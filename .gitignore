@@ -1,0 +1,6 @@
+/* Gitignore 
+ *  Things we dont git to check for diffs */
+
+*.zip
+TRAPSat_cFS/cfs/psp/fsw/rpi-linux/* 
+TRAPSat_cFS/cfs/psp/fsw/rpi-linux/

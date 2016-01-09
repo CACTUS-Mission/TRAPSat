@@ -1,0 +1,17 @@
+Here is a list  of linux commands that will come in handy.
+
+	$ df -h 
+	
+	Shows the amount of free space/space used on each system partition. 
+	The -h switch shows labeled block sizes that are easier to read 
+	(i.e. xxGB  | xxMB | xxKB | xxB ).
+
+	
+	$ du -shc 
+	This command can be used to show the size of files and directories.
+	-s shows a summary rather than a listing for each file.
+	-h shows labeled block sizes.
+	-c shows a grand total for the directory from which the command is run. (semi redundant to run with -s).
+
+
+	

@@ -1,0 +1,411 @@
+        -:    0:Source:/home/wmoleski/CFS/mission_2014/cfe/fsw/cfe-core/src/fs/cfe_fs_api.c
+        -:    0:Graph:cfe_fs_api.gcno
+        -:    0:Data:cfe_fs_api.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:** $Id: cfe_fs_api.c.gcov 1.5 2015/06/24 12:19:16EDT wmoleski Exp  $
+        -:    3:**
+        -:    4:**      Copyright (c) 2004-2012, United States government as represented by the 
+        -:    5:**      administrator of the National Aeronautics Space Administration.  
+        -:    6:**      All rights reserved. This software(cFE) was created at NASA's Goddard 
+        -:    7:**      Space Flight Center pursuant to government contracts.
+        -:    8:**
+        -:    9:**      This is governed by the NASA Open Source Agreement and may be used, 
+        -:   10:**      distributed and modified only pursuant to the terms of that agreement.
+        -:   11:**
+        -:   12:** Purpose:  cFE File Services (FS) library API source file
+        -:   13:**
+        -:   14:** Author:   S.Walling/Microtel
+        -:   15:**
+        -:   16:** Notes:
+        -:   17:**
+        -:   18:** $Log: cfe_fs_api.c.gcov  $
+        -:   18:** Revision 1.5 2015/06/24 12:19:16EDT wmoleski 
+        -:   18:** Checking in the unit-test results for cFE 6.4.2.0
+        -:   19:** Revision 1.8 2014/08/22 17:06:20GMT-05:00 lwalling 
+        -:   20:** Change signed loop counters to unsigned
+        -:   21:** Revision 1.7 2012/01/13 12:11:28EST acudmore 
+        -:   22:** Changed license text to reflect open source
+        -:   23:** Revision 1.6 2010/11/03 15:09:41EDT jmdagost 
+        -:   24:** Added cfe.h include file.
+        -:   25:** Revision 1.5 2010/10/25 17:51:05EDT jmdagost 
+        -:   26:** Added filename length test to CFE_FS_ExtractFilenameFromPath()
+        -:   27:** Revision 1.4 2009/06/10 09:13:43EDT acudmore 
+        -:   28:** Converted OS_Mem* and OS_BSP* calls to CFE_PSP_*
+        -:   29:** Revision 1.3 2008/08/28 08:39:58EDT apcudmore 
+        -:   30:** fixed CFS names. ( CFS-->CFE )
+        -:   31:** Revision 1.2 2008/06/20 15:40:30EDT apcudmore 
+        -:   32:** Added support for OSAL based module loader
+        -:   33:**  - Removed calls and references to the BSP based module loader
+        -:   34:** Revision 1.1 2008/04/17 08:05:16EDT ruperera 
+        -:   35:** Initial revision
+        -:   36:** Member added to project c:/MKSDATA/MKS-REPOSITORY/MKS-CFE-PROJECT/fsw/cfe-core/src/fs/project.pj
+        -:   37:** Revision 1.14 2007/09/05 09:45:01EDT David Kobe (dlkobe) 
+        -:   38:** Corrected OS_lseek return status data type
+        -:   39:** Revision 1.13 2007/09/05 09:43:12EDT David Kobe (dlkobe) 
+        -:   40:** Corrected usage of return codes from OS_lseek and OS_write
+        -:   41:** Revision 1.12 2007/05/17 13:05:09EDT wfmoleski 
+        -:   42:** 
+        -:   43:** Revision 1.11 2007/03/16 15:12:12EST dlkobe 
+        -:   44:** Swapped parameter list for CFE_FS_ReadHeader API.
+        -:   45:** Revision 1.10 2006/09/01 11:39:24GMT-05:00 dlkobe 
+        -:   46:** Added processor endianess check and swapped header data if necessary
+        -:   47:** Revision 1.9 2006/07/25 14:37:52GMT-05:00 njyanchik 
+        -:   48:** It turns out the both the FS app and the OSAL were incorrect where file descriptors are
+        -:   49:** concerned. the file descriptors should be int32 across the board.
+        -:   50:**
+        -:   51:*/
+        -:   52:
+        -:   53:
+        -:   54:/*
+        -:   55:** Required header files...
+        -:   56:*/
+        -:   57:#include "cfe.h"
+        -:   58:#include "cfe_fs.h"
+        -:   59:#include "cfe_time.h"
+        -:   60:#include "osapi.h"
+        -:   61:#include "cfe_psp.h"
+        -:   62:#include "cfe_es.h"
+        -:   63:#include <string.h>
+        -:   64:
+        -:   65:void CFE_FS_ByteSwapCFEHeader(CFE_FS_Header_t *Hdr);
+        -:   66:void CFE_FS_ByteSwapUint32(uint32 *Uint32ToSwapPtr);
+        -:   67:
+        -:   68:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:   69:/*                                                                         */
+        -:   70:/* CFE_FS_ReadHeader() -- read cFE file header structure                   */
+        -:   71:/*                                                                         */
+        -:   72:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:   73:
+        -:   74:int32 CFE_FS_ReadHeader(CFE_FS_Header_t *Hdr, int32 FileDes)
+        2:   75:{
+        -:   76:    int32   Result;
+        2:   77:    int32   EndianCheck = 0x01020304;
+        -:   78:    
+        -:   79:    /*
+        -:   80:    ** Ensure that we are at the start of the file...
+        -:   81:    */
+        2:   82:    Result = OS_lseek(FileDes, 0, OS_SEEK_SET);
+        -:   83:
+        2:   84:    if (Result == OS_SUCCESS)
+        -:   85:    {
+        -:   86:        /*
+        -:   87:        ** Read header structure into callers buffer...
+        -:   88:        */
+        1:   89:        Result = OS_read(FileDes, Hdr, sizeof(CFE_FS_Header_t));
+        -:   90:
+        -:   91:	    /* Determine if this processor is a little endian processor */
+        1:   92:    	if ((*(char *)(&EndianCheck)) == 0x04)
+        -:   93:    	{
+        -:   94:    	    /* If this is a little endian processor, then convert the header data structure from */
+        -:   95:    	    /* its standard big-endian format into a little endian format to ease user access    */
+        1:   96:    	    CFE_FS_ByteSwapCFEHeader(Hdr);
+        -:   97:    	}
+        -:   98:    }
+        -:   99:    
+        2:  100:    return(Result);
+        -:  101:
+        -:  102:} /* End of CFE_FS_ReadHeader() */
+        -:  103:
+        -:  104:
+        -:  105:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  106:/*                                                                         */
+        -:  107:/* CFE_FS_WriteHeader() -- write cFE file header structure                 */
+        -:  108:/*                                                                         */
+        -:  109:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  110:
+        -:  111:int32 CFE_FS_WriteHeader(int32 FileDes, CFE_FS_Header_t *Hdr)
+        2:  112:{
+        -:  113:    CFE_TIME_SysTime_t Time;
+        -:  114:    int32   Result;
+        2:  115:    int32   EndianCheck = 0x01020304;
+        -:  116:
+        -:  117:    /*
+        -:  118:    ** Ensure that we are at the start of the file...
+        -:  119:    */
+        2:  120:    Result = OS_lseek(FileDes, 0, OS_SEEK_SET);
+        -:  121:
+        2:  122:    if (Result == OS_SUCCESS)
+        -:  123:    {
+        -:  124:        /*
+        -:  125:        ** Fill in the ID fields...
+        -:  126:        */
+        1:  127:          Hdr->SpacecraftID  = CFE_PSP_GetSpacecraftId();
+        1:  128:          Hdr->ProcessorID   = CFE_PSP_GetProcessorId();
+        1:  129:          CFE_ES_GetAppID((uint32 *)&(Hdr->ApplicationID));
+        -:  130:
+        -:  131:          /* Fill in length field */
+        -:  132:
+        1:  133:          Hdr->Length = sizeof(CFE_FS_Header_t);
+        -:  134:
+        -:  135:          /* put the header, 'cfe1' in hex, in to the content type */
+        1:  136:          Hdr->ContentType = 0x63464531;
+        -:  137:
+        -:  138:          
+        -:  139:        /*
+        -:  140:        ** Fill in the timestamp fields...
+        -:  141:        */
+        1:  142:          Time = CFE_TIME_GetTime();
+        1:  143:          Hdr->TimeSeconds = Time.Seconds;
+        1:  144:          Hdr->TimeSubSeconds = Time.Subseconds;
+        -:  145:
+        -:  146:        /*
+        -:  147:        ** Determine if this is a little endian processor
+        -:  148:        */
+        1:  149:        if ((*(char *)(&EndianCheck)) == 0x04)
+        -:  150:        {
+        -:  151:            /* If this is a little endian processor, then convert the header data structure from */
+        -:  152:            /* the native little endian format to the required CFE standard big endian format    */
+        1:  153:            CFE_FS_ByteSwapCFEHeader(Hdr);
+        -:  154:        }
+        -:  155:
+        -:  156:        /*
+        -:  157:        ** Write header structure from callers buffer...
+        -:  158:        */
+        1:  159:        Result = OS_write(FileDes, Hdr, sizeof(CFE_FS_Header_t));
+        -:  160:
+        -:  161:        /*
+        -:  162:        ** Determine if this is a little endian processor
+        -:  163:        */
+        1:  164:        if ((*(char *)(&EndianCheck)) == 0x04)
+        -:  165:        {
+        -:  166:            /* If this is a little endian processor, then convert the header data structure back */
+        -:  167:            /* from the required CFE standard big endian format to the little endian format      */
+        1:  168:            CFE_FS_ByteSwapCFEHeader(Hdr);
+        -:  169:        }
+        -:  170:
+        -:  171:    }
+        -:  172:
+        2:  173:    return(Result);
+        -:  174:
+        -:  175:} /* End of CFE_FS_WriteHeader() */
+        -:  176:
+        -:  177:
+        -:  178:int32 CFE_FS_SetTimestamp(int32 FileDes, CFE_TIME_SysTime_t NewTimestamp)
+        4:  179:{
+        4:  180:    int32              Result = OS_FS_SUCCESS;
+        -:  181:    CFE_FS_Header_t    TempHdr;
+        4:  182:    int32              EndianCheck = 0x01020304;
+        4:  183:    CFE_TIME_SysTime_t OutTimestamp = NewTimestamp;
+        4:  184:    int32              FileOffset = 0;
+        -:  185:    
+        4:  186:    FileOffset = ((char *)&TempHdr.TimeSeconds - (char *)&TempHdr.ContentType);
+        4:  187:    Result = OS_lseek(FileDes, FileOffset, OS_SEEK_SET);
+        -:  188:    
+        4:  189:    if (Result == FileOffset)
+        -:  190:    {
+        -:  191:        /*
+        -:  192:        **  Determine if this is a little endian processor
+        -:  193:        */
+        3:  194:        if ((*(char *)(&EndianCheck)) == 0x04)
+        -:  195:        {
+        -:  196:            /* If this processor is a little endian processor, then convert the timestamp to a big */
+        -:  197:            /* endian format so that it is compatible with the standard cFE File Header format     */
+        3:  198:            CFE_FS_ByteSwapUint32(&OutTimestamp.Seconds);
+        3:  199:            CFE_FS_ByteSwapUint32(&OutTimestamp.Subseconds);
+        -:  200:        }
+        -:  201:        
+        3:  202:        Result = OS_write(FileDes, &OutTimestamp.Seconds, sizeof(OutTimestamp.Seconds));
+        -:  203:        
+        -:  204:        /* On a good write, the value returned will equal the number of bytes written */
+        3:  205:        if (Result == sizeof(OutTimestamp.Seconds))
+        -:  206:        {
+        2:  207:            Result = OS_write(FileDes, &OutTimestamp.Subseconds, sizeof(OutTimestamp.Subseconds));
+        -:  208:            
+        2:  209:            if (Result == sizeof(OutTimestamp.Subseconds))
+        -:  210:            {
+        1:  211:                Result = OS_FS_SUCCESS;
+        -:  212:            }
+        -:  213:            else
+        -:  214:            {
+        1:  215:                CFE_ES_WriteToSysLog("CFE_FS:SetTime-Failed to write Subseconds (Status=0x%08X)\n", Result);
+        -:  216:            }
+        -:  217:        }
+        -:  218:        else
+        -:  219:        {
+        1:  220:            CFE_ES_WriteToSysLog("CFE_FS:SetTime-Failed to write Seconds (Status=0x%08X)\n", Result);
+        -:  221:        }
+        -:  222:    }
+        -:  223:    else
+        -:  224:    {
+        1:  225:        CFE_ES_WriteToSysLog("CFE_FS:SetTime-Failed to lseek time fields (Status=0x%08X)\n", Result);
+        -:  226:    }
+        -:  227:    
+        4:  228:    return(Result);
+        -:  229:} /* End of CFE_FS_SetTimestamp() */
+        -:  230:
+        -:  231:
+        -:  232:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  233:/*                                                                         */
+        -:  234:/* CFE_FS_ByteSwapCFEHeader() -- byte swap cFE file header structure       */
+        -:  235:/*                                                                         */
+        -:  236:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  237:
+        -:  238:void CFE_FS_ByteSwapCFEHeader(CFE_FS_Header_t *Hdr)
+        4:  239:{
+        4:  240:    CFE_FS_ByteSwapUint32(&Hdr->ContentType);
+        4:  241:    CFE_FS_ByteSwapUint32(&Hdr->SubType);
+        4:  242:    CFE_FS_ByteSwapUint32(&Hdr->Length);
+        4:  243:    CFE_FS_ByteSwapUint32(&Hdr->SpacecraftID);
+        4:  244:    CFE_FS_ByteSwapUint32(&Hdr->ProcessorID);
+        4:  245:    CFE_FS_ByteSwapUint32(&Hdr->ApplicationID);
+        4:  246:    CFE_FS_ByteSwapUint32(&Hdr->TimeSeconds);
+        4:  247:    CFE_FS_ByteSwapUint32(&Hdr->TimeSubSeconds);
+        -:  248:
+        4:  249:} /* End of CFE_FS_ByteSwapCFEHeader() */
+        -:  250:
+        -:  251:
+        -:  252:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  253:/*                                                                         */
+        -:  254:/* CFE_FS_ByteSwapUint32() -- byte swap an uint32                          */
+        -:  255:/*                                                                         */
+        -:  256:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  257:
+        -:  258:void CFE_FS_ByteSwapUint32(uint32 *Uint32ToSwapPtr)
+       39:  259:{
+       39:  260:    int32 Temp = *Uint32ToSwapPtr;
+       39:  261:    char *InPtr = (char *)&Temp;
+       39:  262:    char *OutPtr = (char *)Uint32ToSwapPtr;
+        -:  263:    
+       39:  264:    OutPtr[0] = InPtr[3];
+       39:  265:    OutPtr[1] = InPtr[2];
+       39:  266:    OutPtr[2] = InPtr[1];
+       39:  267:    OutPtr[3] = InPtr[0];    
+       39:  268:} /* End of CFE_FS_ByteSwapUint32() */
+        -:  269:
+        -:  270:
+        -:  271:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  272:/*                                                                         */
+        -:  273:/* Function: CFE_FS_ExtractFilenameFromPath                                */
+        -:  274:/*                                                                         */
+        -:  275:/*  This function extracts the filename from a given path/filename         */
+        -:  276:/*   combination.                                                          */
+        -:  277:/*                                                                         */
+        -:  278:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  279:int32 CFE_FS_ExtractFilenameFromPath(char *OriginalPath, char *FileNameOnly)
+        4:  280:{
+        -:  281:   uint32 i,j;
+        -:  282:   int    StringLength;
+        -:  283:   int    DirMarkIdx;
+        -:  284:   int32  ReturnCode;
+        -:  285:   
+        5:  286:   if ( OriginalPath == NULL || FileNameOnly == NULL )
+        -:  287:   {
+        1:  288:      ReturnCode = CFE_FS_BAD_ARGUMENT;
+        -:  289:   }
+        -:  290:   else
+        -:  291:   {
+        -:  292:      
+        -:  293:       /*
+        -:  294:       ** Get the string length of the original file path
+        -:  295:       */
+        3:  296:       StringLength = strlen(OriginalPath);
+        -:  297:   
+        -:  298:       /*
+        -:  299:       ** Extract the filename from the Path
+        -:  300:       */
+        -:  301:    
+        -:  302:       /* 
+        -:  303:       ** Find the last '/' Character 
+        -:  304:       */
+        3:  305:       DirMarkIdx = -1;
+      101:  306:       for ( i = 0; i < StringLength; i++ )
+        -:  307:       {
+       98:  308:          if ( OriginalPath[i] == '/' )
+        -:  309:          {
+        4:  310:             DirMarkIdx = i;
+        -:  311:          }
+        -:  312:       }
+        -:  313:    
+        -:  314:       /*
+        -:  315:       ** Verify the filename isn't too long
+        -:  316:       */
+        3:  317:       if ((StringLength - (DirMarkIdx + 1)) < OS_MAX_PATH_LEN)
+        -:  318:       {       
+        -:  319:          /* 
+        -:  320:          ** Extract the filename portion 
+        -:  321:          */
+        2:  322:          if ( DirMarkIdx > 0 )
+        -:  323:          {    
+        -:  324:             /* 
+        -:  325:             ** Extract the filename portion 
+        -:  326:             */
+        1:  327:             j = 0;
+       15:  328:             for ( i = DirMarkIdx + 1; i < StringLength; i++ )
+        -:  329:             {
+       14:  330:                FileNameOnly[j] = OriginalPath[i];
+       14:  331:                j++;
+        -:  332:             }
+        1:  333:             FileNameOnly[j] = '\0';
+        -:  334:    
+        1:  335:             ReturnCode = CFE_SUCCESS;       
+        -:  336:          }
+        -:  337:          else
+        -:  338:          { 
+        1:  339:             ReturnCode = CFE_FS_INVALID_PATH;
+        -:  340:          }
+        -:  341:       }
+        -:  342:       else 
+        -:  343:       {
+        1:  344:           ReturnCode = CFE_FS_FNAME_TOO_LONG;
+        -:  345:       }
+        -:  346:    }
+        -:  347:   
+        4:  348:    return(ReturnCode);
+        -:  349:}
+        -:  350:
+        -:  351:
+        -:  352:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  353:/*                                                                         */
+        -:  354:/* Function: CFE_FS_BSPIsGzFile                                            */
+        -:  355:/*                                                                         */
+        -:  356:/*  This function will check to see if the file to load                    */
+        -:  357:/*  is compressed with gzip. Currently it is based on the                  */
+        -:  358:/*  file name. The file name must end in ".gz".                            */ 
+        -:  359:/*                                                                         */
+        -:  360:/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        -:  361:boolean CFE_FS_IsGzFile(char *FileName)
+        4:  362:{
+        -:  363:   int    StringLength;
+        -:  364:   
+        4:  365:   if ( FileName == NULL )
+        -:  366:   {
+        1:  367:      return(FALSE);
+        -:  368:   }
+        -:  369:   /*
+        -:  370:   ** Get the string length of the SourceFile name
+        -:  371:   */
+        3:  372:   StringLength = strlen(FileName);
+        -:  373:   
+        -:  374:   /*
+        -:  375:   ** The compressed filename must be named "something.gz"
+        -:  376:   ** Because of that, the shortest compressed filename is "a.gz"
+        -:  377:   ** Check for the length before determining if the file is zipped
+        -:  378:   */
+        3:  379:   if ( StringLength < 4 )
+        -:  380:   {
+        1:  381:      return(FALSE);
+        -:  382:   }
+        -:  383:
+        -:  384:   /*
+        -:  385:   ** if the last 3 characters are ".gz"
+        -:  386:   ** Then assume the file is zipped.
+        -:  387:   */
+        2:  388:   if ( (FileName[StringLength - 3] == '.') &&
+        -:  389:        (FileName[StringLength - 2] == 'g') &&
+        -:  390:        (FileName[StringLength - 1] == 'z'))
+        -:  391:   {
+        1:  392:       return(TRUE);       
+        -:  393:   }
+        -:  394:   else
+        -:  395:   {
+        1:  396:       return(FALSE);
+        -:  397:   }
+        -:  398:  
+        -:  399:}
+        -:  400:
+        -:  401:
+        -:  402:/************************/
+        -:  403:/*  End of File Comment */
+        -:  404:/************************/

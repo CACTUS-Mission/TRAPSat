@@ -1,0 +1,1874 @@
+        -:    0:Source:/home/wmoleski/CFS/mission_2014/cfe/fsw/cfe-core/src/evs/cfe_evs_task.c
+        -:    0:Graph:cfe_evs_task.gcno
+        -:    0:Data:cfe_evs_task.gcda
+        -:    0:Runs:1
+        -:    0:Programs:3
+        -:    1:/*
+        -:    2:**
+        -:    3:**  File Name: cfe_evs_task.c
+        -:    4:**  $Id: cfe_evs_task.c.gcov 1.5 2015/06/24 12:19:34EDT wmoleski Exp  $
+        -:    5:**
+        -:    6:**
+        -:    7:**      Copyright (c) 2004-2012, United States government as represented by the
+        -:    8:**      administrator of the National Aeronautics Space Administration.
+        -:    9:**      All rights reserved. This software(cFE) was created at NASA's Goddard
+        -:   10:**      Space Flight Center pursuant to government contracts.
+        -:   11:**
+        -:   12:**      This is governed by the NASA Open Source Agreement and may be used,
+        -:   13:**      distributed and modified only pursuant to the terms of that agreement.
+        -:   14:**
+        -:   15:**
+        -:   16:**
+        -:   17:**
+        -:   18:**
+        -:   19:**  Title: Event Service API Management Control Interfaces
+        -:   20:**
+        -:   21:**  Purpose: This module defines the top level functions of the
+        -:   22:**           cFE Event Service task defining the control, command,
+        -:   23:**           and telemetry interfaces
+        -:   24:**
+        -:   25:**  $Date: 2015/06/24 12:19:34EDT $
+        -:   26:**  $Revision: 1.5 $
+        -:   27:**  $Log: cfe_evs_task.c.gcov  $
+        -:   27:**  Revision 1.5 2015/06/24 12:19:34EDT wmoleski 
+        -:   27:**  Checking in the unit-test results for cFE 6.4.2.0
+        -:   28:**  Revision 1.19 2014/08/22 16:53:24GMT-05:00 lwalling 
+        -:   29:**  Change signed loop counters to unsigned
+        -:   30:**  Revision 1.18 2012/10/01 17:37:11EDT aschoeni 
+        -:   31:**  removed relative path in include (handle in makefile)
+        -:   32:**  Revision 1.17 2012/01/18 16:28:03EST jmdagost 
+        -:   33:**  Update init and no-op event msgs to include OSAL revision and mission revision numbers.
+        -:   34:**  --- Added comments ---  jmdagost [2012/01/18 21:31:18Z]
+        -:   35:**  Updated init and no-op event msgs to include cFE version numbers.
+        -:   36:**  Revision 1.16 2012/01/13 12:00:55EST acudmore 
+        -:   37:**  Changed license text to reflect open source
+        -:   38:**  Revision 1.15 2011/09/30 14:52:08EDT lwalling 
+        -:   39:**  Fix use of config file setting for default event log mode
+        -:   40:**  Revision 1.14 2011/09/28 13:18:12EDT lwalling 
+        -:   41:**  Verify reset area size is at least as big as CFE_ES_ResetData_t
+        -:   42:**  Revision 1.13 2011/06/02 18:08:56EDT lwalling 
+        -:   43:**  Modified error handling for Write App Data to File command handler, updated event text
+        -:   44:**  Revision 1.12 2011/06/01 10:36:39EDT lwalling 
+        -:   45:**  Include internal ES header file, fix typo in calls to CFE_ES_WriteToSysLog()
+        -:   46:**  Revision 1.11 2011/05/23 15:57:01EDT lwalling 
+        -:   47:**  Change startup to not fail if unable to create event log, verify reset area size and event log contents
+        -:   48:**  Revision 1.10 2011/04/07 11:24:26EDT lwalling 
+        -:   49:**  Fix typo in data definition
+        -:   50:**  Revision 1.9 2011/04/07 11:00:39EDT lwalling 
+        -:   51:**  Restored deleted app cleanup function -- CFE_EVS_CleanUpApp()
+        -:   52:**  Revision 1.8 2011/04/05 16:33:44EDT lwalling 
+        -:   53:**  Optimize EVS use of string functions, plus other performance improvements
+        -:   54:**  Revision 1.7 2011/03/17 15:55:39EDT lwalling 
+        -:   55:**  Fix use of return value from function CFE_ES_GetResetType()
+        -:   56:**  Revision 1.6 2010/10/27 16:37:17EDT jmdagost 
+        -:   57:**  Forced LogMode to default value on reset, added platform config and evs msg include files.
+        -:   58:**  Revision 1.5 2010/09/21 16:12:13EDT jmdagost 
+        -:   59:**  Added conditional statements around conditionally-used local variables.
+        -:   60:**  Revision 1.4 2009/07/31 19:54:57EDT aschoeni 
+        -:   61:**  Added length checking and fixed several comments and events
+        -:   62:**  Revision 1.3 2009/06/10 09:13:01EDT acudmore 
+        -:   63:**  Converted OS_Mem* and OS_BSP* calls to CFE_PSP_*
+        -:   64:**  Revision 1.2 2008/07/31 15:41:38EDT apcudmore 
+        -:   65:**  Added execution counter API:
+        -:   66:**    -- Added execution counter to ES internal task data
+        -:   67:**    -- Added code to increment counter in RunLoop
+        -:   68:**    -- Added code to report counter in GetInfo APIs
+        -:   69:**    -- Added API to increment counter for child tasks
+        -:   70:**    -- Added code to cFE Core apps to increment counters.
+        -:   71:**  Revision 1.1 2008/04/17 08:05:13EDT ruperera 
+        -:   72:**  Initial revision
+        -:   73:**  Member added to project c:/MKSDATA/MKS-REPOSITORY/MKS-CFE-PROJECT/fsw/cfe-core/src/evs/project.pj
+        -:   74:**  Revision 1.1.2.72 2007/08/27 12:01:13EDT njyanchik 
+        -:   75:**  I mustv'e accidentally overwritten DAve's change of adding an event ID to WriteAppData, so I
+        -:   76:**  am fixing the mistake
+        -:   77:**  Revision 1.1.2.71 2007/08/24 14:27:38EDT apcudmore 
+        -:   78:**  Keep EVS from clearing out the log on a Processor reset
+        -:   79:**  Revision 1.1.2.70 2007/07/18 15:48:00EDT njyanchik 
+        -:   80:**  Jonathan added text into each error event in the two functions that write files (WriteLog and WriteAppData), as well as updated the doxygen comments in the header file
+        -:   81:**  Revision 1.1.2.68 2007/06/05 15:37:36EDT njyanchik 
+        -:   82:**  The log mode was not being set correctly in the telemetry. It was because the logmode variable
+        -:   83:**  was assigned to the logfullflag variable in telemetry. I reassigned it to the appropriate variable.
+        -:   84:**  Revision 1.1.2.67 2007/05/16 15:13:42EDT dlkobe 
+        -:   85:**  Added MemPoolHandle members to HK packet
+        -:   86:**  Revision 1.1.2.66 2007/05/16 08:44:36EDT njyanchik 
+        -:   87:**  I re added the AppData Subtype to the AppData File header
+        -:   88:**  Revision 1.1.2.65 2007/05/15 11:01:10EDT rjmcgraw 
+        -:   89:**  DCR78:11 Exit main loop for CFE_SB_RcvMsg errors
+        -:   90:**  Revision 1.1.2.64 2007/05/14 10:26:04EDT apcudmore 
+        -:   91:**  Preserve the EVS Local event log on a processor restart:
+        -:   92:**  - moved the EVS Log to the ES reset data structure
+        -:   93:**  - Added a couple of EVS Log related variables into the EVS_Log_t structure
+        -:   94:**  - Added a routine to the EVS early init to get a pointer to the EVS Log 
+        -:   95:**  - Added code to the EVS housekeeping service routine to copy Log variables into TLM
+        -:   96:**  Revision 1.1.2.63 2007/04/27 16:58:19EDT rjmcgraw 
+        -:   97:**  Checked return from init event
+        -:   98:**  Revision 1.1.2.62 2007/04/27 16:13:15EDT rjmcgraw 
+        -:   99:**  DCR2987:4 Standardize task init error code
+        -:  100:**  Revision 1.1.2.61 2007/04/27 12:31:06EDT njyanchik 
+        -:  101:**  I changed EVS and TIME to not have a telemetry counter for SB pipe reads in the  
+        -:  102:**  main loop. Instead, I have added a syslog message to state the problem
+        -:  103:**  Revision 1.1.2.60 2007/04/26 14:45:39EDT rjmcgraw 
+        -:  104:**  Added pool create and sem create error handling
+        -:  105:**  Revision 1.1.2.59 2007/04/13 16:23:16EDT apcudmore 
+        -:  106:**  Changed EarlyInit function prototype to return int32 status
+        -:  107:**  Revision 1.1.2.58 2007/04/11 10:59:56EDT njyanchik 
+        -:  108:**  Remove the TaskDelay in the main loop for EVS. I also addeda counterin telemtry 
+        -:  109:**  that will notify the ground of an error in reading the command pipe.
+        -:  110:**  Revision 1.1.2.57 2007/04/09 14:45:08EDT rjmcgraw 
+        -:  111:**  Changed names of performance ids to include CFE_
+        -:  112:**
+        -:  113:*/
+        -:  114:
+        -:  115:/* Include Files */
+        -:  116:#include "cfe_evs_task.h"       /* EVS internal definitions */
+        -:  117:#include "cfe_evs_log.h"        /* EVS log file definitions */
+        -:  118:#include "cfe_evs_utils.h"      /* EVS utility function definitions */
+        -:  119:#include "cfe_evs.h"            /* EVS API definitions */
+        -:  120:
+        -:  121:#include <string.h>
+        -:  122:
+        -:  123:#include "cfe_version.h"      /* cFE version definitions */
+        -:  124:#include "cfe_error.h"        /* cFE error code definitions */
+        -:  125:#include "cfe_es.h"           /* Executive Service definitions */
+        -:  126:#include "cfe_fs.h"           /* File Service definitions */
+        -:  127:#include "cfe_psp.h"          /* cFE Platform Support Package definitions */
+        -:  128:#include "osapi.h"            /* OS API file system definitions */
+        -:  129:#include "cfe_platform_cfg.h" /* cFE Platform Configuration definitions */
+        -:  130:#include "cfe_es_global.h" /* Get reset area type defintion */
+        -:  131:
+        -:  132:/* Global Data */
+        -:  133:CFE_EVS_GlobalData_t CFE_EVS_GlobalData;
+        -:  134:
+        -:  135:
+        -:  136:/*
+        -:  137:** Local function prototypes.
+        -:  138:*/
+        -:  139:int32 CFE_EVS_TaskInit ( void );
+        -:  140:void  CFE_EVS_ProcessCommandPacket ( CFE_SB_MsgPtr_t EVS_MsgPtr );
+        -:  141:void  CFE_EVS_ProcessGroundCommand ( CFE_SB_MsgPtr_t EVS_MsgPtr );
+        -:  142:void  CFE_EVS_ReportHousekeepingCmd ( void );
+        -:  143:void  CFE_EVS_ResetCountersCmd ( void );
+        -:  144:boolean CFE_EVS_VerifyCmdLength(CFE_SB_MsgPtr_t Msg, uint16 ExpectedLength);
+        -:  145:boolean CFE_EVS_SetFilterMaskCmd (const CFE_EVS_AppNameEventIDMaskCmd_t *CmdPtr);
+        -:  146:boolean CFE_EVS_EnablePortsCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr);
+        -:  147:boolean CFE_EVS_DisablePortsCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr);
+        -:  148:boolean CFE_EVS_EnableEventTypesCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr);
+        -:  149:boolean CFE_EVS_DisableEventTypesCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr);
+        -:  150:boolean CFE_EVS_SetEventFormatModeCmd (const CFE_EVS_ModeCmd_t *CmdPtr);
+        -:  151:boolean CFE_EVS_EnableAppEventTypesCmd (const CFE_EVS_AppNameBitMaskCmd_t *CmdPtr);
+        -:  152:boolean CFE_EVS_DisableAppEventTypesCmd (const CFE_EVS_AppNameBitMaskCmd_t *CmdPtr);
+        -:  153:boolean CFE_EVS_EnableAppEventsCmd (const CFE_EVS_AppNameCmd_t *CmdPtr);
+        -:  154:boolean CFE_EVS_DisableAppEventsCmd (const CFE_EVS_AppNameCmd_t *CmdPtr);
+        -:  155:boolean CFE_EVS_ResetAppEventCounterCmd (const CFE_EVS_AppNameCmd_t *CmdPtr);
+        -:  156:boolean CFE_EVS_ResetFilterCmd (const CFE_EVS_AppNameEventIDCmd_t *CmdPtr);
+        -:  157:boolean CFE_EVS_AddEventFilterCmd (const CFE_EVS_AppNameEventIDMaskCmd_t *CmdPtr);
+        -:  158:boolean CFE_EVS_DeleteEventFilterCmd (const CFE_EVS_AppNameEventIDCmd_t *CmdPtr);
+        -:  159:boolean CFE_EVS_WriteAppDataCmd ( const CFE_EVS_AppDataCmd_t *CmdPtr );
+        -:  160:boolean CFE_EVS_ResetAllFiltersCmd (const CFE_EVS_AppNameCmd_t *CmdPtr);
+        -:  161:
+        -:  162:/* Function Definitions */
+        -:  163:
+        -:  164:
+        -:  165:/*
+        -:  166:**             Function Prologue
+        -:  167:**
+        -:  168:** Function Name:      CFE_EVS_EarlyInit
+        -:  169:**
+        -:  170:** Purpose:  This routine provides initialization for the EVS API.
+        -:  171:**
+        -:  172:** Assumptions and Notes: This routine must be called before the EVS
+        -:  173:**      application is started.  CFE_EVS_EarlyInit performs initialization
+        -:  174:**      necessary to support EVS API calls that might occur before
+        -:  175:**      the EVS application has completed its startup initialization.
+        -:  176:*/
+        -:  177:int32 CFE_EVS_EarlyInit ( void )
+        6:  178:{
+        -:  179:
+        -:  180:#ifdef CFE_EVS_LOG_ON
+        -:  181:
+        -:  182:   int32                Status;
+        6:  183:   uint32               resetAreaSize = 0;
+        6:  184:   CFE_ES_ResetData_t  *CFE_EVS_ResetDataPtr = (CFE_ES_ResetData_t *) NULL;
+        -:  185:
+        -:  186:#endif
+        -:  187:
+        6:  188:   CFE_PSP_MemSet(&CFE_EVS_GlobalData, 0, sizeof(CFE_EVS_GlobalData_t));
+        -:  189:
+        6:  190:   CFE_EVS_GlobalData.EVS_AppID = CFE_EVS_UNDEF_APPID;
+        -:  191:
+        -:  192:   /* Initialize housekeeping packet */
+        6:  193:   CFE_SB_InitMsg(&CFE_EVS_GlobalData.EVS_TlmPkt, CFE_EVS_HK_TLM_MID,
+        -:  194:                   CFE_EVS_HK_TLM_LNGTH, FALSE);
+        -:  195:  
+        -:  196:   /* Elements stored in the hk packet that have non-zero default values */
+        6:  197:   CFE_EVS_GlobalData.EVS_TlmPkt.MessageFormatMode = CFE_EVS_DEFAULT_MSG_FORMAT_MODE;
+        6:  198:   CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort = CFE_EVS_PORT_DEFAULT;
+        6:  199:   CFE_EVS_GlobalData.EVS_TlmPkt.LogFullFlag = FALSE;
+        6:  200:   CFE_EVS_GlobalData.EVS_TlmPkt.LogMode = CFE_EVS_DEFAULT_LOG_MODE;
+        -:  201:
+        -:  202:#ifdef CFE_EVS_LOG_ON
+        -:  203:
+        -:  204:   /* Get a pointer to the CFE reset area from the BSP */
+        6:  205:   Status = CFE_PSP_GetResetArea(&CFE_EVS_ResetDataPtr, &resetAreaSize);
+        -:  206:
+        6:  207:   if (Status != CFE_PSP_SUCCESS)
+        -:  208:   {
+        1:  209:      CFE_ES_WriteToSysLog("EVS call to CFE_PSP_GetResetArea failed, RC=0x%08x\n", Status);
+        -:  210:   }
+        5:  211:   else if (resetAreaSize < sizeof(CFE_ES_ResetData_t))
+        -:  212:   {
+        -:  213:      /* Got the pointer but the size is wrong */
+        1:  214:      Status = CFE_EVS_RESET_AREA_POINTER;
+        1:  215:      CFE_ES_WriteToSysLog("Unexpected size from CFE_PSP_GetResetArea: expected = 0x%08X, actual = 0x%08X\n",
+        -:  216:                            sizeof(CFE_ES_ResetData_t), resetAreaSize);
+        -:  217:   }
+        -:  218:   else
+        -:  219:   {
+        -:  220:      /* Save pointer to the EVS portion of the CFE reset area */
+        4:  221:      CFE_EVS_GlobalData.EVS_LogPtr = &CFE_EVS_ResetDataPtr->EVS_Log;
+        -:  222:
+        -:  223:      /* Create semaphore to serialize access to event log */
+        4:  224:      Status = OS_MutSemCreate(&CFE_EVS_GlobalData.EVS_SharedDataMutexID, "CFE_EVS_DataMutex", 0);
+        -:  225:
+        4:  226:      if (Status != OS_SUCCESS)
+        -:  227:      {
+        1:  228:         CFE_ES_WriteToSysLog("EVS call to OS_MutSemCreate failed, RC=0x%08x\n", Status);
+        -:  229:      }
+        -:  230:      else
+        -:  231:      {
+        -:  232:         /* Enable access to the EVS event log */                                                            
+        3:  233:         CFE_EVS_GlobalData.EVS_TlmPkt.LogEnabled = TRUE;
+        -:  234:
+        -:  235:         /* Clear event log if power-on reset or bad contents */                                                            
+        3:  236:         if (CFE_ES_GetResetType(NULL) == CFE_ES_POWERON_RESET)                                                                   
+        -:  237:         {
+        1:  238:            CFE_ES_WriteToSysLog("Event Log cleared following power-on reset\n");
+        1:  239:            EVS_ClearLog();                                                                                         
+        1:  240:            CFE_EVS_GlobalData.EVS_LogPtr->LogMode = CFE_EVS_DEFAULT_LOG_MODE;
+        -:  241:         }
+        3:  242:         else if (((CFE_EVS_GlobalData.EVS_LogPtr->LogMode != CFE_EVS_LOG_OVERWRITE) &&
+        -:  243:                   (CFE_EVS_GlobalData.EVS_LogPtr->LogMode != CFE_EVS_LOG_DISCARD))  ||
+        -:  244:                  ((CFE_EVS_GlobalData.EVS_LogPtr->LogFullFlag != FALSE)   &&
+        -:  245:                   (CFE_EVS_GlobalData.EVS_LogPtr->LogFullFlag != TRUE))   ||
+        -:  246:                   (CFE_EVS_GlobalData.EVS_LogPtr->Next >= CFE_EVS_LOG_MAX))
+        -:  247:         {
+        1:  248:            CFE_ES_WriteToSysLog("Event Log cleared, n=%d, c=%d, f=%d, m=%d, o=%d\n",
+        -:  249:                                  CFE_EVS_GlobalData.EVS_LogPtr->Next,
+        -:  250:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogCount,
+        -:  251:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogFullFlag,
+        -:  252:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogMode,
+        -:  253:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogOverflowCounter);
+        1:  254:            EVS_ClearLog();                                                                                         
+        1:  255:            CFE_EVS_GlobalData.EVS_LogPtr->LogMode = CFE_EVS_DEFAULT_LOG_MODE;
+        -:  256:         }
+        -:  257:         else
+        -:  258:         {
+        1:  259:            CFE_ES_WriteToSysLog("Event Log restored, n=%d, c=%d, f=%d, m=%d, o=%d\n",
+        -:  260:                                  CFE_EVS_GlobalData.EVS_LogPtr->Next,
+        -:  261:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogCount,
+        -:  262:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogFullFlag,
+        -:  263:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogMode,
+        -:  264:                                  CFE_EVS_GlobalData.EVS_LogPtr->LogOverflowCounter);
+        -:  265:         }
+        -:  266:      }
+        -:  267:   }
+        -:  268:
+        -:  269:#endif
+        -:  270:
+        6:  271:   return(CFE_SUCCESS);
+        -:  272:
+        -:  273:} /* End CFE_EVS_EarlyInit */
+        -:  274:
+        -:  275:
+        -:  276:/*
+        -:  277:**             Function Prologue
+        -:  278:**
+        -:  279:** Function Name:      CFE_EVS_CleanUpApp
+        -:  280:**
+        -:  281:** Purpose:  ES calls this routine when an app is being terminated.
+        -:  282:**
+        -:  283:** Assumptions and Notes:
+        -:  284:*/
+        -:  285:int32 CFE_EVS_CleanUpApp(uint32 AppID)
+        3:  286:{
+        3:  287:   int32  Status = CFE_SUCCESS;
+        -:  288:
+        3:  289:   if (AppID >= CFE_ES_MAX_APPLICATIONS)
+        -:  290:   {
+        1:  291:      Status = CFE_EVS_APP_ILLEGAL_APP_ID;
+        -:  292:   }
+        2:  293:   else if (CFE_EVS_GlobalData.AppData[AppID].RegisterFlag == TRUE)
+        -:  294:   {
+        -:  295:      /* Same cleanup as CFE_EVS_Unregister() */
+        1:  296:      CFE_PSP_MemSet(&CFE_EVS_GlobalData.AppData[AppID], 0, sizeof(EVS_AppData_t));
+        -:  297:   }
+        -:  298:    
+        3:  299:   return(Status);
+        -:  300:}
+        -:  301:
+        -:  302:
+        -:  303:/*
+        -:  304:**             Function Prologue
+        -:  305:**
+        -:  306:** Function Name:      EVS_TaskMain
+        -:  307:**
+        -:  308:** Purpose:  This is the main EVS task process loop.
+        -:  309:**
+        -:  310:** Assumptions and Notes:
+        -:  311:**
+        -:  312:*/
+        -:  313:void CFE_EVS_TaskMain(void)
+        2:  314:{
+        -:  315:    int32 Status;    
+        -:  316:    CFE_SB_MsgPtr_t    EVS_MsgPtr; /* Pointer to SB message */
+        -:  317:
+        2:  318:    CFE_ES_PerfLogEntry(CFE_EVS_MAIN_PERF_ID);    
+        -:  319:   
+        2:  320:    Status = CFE_EVS_TaskInit();
+        -:  321:    
+        2:  322:    if(Status != CFE_SUCCESS)
+        -:  323:    {
+        1:  324:      CFE_ES_WriteToSysLog("EVS:Application Init Failed,RC=0x%08X\n", Status);
+        1:  325:      CFE_ES_PerfLogExit(CFE_EVS_MAIN_PERF_ID);
+        -:  326:      /* Note: CFE_ES_ExitApp will not return */
+        1:  327:      CFE_ES_ExitApp(CFE_ES_CORE_APP_INIT_ERROR);
+        -:  328:    }/* end if */      
+        -:  329:
+        -:  330:    /*
+        -:  331:     * Wait for other apps to start.
+        -:  332:     * It is important that the core apps are present before this starts receiving
+        -:  333:     * messages from the command pipe, as some of those handlers might depend on
+        -:  334:     * the other core apps.
+        -:  335:     */
+        2:  336:    CFE_ES_WaitForStartupSync(CFE_CORE_MAX_STARTUP_MSEC);
+        -:  337:
+        -:  338:    /* Main loop */
+        6:  339:    while (Status == CFE_SUCCESS)
+        -:  340:    {
+        -:  341:        /* Increment the Main task Execution Counter */
+        2:  342:        CFE_ES_IncrementTaskCounter();
+        -:  343:    
+        2:  344:        CFE_ES_PerfLogExit(CFE_EVS_MAIN_PERF_ID);
+        -:  345:
+        -:  346:        /* Pend on receipt of packet */
+        2:  347:        Status = CFE_SB_RcvMsg(&EVS_MsgPtr, 
+        -:  348:                               CFE_EVS_GlobalData.EVS_CommandPipe, 
+        -:  349:                               CFE_SB_PEND_FOREVER);
+        -:  350:
+        2:  351:        CFE_ES_PerfLogEntry(CFE_EVS_MAIN_PERF_ID);
+        -:  352:
+        2:  353:        if (Status == CFE_SUCCESS)
+        -:  354:        {
+        -:  355:            /* Process cmd pipe msg */
+        1:  356:            CFE_EVS_ProcessCommandPacket(EVS_MsgPtr);
+        -:  357:        }else{            
+        1:  358:            CFE_ES_WriteToSysLog("EVS:Error reading cmd pipe,RC=0x%08X\n",Status);
+        -:  359:        }/* end if */
+        -:  360:    
+        -:  361:    }/* end while */
+        -:  362:
+        -:  363:    /* while loop exits only if CFE_SB_RcvMsg returns error */
+        2:  364:    CFE_ES_ExitApp(CFE_ES_CORE_APP_RUNTIME_ERROR);
+        -:  365:
+        2:  366:} /* end CFE_EVS_TaskMain */
+        -:  367:
+        -:  368:
+        -:  369:
+        -:  370:/*
+        -:  371:**             Function Prologue
+        -:  372:**
+        -:  373:** Function Name:      CFE_EVS_TaskInit
+        -:  374:**
+        -:  375:** Purpose:  This function performs any necessary EVS task initialization.
+        -:  376:**
+        -:  377:** Assumptions and Notes:
+        -:  378:**
+        -:  379:*/
+        -:  380:int32 CFE_EVS_TaskInit ( void )
+        8:  381:{
+        -:  382:   int32 Status;
+        -:  383:   uint32 AppID;
+        -:  384: 
+        -:  385:   /* Register EVS application */
+        8:  386:   Status = CFE_ES_RegisterApp();
+        8:  387:   if (Status != CFE_SUCCESS)
+        -:  388:   {
+        2:  389:      CFE_ES_WriteToSysLog("EVS:Call to CFE_ES_RegisterApp Failed:RC=0x%08X\n",Status);
+        2:  390:      return Status;
+        -:  391:   }
+        -:  392:
+        -:  393:   /* Query and verify the EVS AppID */
+        6:  394:   Status = EVS_GetAppID(&AppID);
+        6:  395:   if (Status != CFE_SUCCESS)
+        -:  396:   {
+        1:  397:      CFE_ES_WriteToSysLog("EVS:Call to CFE_ES_GetAppID Failed:RC=0x%08X\n",(unsigned int)Status);
+        1:  398:      return Status;
+        -:  399:   }
+        -:  400:
+        -:  401:   /* Register EVS task for event services */
+        5:  402:   Status = CFE_EVS_Register(NULL, 0, CFE_EVS_BINARY_FILTER);
+        5:  403:   if (Status != CFE_SUCCESS)
+        -:  404:   {
+    #####:  405:      CFE_ES_WriteToSysLog("EVS:Call to CFE_EVS_Register Failed:RC=0x%08X\n",Status);
+    #####:  406:      return Status;
+        -:  407:   }
+        -:  408:    
+        -:  409:   /* Create software bus command pipe */
+        5:  410:   Status = CFE_SB_CreatePipe(&CFE_EVS_GlobalData.EVS_CommandPipe,
+        -:  411:                               CFE_EVS_PIPE_DEPTH, CFE_EVS_PIPE_NAME);
+        5:  412:   if (Status != CFE_SUCCESS)
+        -:  413:   {
+        1:  414:      CFE_ES_WriteToSysLog("EVS:Call to CFE_SB_CreatePipe Failed:RC=0x%08X\n",Status);
+        1:  415:      return Status;
+        -:  416:   }
+        -:  417:      
+        -:  418:   /* Subscribe to command and telemetry requests coming in on the command pipe */
+        4:  419:   Status = CFE_SB_SubscribeEx(CFE_EVS_CMD_MID, CFE_EVS_GlobalData.EVS_CommandPipe,
+        -:  420:                               CFE_SB_Default_Qos, CFE_EVS_MSG_LIMIT);
+        4:  421:   if (Status != CFE_SUCCESS)
+        -:  422:   {
+        1:  423:      CFE_ES_WriteToSysLog("EVS:Subscribing to Cmds Failed:RC=0x%08X\n",Status);
+        1:  424:      return Status;
+        -:  425:   }
+        -:  426:  
+        3:  427:   Status = CFE_SB_SubscribeEx(CFE_EVS_SEND_HK_MID, CFE_EVS_GlobalData.EVS_CommandPipe,
+        -:  428:                               CFE_SB_Default_Qos, CFE_EVS_MSG_LIMIT);
+        3:  429:   if (Status != CFE_SUCCESS)
+        -:  430:   {
+        1:  431:      CFE_ES_WriteToSysLog("EVS:Subscribing to HK Request Failed:RC=0x%08X\n",Status);
+        1:  432:      return Status;
+        -:  433:   }
+        -:  434:  
+        -:  435:   /* Write the AppID to the global location, now that the rest of initialization is done */
+        2:  436:   CFE_EVS_GlobalData.EVS_AppID = AppID;
+        2:  437:   EVS_SendEvent(CFE_EVS_STARTUP_EID, CFE_EVS_INFORMATION, "cFE EVS Initialized. cFE Version %d.%d.%d.%d",
+        -:  438:                 CFE_MAJOR_VERSION,CFE_MINOR_VERSION,CFE_REVISION,CFE_MISSION_REV);
+        -:  439:
+        2:  440:   return CFE_SUCCESS;
+        -:  441:
+        -:  442:} /* End CFE_EVS_TaskInit */
+        -:  443:
+        -:  444:
+        -:  445:
+        -:  446:/*
+        -:  447:**             Function Prologue
+        -:  448:**
+        -:  449:** Function Name:      CFE_EVS_ProcessCommandPacket
+        -:  450:**
+        -:  451:** Purpose:  This function processes packets received on the EVS command pipe.
+        -:  452:**
+        -:  453:** Assumptions and Notes:
+        -:  454:**
+        -:  455:*/
+        -:  456:void CFE_EVS_ProcessCommandPacket ( CFE_SB_MsgPtr_t EVS_MsgPtr )
+      117:  457:{
+        -:  458:    /* Process all SB messages */
+      117:  459:    switch (CFE_SB_GetMsgId(EVS_MsgPtr))
+        -:  460:    {
+        -:  461:        case CFE_EVS_CMD_MID:
+        -:  462:            /* EVS task specific command */
+      114:  463:            CFE_EVS_ProcessGroundCommand(EVS_MsgPtr);
+      114:  464:            break;
+        -:  465:
+        -:  466:        case CFE_EVS_SEND_HK_MID:
+        -:  467:            /* Housekeeping request */
+        1:  468:            CFE_EVS_ReportHousekeepingCmd();
+        1:  469:            break;
+        -:  470:
+        -:  471:        default:
+        -:  472:            /* Unknown command -- should never occur */
+        2:  473:            CFE_EVS_GlobalData.EVS_TlmPkt.CommandErrCounter++;
+        2:  474:            EVS_SendEvent(CFE_EVS_ERR_MSGID_EID, CFE_EVS_ERROR,
+        -:  475:                         "Invalid command packet, Message ID = 0x%08X",
+        -:  476:                          CFE_SB_GetMsgId(EVS_MsgPtr));
+        -:  477:            break;
+        -:  478:    }
+        -:  479:
+        -:  480:    return;
+        -:  481:
+        -:  482:} /* End CFE_EVS_ProcessCommandPacket */
+        -:  483:
+        -:  484:
+        -:  485:/*
+        -:  486:**             Function Prologue
+        -:  487:**
+        -:  488:** Function Name:      CFE_EVS_ProcessGroundCommand
+        -:  489:**
+        -:  490:** Purpose:  This function processes a command, verifying that it is valid and of
+        -:  491:**           proper length.
+        -:  492:**
+        -:  493:** Assumptions and Notes:
+        -:  494:**
+        -:  495:*/
+        -:  496:void CFE_EVS_ProcessGroundCommand ( CFE_SB_MsgPtr_t EVS_MsgPtr )
+      114:  497:{
+      114:  498:   boolean Valid = FALSE;
+        -:  499:
+        -:  500:   /* Process "known" EVS task ground commands */
+      114:  501:   switch (CFE_SB_GetCmdCode(EVS_MsgPtr))
+        -:  502:   {
+        -:  503:      case CFE_EVS_NO_OPERATION_CC:
+        -:  504:
+        2:  505:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_SB_CmdHdr_t))) == TRUE)
+        -:  506:         {
+        1:  507:            EVS_SendEvent(CFE_EVS_NOOP_EID, CFE_EVS_INFORMATION,"No-op command. cFE Version %d.%d.%d.%d",
+        -:  508:                          CFE_MAJOR_VERSION,CFE_MINOR_VERSION,CFE_REVISION,CFE_MISSION_REV);
+        -:  509:         }
+        2:  510:         break;
+        -:  511:
+        -:  512:      case CFE_EVS_RESET_COUNTERS_CC:
+        -:  513:
+        2:  514:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_SB_CmdHdr_t))) == TRUE)
+        -:  515:         {
+        1:  516:            CFE_EVS_ResetCountersCmd();
+        -:  517:            /* Return avoids incrementing command counter */
+        1:  518:            return;
+        -:  519:         }
+        1:  520:         break;
+        -:  521:
+        -:  522:      case CFE_EVS_ENABLE_EVENT_TYPE_CC:
+        -:  523:
+        3:  524:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_BitMaskCmd_t))) == TRUE)
+        -:  525:         {
+        2:  526:            Valid = CFE_EVS_EnableEventTypesCmd((CFE_EVS_BitMaskCmd_t *) EVS_MsgPtr);
+        -:  527:         }
+        3:  528:         break;
+        -:  529:
+        -:  530:      case CFE_EVS_DISABLE_EVENT_TYPE_CC:
+        -:  531:
+        3:  532:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_BitMaskCmd_t))) == TRUE)
+        -:  533:         {
+        2:  534:            Valid = CFE_EVS_DisableEventTypesCmd((CFE_EVS_BitMaskCmd_t *) EVS_MsgPtr);
+        -:  535:         }
+        3:  536:         break;
+        -:  537:
+        -:  538:      case CFE_EVS_SET_EVENT_FORMAT_MODE_CC:
+        -:  539:
+        4:  540:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_ModeCmd_t))) == TRUE)
+        -:  541:         {
+        3:  542:            Valid = CFE_EVS_SetEventFormatModeCmd((CFE_EVS_ModeCmd_t *) EVS_MsgPtr);
+        -:  543:         }
+        4:  544:         break;
+        -:  545:
+        -:  546:      case CFE_EVS_ENABLE_APP_EVENT_TYPE_CC:
+        -:  547:
+       12:  548:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameBitMaskCmd_t))) == TRUE)
+        -:  549:         {
+       11:  550:            Valid = CFE_EVS_EnableAppEventTypesCmd((CFE_EVS_AppNameBitMaskCmd_t *) EVS_MsgPtr);
+        -:  551:         }
+       12:  552:         break;
+        -:  553:
+        -:  554:      case CFE_EVS_DISABLE_APP_EVENT_TYPE_CC:
+        -:  555:
+        7:  556:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameBitMaskCmd_t))) == TRUE)
+        -:  557:         {
+        6:  558:            Valid = CFE_EVS_DisableAppEventTypesCmd((CFE_EVS_AppNameBitMaskCmd_t *) EVS_MsgPtr);
+        -:  559:         }
+        7:  560:         break;
+        -:  561:
+        -:  562:      case CFE_EVS_ENABLE_APP_EVENTS_CC:
+        -:  563:
+        5:  564:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameCmd_t))) == TRUE)
+        -:  565:         {
+        4:  566:            Valid = CFE_EVS_EnableAppEventsCmd((CFE_EVS_AppNameCmd_t *) EVS_MsgPtr);
+        -:  567:         }
+        5:  568:         break;
+        -:  569:
+        -:  570:      case CFE_EVS_DISABLE_APP_EVENTS_CC:
+        -:  571:
+        5:  572:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameCmd_t))) == TRUE)
+        -:  573:         {
+        4:  574:            Valid = CFE_EVS_DisableAppEventsCmd((CFE_EVS_AppNameCmd_t *) EVS_MsgPtr);
+        -:  575:         }
+        5:  576:         break;
+        -:  577:
+        -:  578:      case CFE_EVS_RESET_APP_COUNTER_CC:
+        -:  579:
+        5:  580:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameCmd_t))) == TRUE)
+        -:  581:         {
+        4:  582:            Valid = CFE_EVS_ResetAppEventCounterCmd((CFE_EVS_AppNameCmd_t *) EVS_MsgPtr);
+        -:  583:         }
+        5:  584:         break;
+        -:  585:
+        -:  586:      case CFE_EVS_SET_FILTER_CC:
+        -:  587:
+        6:  588:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, (uint16) sizeof(CFE_EVS_AppNameEventIDMaskCmd_t))) == TRUE)
+        -:  589:         {
+        5:  590:            Valid = CFE_EVS_SetFilterMaskCmd((CFE_EVS_AppNameEventIDMaskCmd_t *) EVS_MsgPtr);
+        -:  591:         }
+        6:  592:         break;
+        -:  593:
+        -:  594:      case CFE_EVS_ENABLE_PORTS_CC:
+        -:  595:
+        3:  596:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_BitMaskCmd_t))) == TRUE)
+        -:  597:         {
+        2:  598:            Valid = CFE_EVS_EnablePortsCmd((CFE_EVS_BitMaskCmd_t *) EVS_MsgPtr);
+        -:  599:         }
+        3:  600:         break;
+        -:  601:
+        -:  602:      case CFE_EVS_DISABLE_PORTS_CC:
+        -:  603:
+        4:  604:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_BitMaskCmd_t))) == TRUE)
+        -:  605:         {
+        3:  606:            Valid = CFE_EVS_DisablePortsCmd((CFE_EVS_BitMaskCmd_t *) EVS_MsgPtr);
+        -:  607:         }
+        4:  608:         break;
+        -:  609:
+        -:  610:      case CFE_EVS_RESET_FILTER_CC:
+        -:  611:
+        6:  612:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameEventIDCmd_t))) == TRUE)
+        -:  613:         {
+        5:  614:            Valid = CFE_EVS_ResetFilterCmd((CFE_EVS_AppNameEventIDCmd_t *) EVS_MsgPtr);
+        -:  615:         }
+        6:  616:         break;
+        -:  617:
+        -:  618:      case CFE_EVS_RESET_ALL_FILTERS_CC:
+        -:  619:
+        6:  620:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameCmd_t))) == TRUE)
+        -:  621:         {
+        5:  622:            Valid = CFE_EVS_ResetAllFiltersCmd((CFE_EVS_AppNameCmd_t *) EVS_MsgPtr);
+        -:  623:         }
+        6:  624:         break;
+        -:  625:
+        -:  626:      case CFE_EVS_ADD_EVENT_FILTER_CC:
+        -:  627:
+       17:  628:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameEventIDMaskCmd_t))) == TRUE)
+        -:  629:         {
+       16:  630:            Valid = CFE_EVS_AddEventFilterCmd((CFE_EVS_AppNameEventIDMaskCmd_t *) EVS_MsgPtr);
+        -:  631:         }
+       17:  632:         break;
+        -:  633:
+        -:  634:      case CFE_EVS_DELETE_EVENT_FILTER_CC:
+        -:  635:
+        7:  636:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppNameEventIDCmd_t))) == TRUE)
+        -:  637:         {
+        6:  638:            Valid = CFE_EVS_DeleteEventFilterCmd((CFE_EVS_AppNameEventIDCmd_t *) EVS_MsgPtr);
+        -:  639:         }
+        7:  640:         break;
+        -:  641:
+        -:  642:      case CFE_EVS_FILE_WRITE_APP_DATA_CC:
+        -:  643:
+        4:  644:         if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_AppDataCmd_t))) == TRUE)
+        -:  645:         {
+        3:  646:            Valid = CFE_EVS_WriteAppDataCmd((CFE_EVS_AppDataCmd_t *) EVS_MsgPtr);
+        -:  647:         }
+        4:  648:         break;
+        -:  649:
+        -:  650:      case CFE_EVS_SET_LOG_MODE_CC:
+        -:  651:
+        6:  652:         if (CFE_EVS_GlobalData.EVS_TlmPkt.LogEnabled == TRUE)
+        -:  653:         {   
+        5:  654:            if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_ModeCmd_t))) == TRUE)
+        -:  655:            {
+        4:  656:               Valid = CFE_EVS_SetLoggingModeCmd((CFE_EVS_ModeCmd_t *) EVS_MsgPtr);
+        -:  657:            }
+        -:  658:         }
+        -:  659:         else
+        -:  660:         {
+        1:  661:            EVS_SendEvent(CFE_EVS_NO_LOGSET_EID, CFE_EVS_ERROR,
+        -:  662:               "Set Log Mode Command: Event Log is Disabled");
+        -:  663:         }
+        6:  664:         break;
+        -:  665:
+        -:  666:      case CFE_EVS_CLEAR_LOG_CC:
+        -:  667:
+        3:  668:         if (CFE_EVS_GlobalData.EVS_TlmPkt.LogEnabled == TRUE)
+        -:  669:         {   
+        2:  670:            if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_SB_CmdHdr_t))) == TRUE)
+        -:  671:            {
+        1:  672:               EVS_ClearLog();
+        -:  673:            }
+        -:  674:         }
+        -:  675:         else
+        -:  676:         {
+        1:  677:            EVS_SendEvent(CFE_EVS_NO_LOGCLR_EID, CFE_EVS_ERROR,
+        -:  678:                         "Clear Log Command: Event Log is Disabled");
+        -:  679:         }
+        3:  680:         break;
+        -:  681:
+        -:  682:      case CFE_EVS_FILE_WRITE_LOG_DATA_CC:
+        -:  683:
+        3:  684:         if (CFE_EVS_GlobalData.EVS_TlmPkt.LogEnabled == TRUE)
+        -:  685:         {   
+        2:  686:            if ((Valid = CFE_EVS_VerifyCmdLength(EVS_MsgPtr, sizeof(CFE_EVS_LogFileCmd_t))) == TRUE)
+        -:  687:            {
+        1:  688:               Valid = CFE_EVS_WriteLogFileCmd((CFE_EVS_LogFileCmd_t *) EVS_MsgPtr);
+        -:  689:            }
+        -:  690:         }
+        -:  691:         else
+        -:  692:         {
+        1:  693:            EVS_SendEvent(CFE_EVS_NO_LOGWR_EID, CFE_EVS_ERROR,
+        -:  694:                         "Write Log Command: Event Log is Disabled");
+        -:  695:         }
+        3:  696:         break;
+        -:  697:
+        -:  698:       /* default is a bad command code as it was not found above */
+        -:  699:       default:
+        -:  700:
+        1:  701:          EVS_SendEvent(CFE_EVS_ERR_CC_EID, CFE_EVS_ERROR,
+        -:  702:                       "Invalid command code -- ID = 0x%08x, CC = %d",
+        -:  703:                        CFE_SB_GetMsgId(EVS_MsgPtr), CFE_SB_GetCmdCode(EVS_MsgPtr));
+        -:  704:          break;
+        -:  705:   }
+        -:  706:
+      113:  707:   if (Valid == TRUE)
+        -:  708:   {
+       40:  709:      CFE_EVS_GlobalData.EVS_TlmPkt.CommandCounter++;
+        -:  710:   }
+        -:  711:   else
+        -:  712:   {
+       73:  713:      CFE_EVS_GlobalData.EVS_TlmPkt.CommandErrCounter++;
+        -:  714:   }
+        -:  715:
+      113:  716:   return;
+        -:  717:
+        -:  718:} /* End of EVS_ProcessGroundCommand() */
+        -:  719:
+        -:  720:
+        -:  721:/*
+        -:  722:**             Function Prologue
+        -:  723:**
+        -:  724:** Function Name:      CFE_EVS_VerifyCmdLength
+        -:  725:**
+        -:  726:** Purpose:  This function validates the length of incoming commands.
+        -:  727:**
+        -:  728:** Assumptions and Notes:
+        -:  729:**
+        -:  730:*/
+        -:  731:boolean CFE_EVS_VerifyCmdLength(CFE_SB_MsgPtr_t Msg, uint16 ExpectedLength)
+      110:  732:{
+      110:  733:    boolean result       = TRUE;
+      110:  734:    uint16  ActualLength = CFE_SB_GetTotalMsgLength(Msg);
+        -:  735:
+        -:  736:    /*
+        -:  737:    ** Verify the command packet length
+        -:  738:    */
+      110:  739:    if (ExpectedLength != ActualLength)
+        -:  740:    {
+       21:  741:        CFE_SB_MsgId_t MessageID = CFE_SB_GetMsgId(Msg);
+       21:  742:        uint16 CommandCode = CFE_SB_GetCmdCode(Msg);
+        -:  743:
+       21:  744:        EVS_SendEvent(CFE_EVS_LEN_ERR_EID, CFE_EVS_ERROR,
+        -:  745:           "Invalid cmd length: ID = 0x%X, CC = %d, Exp Len = %d, Len = %d",
+        -:  746:                          MessageID, CommandCode, ExpectedLength, ActualLength);
+       21:  747:        result = FALSE;
+        -:  748:    }
+        -:  749:
+      110:  750:    return(result);
+        -:  751:
+        -:  752:} /* End of CFE_EVS_VerifyCmdLength() */
+        -:  753:
+        -:  754:/*
+        -:  755:**             Function Prologue
+        -:  756:**
+        -:  757:** Function Name:      CFE_EVS_ReportHousekeepingCmd
+        -:  758:**
+        -:  759:** Purpose:  Request for housekeeping status telemetry packet.
+        -:  760:**
+        -:  761:** Assumptions and Notes:
+        -:  762:**
+        -:  763:*/
+        -:  764:void CFE_EVS_ReportHousekeepingCmd ( void )
+        1:  765:{
+        -:  766:   uint32 i, j;
+        -:  767:
+        -:  768:
+        1:  769:   if (CFE_EVS_GlobalData.EVS_TlmPkt.LogEnabled == TRUE)
+        -:  770:   {   
+        -:  771:      /* Copy hk variables that are maintained in the event log */
+        1:  772:      CFE_EVS_GlobalData.EVS_TlmPkt.LogFullFlag = CFE_EVS_GlobalData.EVS_LogPtr->LogFullFlag;
+        1:  773:      CFE_EVS_GlobalData.EVS_TlmPkt.LogMode = CFE_EVS_GlobalData.EVS_LogPtr->LogMode;
+        1:  774:      CFE_EVS_GlobalData.EVS_TlmPkt.LogOverflowCounter = CFE_EVS_GlobalData.EVS_LogPtr->LogOverflowCounter;
+        -:  775:   }
+        -:  776:
+        -:  777:   /* Write event state data for registered apps to telemetry packet */
+       33:  778:   for (i = 0, j = 0; i < CFE_ES_MAX_APPLICATIONS; i++)
+        -:  779:   {
+       32:  780:      if (CFE_EVS_GlobalData.AppData[i].RegisterFlag == TRUE)
+        -:  781:      {
+        1:  782:         CFE_EVS_GlobalData.EVS_TlmPkt.AppData[j].AppID = i;
+        1:  783:         CFE_EVS_GlobalData.EVS_TlmPkt.AppData[j].AppEnableStatus = CFE_EVS_GlobalData.AppData[i].ActiveFlag;
+        1:  784:         CFE_EVS_GlobalData.EVS_TlmPkt.AppData[j].AppMessageSentCounter = CFE_EVS_GlobalData.AppData[i].EventCount;
+        1:  785:         j++;
+        -:  786:      }
+        -:  787:   }
+        -:  788:
+        -:  789:   /* Clear unused portion of event state data in telemetry packet */
+       32:  790:   for (i = j; i < CFE_ES_MAX_APPLICATIONS; i++)
+        -:  791:   {
+       31:  792:      CFE_EVS_GlobalData.EVS_TlmPkt.AppData[i].AppID = 0;
+       31:  793:      CFE_EVS_GlobalData.EVS_TlmPkt.AppData[i].AppEnableStatus = FALSE;
+       31:  794:      CFE_EVS_GlobalData.EVS_TlmPkt.AppData[i].AppMessageSentCounter = 0;
+        -:  795:   }
+        -:  796:
+        1:  797:   CFE_SB_TimeStampMsg((CFE_SB_Msg_t *) &CFE_EVS_GlobalData.EVS_TlmPkt);
+        -:  798:
+        1:  799:   CFE_SB_SendMsg((CFE_SB_Msg_t *) &CFE_EVS_GlobalData.EVS_TlmPkt);
+        -:  800:
+        1:  801:} /* End of CFE_EVS_ReportHousekeepingCmd() */
+        -:  802:
+        -:  803:
+        -:  804:/*
+        -:  805:**             Function Prologue
+        -:  806:**
+        -:  807:** Function Name:      CFE_EVS_ResetCountersCmd
+        -:  808:**
+        -:  809:** Purpose:  This function resets all the global counter variables that are
+        -:  810:**           part of the task telemetry.
+        -:  811:**
+        -:  812:** Assumptions and Notes:
+        -:  813:**
+        -:  814:*/
+        -:  815:void CFE_EVS_ResetCountersCmd ( void )
+        1:  816:{
+        -:  817:   /* Status of commands processed by EVS task */
+        1:  818:   CFE_EVS_GlobalData.EVS_TlmPkt.CommandCounter  = 0;
+        1:  819:   CFE_EVS_GlobalData.EVS_TlmPkt.CommandErrCounter   =  0;
+        -:  820:
+        -:  821:   /* EVS telemetry counters */
+        1:  822:   CFE_EVS_GlobalData.EVS_TlmPkt.MessageSendCounter = 0;
+        1:  823:   CFE_EVS_GlobalData.EVS_TlmPkt.MessageTruncCounter = 0;
+        1:  824:   CFE_EVS_GlobalData.EVS_TlmPkt.UnregisteredAppCounter = 0;
+        -:  825:
+        1:  826:   EVS_SendEvent(CFE_EVS_RSTCNT_EID, CFE_EVS_DEBUG, "Reset Counters Command Received");
+        -:  827:
+        1:  828:} /* End of CFE_EVS_ResetCountersCmd() */
+        -:  829:
+        -:  830:
+        -:  831:/*
+        -:  832:**             Function Prologue
+        -:  833:**
+        -:  834:** Function Name:      CFE_EVS_SetEventFilterMaskCmd
+        -:  835:**
+        -:  836:** Purpose:  This routine sets the filter mask for the given event_id in the
+        -:  837:**           calling task's filter array
+        -:  838:**
+        -:  839:** Assumptions and Notes:
+        -:  840:**
+        -:  841:*/
+        -:  842:boolean CFE_EVS_SetFilterMaskCmd (const CFE_EVS_AppNameEventIDMaskCmd_t *CmdPtr)
+        5:  843:{
+        -:  844:   EVS_BinFilter_t    *FilterPtr;
+        5:  845:   uint32              AppID = CFE_EVS_UNDEF_APPID;
+        5:  846:   int32               Status = TRUE;
+        -:  847:   EVS_AppData_t      *AppDataPtr;
+        -:  848:
+        -:  849:   /* Retreive application data */
+        5:  850:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -:  851:
+        5:  852:   if (Status == CFE_SUCCESS)
+        -:  853:   {
+        2:  854:      AppDataPtr = &CFE_EVS_GlobalData.AppData[AppID];
+        -:  855:
+        2:  856:      FilterPtr = EVS_FindEventID(CmdPtr->EventID, AppDataPtr->BinFilters);
+        -:  857:
+        2:  858:      if(FilterPtr != NULL)
+        -:  859:      {
+        -:  860:         /* Set application filter mask */
+        1:  861:         FilterPtr->Mask = CmdPtr->Mask;
+        -:  862:
+        1:  863:         EVS_SendEvent(CFE_EVS_SETFILTERMSK_EID, CFE_EVS_DEBUG,
+        -:  864:                           "Set Filter Mask Command Received with AppName=%s, EventID=0x%08x, Mask=0x%04x",
+        -:  865:                           CmdPtr->AppName, CmdPtr->EventID, CmdPtr->Mask);
+        -:  866:
+        1:  867:         Status = TRUE;
+        -:  868:      }
+        -:  869:      else
+        -:  870:      {
+        1:  871:         EVS_SendEvent(CFE_EVS_ERR_EVTIDNOREGS_EID, CFE_EVS_ERROR,
+        -:  872:                           "%s Event ID %d not registered for filtering: CC = %lu ",
+        -:  873:                           CmdPtr->AppName, CmdPtr->EventID, CFE_EVS_SET_FILTER_CC);
+        -:  874:
+        1:  875:         Status = FALSE;
+        -:  876:      }
+        -:  877:   }
+        3:  878:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -:  879:   {
+        1:  880:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -:  881:                        "%s not registered with EVS: CC = %lu",
+        -:  882:                        CmdPtr->AppName, CFE_EVS_SET_FILTER_CC);
+        1:  883:      Status = FALSE;
+        -:  884:   }
+        2:  885:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -:  886:   {
+        1:  887:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -:  888:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -:  889:                        AppID, CmdPtr->AppName, CFE_EVS_SET_FILTER_CC);
+        1:  890:      Status = FALSE;
+        -:  891:   }
+        -:  892:   else
+        -:  893:   {
+        1:  894:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -:  895:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -:  896:                        CmdPtr->AppName, CFE_EVS_SET_FILTER_CC);
+        1:  897:      Status = FALSE;
+        -:  898:   }
+        -:  899:
+        5:  900:   return (boolean)Status;
+        -:  901:
+        -:  902:} /* End CFE_EVS_SetFilterMaskCmd */
+        -:  903:
+        -:  904:
+        -:  905:
+        -:  906:/*
+        -:  907:**             Function Prologue
+        -:  908:**
+        -:  909:** Function Name:      CFE_EVS_EnablePortsCmd
+        -:  910:**
+        -:  911:** Purpose:  This routine sets the command given ports to an enabled state
+        -:  912:**
+        -:  913:** Assumptions and Notes:
+        -:  914:** Shifting is done so the value not masked off is placed in the ones spot:
+        -:  915:** necessary for comparing with TRUE.
+        -:  916:*/
+        -:  917:boolean CFE_EVS_EnablePortsCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr)
+        2:  918:{
+        -:  919:    boolean ReturnCode;
+        -:  920:
+        -:  921:    /* Need to check for an out of range bitmask, since oue bit masks are only 4 bits */
+        3:  922:    if (CmdPtr->BitMask == 0x0 || CmdPtr->BitMask > 0x0F)
+        -:  923:    {
+        1:  924:        EVS_SendEvent(CFE_EVS_ERR_INVALID_BITMASK_EID, CFE_EVS_ERROR,
+        -:  925:                          "Bit Mask = 0x%08x out of range: CC = %lu",
+        -:  926:                          CmdPtr->BitMask, CFE_EVS_ENABLE_PORTS_CC);
+        1:  927:        ReturnCode = FALSE;  
+        -:  928:    }
+        -:  929:    else
+        -:  930:    {
+        -:  931:
+        -:  932:        /* Process command data */
+        1:  933:        if(((CmdPtr->BitMask & CFE_EVS_PORT1_BIT) >> 0) == TRUE)
+        -:  934:        {
+        1:  935:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort |= CFE_EVS_PORT1_BIT;
+        -:  936:        }
+        1:  937:        if(((CmdPtr->BitMask & CFE_EVS_PORT2_BIT) >>1) == TRUE)
+        -:  938:        {
+        1:  939:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort |= CFE_EVS_PORT2_BIT;
+        -:  940:        }
+        1:  941:        if(((CmdPtr->BitMask & CFE_EVS_PORT3_BIT) >> 2) == TRUE)
+        -:  942:        {
+        1:  943:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort |= CFE_EVS_PORT3_BIT;
+        -:  944:        }
+        1:  945:        if(((CmdPtr->BitMask & CFE_EVS_PORT4_BIT) >>3) == TRUE)
+        -:  946:        {
+        1:  947:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort |= CFE_EVS_PORT4_BIT;
+        -:  948:        }
+        -:  949:
+        1:  950:        EVS_SendEvent(CFE_EVS_ENAPORT_EID, CFE_EVS_DEBUG,
+        -:  951:                        "Enable Ports Command Received with Port Bit Mask = 0x%02x",
+        -:  952:                        CmdPtr->BitMask);
+        1:  953:        ReturnCode = TRUE;
+        -:  954:    }
+        -:  955:
+        2:  956:    return ReturnCode;
+        -:  957:
+        -:  958:} /* End CFE_EVS_EnablePortsCmd */
+        -:  959:
+        -:  960:
+        -:  961:/*
+        -:  962:**             Function Prologue
+        -:  963:**
+        -:  964:** Function Name:      CFE_EVS_DisablePortsCmd
+        -:  965:**
+        -:  966:** Purpose:  This routine sets the command given ports to a disabled state
+        -:  967:**
+        -:  968:** Assumptions and Notes:
+        -:  969:** Shifting is done so the value not masked off is placed in the ones spot:
+        -:  970:** necessary for comparing with TRUE.
+        -:  971:*/
+        -:  972:boolean CFE_EVS_DisablePortsCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr)
+        3:  973:{
+        -:  974:    
+        -:  975:    boolean ReturnCode;
+        -:  976:
+        -:  977:    /* Need to check for an out of range bitmask, since oue bit masks are only 4 bits */
+        4:  978:    if (CmdPtr->BitMask == 0x0 || CmdPtr->BitMask > 0x0F)
+        -:  979:    {
+        1:  980:        EVS_SendEvent(CFE_EVS_ERR_INVALID_BITMASK_EID, CFE_EVS_ERROR,
+        -:  981:                          "Bit Mask = 0x%08x out of range: CC = %lu",
+        -:  982:                          CmdPtr->BitMask, CFE_EVS_DISABLE_PORTS_CC);
+        1:  983:        ReturnCode = FALSE;  
+        -:  984:    }
+        -:  985:    else
+        -:  986:    {
+        -:  987:
+        -:  988:        /* Process command data */
+        2:  989:        if(((CmdPtr->BitMask & CFE_EVS_PORT1_BIT) >>0) == TRUE)
+        -:  990:        {
+        2:  991:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort &= ~CFE_EVS_PORT1_BIT;
+        -:  992:        }
+        2:  993:        if(((CmdPtr->BitMask & CFE_EVS_PORT2_BIT) >> 1) == TRUE)
+        -:  994:        {
+        2:  995:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort &= ~CFE_EVS_PORT2_BIT;
+        -:  996:        }
+        2:  997:        if(((CmdPtr->BitMask & CFE_EVS_PORT3_BIT) >> 2) == TRUE)
+        -:  998:        {
+        2:  999:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort &= ~CFE_EVS_PORT3_BIT;
+        -: 1000:        }
+        2: 1001:        if(((CmdPtr->BitMask & CFE_EVS_PORT4_BIT) >>3) == TRUE)
+        -: 1002:        {
+        2: 1003:            CFE_EVS_GlobalData.EVS_TlmPkt.OutputPort &= ~CFE_EVS_PORT4_BIT;
+        -: 1004:        }
+        -: 1005:
+        2: 1006:        EVS_SendEvent(CFE_EVS_DISPORT_EID, CFE_EVS_DEBUG,
+        -: 1007:                         "Disable Ports Command Received with Port Bit Mask = 0x%02x",
+        -: 1008:                         CmdPtr->BitMask);
+        -: 1009:        
+        2: 1010:        ReturnCode = TRUE;
+        -: 1011:    }
+        -: 1012:   
+        3: 1013:    return ReturnCode;
+        -: 1014:
+        -: 1015:} /* End CFE_EVS_DisablePortsCmd */
+        -: 1016:
+        -: 1017:
+        -: 1018:
+        -: 1019:/*
+        -: 1020:**             Function Prologue
+        -: 1021:**
+        -: 1022:** Function Name:      CFE_EVS_EnableEventTypesCmd
+        -: 1023:**
+        -: 1024:** Purpose:  This routine sets the given event types to an enabled state across all
+        -: 1025:**           registered applications
+        -: 1026:**
+        -: 1027:** Assumptions and Notes:
+        -: 1028:**
+        -: 1029:*/
+        -: 1030:boolean CFE_EVS_EnableEventTypesCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr)
+        2: 1031:{
+        -: 1032:   uint32      i;
+        -: 1033:   boolean  ReturnCode; 
+        -: 1034:
+        -: 1035:   /* Need to check for an out of range bitmask, since our bit masks are only 4 bits */
+        3: 1036:   if (CmdPtr->BitMask == 0x0 || CmdPtr->BitMask > 0x0F)
+        -: 1037:   {
+        1: 1038:       EVS_SendEvent(CFE_EVS_ERR_INVALID_BITMASK_EID, CFE_EVS_ERROR,
+        -: 1039:                         "Bit Mask = 0x%08x out of range: CC = %lu",
+        -: 1040:                         CmdPtr->BitMask, CFE_EVS_ENABLE_EVENT_TYPE_CC);
+        1: 1041:    ReturnCode = FALSE;  
+        -: 1042:   }
+        -: 1043:   else
+        -: 1044:   {
+        -: 1045:
+        -: 1046:        
+        -: 1047:
+       33: 1048:        for (i = 0; i < CFE_ES_MAX_APPLICATIONS; i++)
+        -: 1049:        {
+        -: 1050:            /* Make sure application is registered for event services */
+       32: 1051:            if (CFE_EVS_GlobalData.AppData[i].RegisterFlag == TRUE)
+        -: 1052:            {
+        1: 1053:                EVS_EnableTypes(CmdPtr->BitMask, i);
+        -: 1054:            }
+        -: 1055:        }
+        -: 1056:
+        1: 1057:        EVS_SendEvent(CFE_EVS_ENAEVTTYPE_EID, CFE_EVS_DEBUG,
+        -: 1058:                        "Enable Event Type Command Received with Event Type Bit Mask = 0x%02x",
+        -: 1059:                         CmdPtr->BitMask);
+        -: 1060:
+        1: 1061:       ReturnCode = TRUE;
+        -: 1062:   }
+        -: 1063:
+        2: 1064:   return ReturnCode;
+        -: 1065:
+        -: 1066:} /* End CFE_EVS_EnableEventTypesCmd */
+        -: 1067:
+        -: 1068:
+        -: 1069:/*
+        -: 1070:**             Function Prologue
+        -: 1071:**
+        -: 1072:** Function Name:      CFE_EVS_DisableEventTypesCmd
+        -: 1073:**
+        -: 1074:** Purpose:  This routine sets the given event types to a disabled state across all
+        -: 1075:**           registered applications
+        -: 1076:**
+        -: 1077:** Assumptions and Notes:
+        -: 1078:**
+        -: 1079:*/
+        -: 1080:boolean CFE_EVS_DisableEventTypesCmd (const CFE_EVS_BitMaskCmd_t *CmdPtr)
+        2: 1081:{
+        -: 1082:   uint32   i;
+        -: 1083:   boolean  ReturnCode; 
+        -: 1084:
+        -: 1085:   /* Need to check for an out of range bitmask, since our bit masks are only 4 bits */
+        3: 1086:   if (CmdPtr->BitMask == 0x0 || CmdPtr->BitMask > 0x0F)
+        -: 1087:   {
+        1: 1088:       EVS_SendEvent(CFE_EVS_ERR_INVALID_BITMASK_EID, CFE_EVS_ERROR,
+        -: 1089:                         "Bit Mask = 0x%08x out of range: CC = %lu",
+        -: 1090:                         CmdPtr->BitMask, CFE_EVS_DISABLE_EVENT_TYPE_CC);
+        1: 1091:    ReturnCode = FALSE;  
+        -: 1092:   }
+        -: 1093:
+        -: 1094:   else
+        -: 1095:   {
+        -: 1096:
+       33: 1097:        for (i = 0; i < CFE_ES_MAX_APPLICATIONS; i++)
+        -: 1098:        {
+        -: 1099:            /* Make sure application is registered for event services */
+       32: 1100:            if (CFE_EVS_GlobalData.AppData[i].RegisterFlag == TRUE)
+        -: 1101:            {
+        1: 1102:                EVS_DisableTypes(CmdPtr->BitMask, i);
+        -: 1103:            }
+        -: 1104:         }
+        -: 1105:
+        1: 1106:        EVS_SendEvent(CFE_EVS_DISEVTTYPE_EID, CFE_EVS_DEBUG,
+        -: 1107:                         "Disable Event Type Command Received with Event Type Bit Mask = 0x%02x",
+        -: 1108:                         CmdPtr->BitMask);
+        -: 1109:
+        1: 1110:        ReturnCode = TRUE;
+        -: 1111:   }
+        -: 1112:
+        2: 1113:   return ReturnCode;
+        -: 1114:
+        -: 1115:} /* End CFE_EVS_DisableEventTypesCmd */
+        -: 1116:
+        -: 1117:
+        -: 1118:
+        -: 1119:/*
+        -: 1120:**             Function Prologue
+        -: 1121:**
+        -: 1122:** Function Name:      CFE_EVS_SetEventFormatModeCmd
+        -: 1123:**
+        -: 1124:** Purpose:  This routine sets the Event Format Mode
+        -: 1125:**
+        -: 1126:** Assumptions and Notes:
+        -: 1127:**
+        -: 1128:*/
+        -: 1129:boolean CFE_EVS_SetEventFormatModeCmd (const CFE_EVS_ModeCmd_t *CmdPtr)
+        3: 1130:{
+        3: 1131:   boolean Status = TRUE;
+        -: 1132:
+        5: 1133:   if((CmdPtr->Mode == CFE_EVS_SHORT_FORMAT) || (CmdPtr->Mode == CFE_EVS_LONG_FORMAT))
+        -: 1134:   {
+        2: 1135:      CFE_EVS_GlobalData.EVS_TlmPkt.MessageFormatMode = CmdPtr->Mode;
+        -: 1136:
+        2: 1137:      EVS_SendEvent(CFE_EVS_SETEVTFMTMOD_EID, CFE_EVS_DEBUG,
+        -: 1138:                        "Set Event Format Mode Command Received with Mode = 0x%02x",
+        -: 1139:                        CmdPtr->Mode);
+        -: 1140:   }
+        -: 1141:   else
+        -: 1142:   {
+        1: 1143:      EVS_SendEvent(CFE_EVS_ERR_ILLEGALFMTMOD_EID, CFE_EVS_ERROR,
+        -: 1144:                        "Set Event Format Mode Command: Invalid Event Format Mode = 0x%02x", CmdPtr->Mode);
+        1: 1145:      Status = FALSE;
+        -: 1146:   }
+        -: 1147:
+        3: 1148:   return Status;
+        -: 1149:
+        -: 1150:} /* End CFE_EVS_SetEventFormatModeCmd */
+        -: 1151:
+        -: 1152:
+        -: 1153:/*
+        -: 1154:**             Function Prologue
+        -: 1155:**
+        -: 1156:** Function Name:      CFE_EVS_EnableAppEventTypesCmd
+        -: 1157:**
+        -: 1158:** Purpose:  This routine sets the given event type for the given application identifier to an
+        -: 1159:**           enabled state
+        -: 1160:**
+        -: 1161:** Assumptions and Notes:
+        -: 1162:**
+        -: 1163:*/
+        -: 1164:boolean CFE_EVS_EnableAppEventTypesCmd (const CFE_EVS_AppNameBitMaskCmd_t *CmdPtr)
+       11: 1165:{
+       11: 1166:   uint32  AppID = CFE_EVS_UNDEF_APPID;
+       11: 1167:   int32   Status = TRUE;
+        -: 1168:
+        -: 1169:   /* Retrieve application data */
+       11: 1170:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1171:
+       11: 1172:   if(Status == CFE_SUCCESS)
+        -: 1173:   {
+        -: 1174:
+        -: 1175:        /* Need to check for an out of range bitmask, since our bit masks are only 4 bits */
+       10: 1176:        if (CmdPtr->BitMask == 0x0 || CmdPtr->BitMask > 0x0F)
+        -: 1177:        {
+        2: 1178:            EVS_SendEvent(CFE_EVS_ERR_INVALID_BITMASK_EID, CFE_EVS_ERROR,
+        -: 1179:                              "Bit Mask = 0x%08x out of range: CC = %lu",
+        -: 1180:                              CmdPtr->BitMask, CFE_EVS_ENABLE_APP_EVENT_TYPE_CC);
+        2: 1181:            Status = FALSE;  
+        -: 1182:        }
+        -: 1183:        else
+        -: 1184:        {
+        6: 1185:            EVS_EnableTypes(CmdPtr->BitMask, AppID);
+        6: 1186:            Status = TRUE;
+        -: 1187:        }
+        -: 1188:   }
+        3: 1189:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1190:   {
+        1: 1191:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1192:                        "%s not registered with EVS: CC = %lu",
+        -: 1193:                        CmdPtr->AppName, CFE_EVS_ENABLE_APP_EVENT_TYPE_CC);
+        1: 1194:      Status = FALSE;
+        -: 1195:   }
+        2: 1196:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1197:   {
+        1: 1198:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1199:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1200:                        AppID, CmdPtr->AppName, CFE_EVS_ENABLE_APP_EVENT_TYPE_CC);
+        1: 1201:      Status = FALSE;
+        -: 1202:   }
+        -: 1203:   else
+        -: 1204:   {
+        1: 1205:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1206:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -: 1207:                        CmdPtr->AppName, CFE_EVS_ENABLE_APP_EVENT_TYPE_CC);
+        1: 1208:      Status = FALSE;
+        -: 1209:   }
+        -: 1210:
+       11: 1211:   if(Status == TRUE)
+        -: 1212:   {
+        6: 1213:      EVS_SendEvent(CFE_EVS_ENAAPPEVTTYPE_EID, CFE_EVS_DEBUG,
+        -: 1214:                        "Enable App Event Type Command Received with AppName = %s, EventType Bit Mask = 0x%02x",
+        -: 1215:                        CmdPtr->AppName, CmdPtr->BitMask);
+        -: 1216:   }
+        -: 1217:
+       11: 1218:   return (boolean)Status;
+        -: 1219:
+        -: 1220:} /* End CFE_EVS_EnableAppEventTypesCmd */
+        -: 1221:
+        -: 1222:
+        -: 1223:/*
+        -: 1224:**             Function Prologue
+        -: 1225:**
+        -: 1226:** Function Name:      CFE_EVS_DisableAppEventTypesCmd
+        -: 1227:**
+        -: 1228:** Purpose:  This routine sets the given event type for the given application identifier to a
+        -: 1229:**           disabled state
+        -: 1230:**
+        -: 1231:** Assumptions and Notes:
+        -: 1232:**
+        -: 1233:*/
+        -: 1234:boolean CFE_EVS_DisableAppEventTypesCmd (const CFE_EVS_AppNameBitMaskCmd_t *CmdPtr)
+        6: 1235:{
+        6: 1236:   uint32 AppID  = CFE_EVS_UNDEF_APPID;
+        6: 1237:   int32  Status = TRUE;
+        -: 1238:
+        -: 1239:   /* Retreive application data */
+        6: 1240:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1241:
+        6: 1242:   if(Status == CFE_SUCCESS)
+        -: 1243:   {
+        -: 1244:
+        -: 1245:        /* Need to check for an out of range bitmask, since our bit masks are only 4 bits */
+        5: 1246:        if (CmdPtr->BitMask == 0x0 || CmdPtr->BitMask > 0x0F)
+        -: 1247:        {
+        2: 1248:            EVS_SendEvent(CFE_EVS_ERR_INVALID_BITMASK_EID, CFE_EVS_ERROR,
+        -: 1249:                              "Bit Mask = 0x%08x out of range: CC = %lu",
+        -: 1250:                              CmdPtr->BitMask, CFE_EVS_DISABLE_APP_EVENT_TYPE_CC);
+        2: 1251:            Status = FALSE;  
+        -: 1252:        }
+        -: 1253:        else
+        -: 1254:        {
+        1: 1255:            EVS_DisableTypes(CmdPtr->BitMask, AppID);
+        1: 1256:            Status = TRUE;
+        -: 1257:        }
+        -: 1258:   }
+        3: 1259:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1260:   {
+        1: 1261:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1262:                        "%s not registered with EVS,: CC = %lu",
+        -: 1263:                        CmdPtr->AppName,CFE_EVS_DISABLE_APP_EVENT_TYPE_CC);
+        1: 1264:      Status = FALSE;
+        -: 1265:   }
+        2: 1266:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1267:   {
+        1: 1268:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1269:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1270:                        AppID, CmdPtr->AppName, CFE_EVS_DISABLE_APP_EVENT_TYPE_CC);
+        1: 1271:      Status = FALSE;
+        -: 1272:   }
+        -: 1273:   else
+        -: 1274:   {
+        1: 1275:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1276:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -: 1277:                        CmdPtr->AppName, CFE_EVS_DISABLE_APP_EVENT_TYPE_CC);
+        1: 1278:      Status = FALSE;
+        -: 1279:   }
+        -: 1280:
+        6: 1281:   if(Status == TRUE)
+        -: 1282:   {
+        1: 1283:      EVS_SendEvent(CFE_EVS_DISAPPENTTYPE_EID, CFE_EVS_DEBUG,
+        -: 1284:                        "Disable App Event Type Command Received with AppName = %s, EventType Bit Mask = 0x%02x",
+        -: 1285:                        CmdPtr->AppName, CmdPtr->BitMask);
+        -: 1286:   }
+        -: 1287:
+        6: 1288:   return (boolean)Status;
+        -: 1289:
+        -: 1290:} /* End CFE_EVS_DisableAppEventTypes */
+        -: 1291:
+        -: 1292:
+        -: 1293:/*
+        -: 1294:**             Function Prologue
+        -: 1295:**
+        -: 1296:** Function Name:      CFE_EVS_EnableAppEventsCmd
+        -: 1297:**
+        -: 1298:** Purpose:  This routine enables application events for the given application identifier
+        -: 1299:**
+        -: 1300:** Assumptions and Notes:
+        -: 1301:**
+        -: 1302:*/
+        -: 1303:boolean CFE_EVS_EnableAppEventsCmd (const CFE_EVS_AppNameCmd_t *CmdPtr)
+        4: 1304:{
+        4: 1305:   uint32 AppID  = CFE_EVS_UNDEF_APPID;
+        4: 1306:   int32  Status = TRUE;
+        -: 1307:
+        -: 1308:   /* Retrieve application data */
+        4: 1309:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1310:
+        4: 1311:   if(Status == CFE_SUCCESS)
+        -: 1312:   {
+        1: 1313:        CFE_EVS_GlobalData.AppData[AppID].ActiveFlag = TRUE;
+        -: 1314:
+        1: 1315:        EVS_SendEvent(CFE_EVS_ENAAPPEVT_EID, CFE_EVS_DEBUG,
+        -: 1316:                          "Enable App Events Command Received with AppName = %s",
+        -: 1317:                          CmdPtr->AppName);
+        -: 1318:
+        1: 1319:        Status = TRUE;
+        -: 1320:   }
+        3: 1321:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1322:   {
+        1: 1323:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1324:                        "%s not registered with EVS: CC = %lu",
+        -: 1325:                        CmdPtr->AppName, CFE_EVS_ENABLE_APP_EVENTS_CC);
+        1: 1326:      Status = FALSE;
+        -: 1327:   }
+        2: 1328:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1329:   {
+        1: 1330:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1331:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1332:                        AppID, CmdPtr->AppName, CFE_EVS_ENABLE_APP_EVENTS_CC);
+        1: 1333:      Status = FALSE;
+        -: 1334:   }
+        -: 1335:   else
+        -: 1336:   {
+        1: 1337:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1338:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -: 1339:                        CmdPtr->AppName, CFE_EVS_ENABLE_APP_EVENTS_CC);
+        1: 1340:      Status = FALSE;
+        -: 1341:   }
+        -: 1342:
+        4: 1343:   return (boolean)Status;
+        -: 1344:
+        -: 1345:} /* End EVS_EnableAppEventsCmd */
+        -: 1346:
+        -: 1347:
+        -: 1348:/*
+        -: 1349:**             Function Prologue
+        -: 1350:**
+        -: 1351:** Function Name:      CFE_EVS_DisableAppEventsCmd
+        -: 1352:**
+        -: 1353:** Purpose:  This routine disables application events for the given application identifier
+        -: 1354:**
+        -: 1355:** Assumptions and Notes:
+        -: 1356:**
+        -: 1357:*/
+        -: 1358:boolean CFE_EVS_DisableAppEventsCmd (const CFE_EVS_AppNameCmd_t *CmdPtr)
+        4: 1359:{
+        4: 1360:   uint32 AppID  = CFE_EVS_UNDEF_APPID;
+        4: 1361:   int32  Status = TRUE;
+        -: 1362:
+        -: 1363:   /* Retreive application data */
+        4: 1364:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1365:
+        4: 1366:   if(Status == CFE_SUCCESS)
+        -: 1367:   {
+        1: 1368:        CFE_EVS_GlobalData.AppData[AppID].ActiveFlag = FALSE;
+        -: 1369:
+        1: 1370:        EVS_SendEvent(CFE_EVS_DISAPPEVT_EID, CFE_EVS_DEBUG,
+        -: 1371:                          "Disable App Events Command Received with AppName = %s",
+        -: 1372:                          CmdPtr->AppName);
+        -: 1373:
+        1: 1374:        Status = TRUE;
+        -: 1375:   }
+        3: 1376:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1377:   {
+        1: 1378:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1379:                        "%s not registered with EVS: CC = %lu",
+        -: 1380:                        CmdPtr->AppName,CFE_EVS_DISABLE_APP_EVENTS_CC);
+        1: 1381:      Status = FALSE;
+        -: 1382:   }
+        2: 1383:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1384:   {
+        1: 1385:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1386:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1387:                        AppID, CmdPtr->AppName,CFE_EVS_DISABLE_APP_EVENTS_CC);
+        1: 1388:      Status = FALSE;
+        -: 1389:   }
+        -: 1390:   else
+        -: 1391:   {
+        1: 1392:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1393:                        "Disable App Events Command: Unable to retrieve application ID for %s: CC = %lu",
+        -: 1394:                        CmdPtr->AppName, CFE_EVS_DISABLE_APP_EVENTS_CC);
+        1: 1395:      Status = FALSE;
+        -: 1396:   }
+        -: 1397:
+        4: 1398:   return (boolean)Status;
+        -: 1399:
+        -: 1400:} /* End CFE_EVS_DisableAppEventsCmd */
+        -: 1401:
+        -: 1402:
+        -: 1403:/*
+        -: 1404:**             Function Prologue
+        -: 1405:**
+        -: 1406:** Function Name:      CFE_EVS_ResetAppEventCounterCmd
+        -: 1407:**
+        -: 1408:** Purpose:  This routine sets the application event counter to zero for the given
+        -: 1409:**           application identifier
+        -: 1410:**
+        -: 1411:** Assumptions and Notes:
+        -: 1412:**
+        -: 1413:*/
+        -: 1414:boolean CFE_EVS_ResetAppEventCounterCmd (const CFE_EVS_AppNameCmd_t *CmdPtr)
+        4: 1415:{
+        4: 1416:   uint32 AppID  = CFE_EVS_UNDEF_APPID;
+        4: 1417:   int32  Status = TRUE;
+        -: 1418:
+        -: 1419:   /* Retreive application data */
+        4: 1420:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1421:
+        4: 1422:   if(Status == CFE_SUCCESS)
+        -: 1423:   {
+        1: 1424:        CFE_EVS_GlobalData.AppData[AppID].EventCount = 0;
+        -: 1425:
+        1: 1426:        EVS_SendEvent(CFE_EVS_RSTEVTCNT_EID, CFE_EVS_DEBUG,
+        -: 1427:                          "Reset Event Counter Command Received with AppName = %s",
+        -: 1428:                          CmdPtr->AppName);
+        -: 1429:
+        1: 1430:        Status = TRUE;
+        -: 1431:   }
+        3: 1432:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1433:   {
+        1: 1434:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1435:                        "%s not registered with EVS: CC = %lu",
+        -: 1436:                        CmdPtr->AppName, CFE_EVS_RESET_APP_COUNTER_CC);
+        1: 1437:      Status = FALSE;
+        -: 1438:   }
+        2: 1439:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1440:   {
+        1: 1441:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1442:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1443:                        AppID, CmdPtr->AppName, CFE_EVS_RESET_APP_COUNTER_CC);
+        1: 1444:      Status = FALSE;
+        -: 1445:   }
+        -: 1446:   else
+        -: 1447:   {
+        1: 1448:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1449:                        "Reset Event Counter Command: Unable to retrieve application ID for %s: CC = %lu",
+        -: 1450:                        CmdPtr->AppName, CFE_EVS_RESET_APP_COUNTER_CC);
+        1: 1451:      Status = FALSE;
+        -: 1452:   }
+        -: 1453:
+        4: 1454:   return (boolean)Status;
+        -: 1455:
+        -: 1456:} /* End CFE_EVS_ResetAppEventCounterCmd */
+        -: 1457:
+        -: 1458:
+        -: 1459:/*
+        -: 1460:**             Function Prologue
+        -: 1461:**
+        -: 1462:** Function Name:      CFE_EVS_ResetFilterCmd
+        -: 1463:**
+        -: 1464:** Purpose:  This routine sets the application event filter counter to zero for the given
+        -: 1465:**           application identifier and event identifier
+        -: 1466:**
+        -: 1467:** Assumptions and Notes:
+        -: 1468:**
+        -: 1469:*/
+        -: 1470:boolean CFE_EVS_ResetFilterCmd (const CFE_EVS_AppNameEventIDCmd_t *CmdPtr)
+        5: 1471:{
+        -: 1472:   EVS_BinFilter_t     *FilterPtr;
+        5: 1473:   uint32               AppID = CFE_EVS_UNDEF_APPID;
+        5: 1474:   int32                Status = TRUE;
+        -: 1475:   EVS_AppData_t       *AppDataPtr;
+        -: 1476:
+        -: 1477:   /* Retreive application data */
+        5: 1478:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1479:
+        5: 1480:   if(Status == CFE_SUCCESS)
+        -: 1481:   {
+        2: 1482:      AppDataPtr = &CFE_EVS_GlobalData.AppData[AppID];
+        -: 1483:
+        2: 1484:      FilterPtr = EVS_FindEventID(CmdPtr->EventID, AppDataPtr->BinFilters);
+        -: 1485:
+        2: 1486:      if(FilterPtr != NULL)
+        -: 1487:      {
+        1: 1488:         FilterPtr->Count = 0;
+        -: 1489:
+        1: 1490:         EVS_SendEvent(CFE_EVS_RSTFILTER_EID, CFE_EVS_DEBUG,
+        -: 1491:                           "Reset Filter Command Received with AppName = %s, EventID = 0x%08x",
+        -: 1492:                           CmdPtr->AppName, CmdPtr->EventID);
+        -: 1493:
+        1: 1494:         Status = TRUE;
+        -: 1495:      }
+        -: 1496:      else
+        -: 1497:      {
+        1: 1498:         EVS_SendEvent(CFE_EVS_ERR_EVTIDNOREGS_EID, CFE_EVS_ERROR,
+        -: 1499:                           "%s Event ID %d not registered for filtering: CC = %lu",
+        -: 1500:                           CmdPtr->AppName, CmdPtr->EventID, CFE_EVS_RESET_FILTER_CC);
+        -: 1501:      }
+        -: 1502:   }
+        3: 1503:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1504:   {
+        1: 1505:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1506:                        "%s not registered with EVS: CC = %lu",
+        -: 1507:                        CmdPtr->AppName, CFE_EVS_RESET_FILTER_CC);
+        1: 1508:      Status = FALSE;
+        -: 1509:   }
+        2: 1510:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1511:   {
+        1: 1512:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1513:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1514:                        AppID, CmdPtr->AppName, CFE_EVS_RESET_FILTER_CC);
+        1: 1515:      Status = FALSE;
+        -: 1516:   }
+        -: 1517:   else
+        -: 1518:   {
+        1: 1519:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1520:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -: 1521:                        CmdPtr->AppName, CFE_EVS_RESET_FILTER_CC);
+        1: 1522:      Status = FALSE;
+        -: 1523:   }
+        -: 1524:
+        5: 1525:   return (boolean)Status;
+        -: 1526:
+        -: 1527:} /* End CFE_EVS_ResetFilterCmd */
+        -: 1528:
+        -: 1529:
+        -: 1530:/*
+        -: 1531:**             Function Prologue
+        -: 1532:**
+        -: 1533:** Function Name:      CFE_EVS_ResetAllFiltersCmd
+        -: 1534:**
+        -: 1535:** Purpose:  This routine sets all application event filter counters to zero for the given
+        -: 1536:**           application identifier
+        -: 1537:**
+        -: 1538:** Assumptions and Notes:
+        -: 1539:**
+        -: 1540:*/
+        -: 1541:boolean CFE_EVS_ResetAllFiltersCmd (const CFE_EVS_AppNameCmd_t *CmdPtr)
+        5: 1542:{
+        5: 1543:   uint32                    AppID  = CFE_EVS_UNDEF_APPID;
+        5: 1544:   int32                     Status = TRUE;
+        -: 1545:   uint32                    i;
+        -: 1546:
+        -: 1547:   /* Retreive application data */
+        5: 1548:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1549:
+        5: 1550:   if(Status == CFE_SUCCESS)
+        -: 1551:   {
+       18: 1552:      for(i=0; i<CFE_EVS_MAX_EVENT_FILTERS; i++)
+        -: 1553:      {
+       16: 1554:         CFE_EVS_GlobalData.AppData[AppID].BinFilters[i].Count = 0;
+        -: 1555:      }
+        -: 1556:
+        2: 1557:      EVS_SendEvent(CFE_EVS_RSTALLFILTER_EID, CFE_EVS_DEBUG,
+        -: 1558:                        "Reset All Filters Command Received with AppName = %s",
+        -: 1559:                        CmdPtr->AppName);
+        -: 1560:
+        2: 1561:      Status = TRUE;
+        -: 1562:   }
+        3: 1563:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1564:   {
+        1: 1565:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1566:                        "%s not registered with EVS: CC = %lu",
+        -: 1567:                        CmdPtr->AppName, CFE_EVS_RESET_ALL_FILTERS_CC);
+        1: 1568:      Status = FALSE;
+        -: 1569:   }
+        2: 1570:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1571:   {
+        1: 1572:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1573:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1574:                        AppID, CmdPtr->AppName, CFE_EVS_RESET_ALL_FILTERS_CC);
+        1: 1575:      Status = FALSE;
+        -: 1576:   }
+        -: 1577:   else
+        -: 1578:   {
+        1: 1579:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1580:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -: 1581:                        CmdPtr->AppName, CFE_EVS_RESET_ALL_FILTERS_CC);
+        1: 1582:      Status = FALSE;
+        -: 1583:   }
+        -: 1584:
+        5: 1585:   return (boolean)Status;
+        -: 1586:
+        -: 1587:} /* End CFE_EVS_ResetAllFiltersCmd */
+        -: 1588:
+        -: 1589:/*
+        -: 1590:**             Function Prologue
+        -: 1591:**
+        -: 1592:** Function Name:      CFE_EVS_AddEventFilterCmd
+        -: 1593:**
+        -: 1594:** Purpose:  This routine adds the given event filter for the given application
+        -: 1595:**           identifier and event identifier.
+        -: 1596:**
+        -: 1597:** Assumptions and Notes:
+        -: 1598:**
+        -: 1599:*/
+        -: 1600:boolean CFE_EVS_AddEventFilterCmd (const CFE_EVS_AppNameEventIDMaskCmd_t *CmdPtr)
+       16: 1601:{
+        -: 1602:   EVS_BinFilter_t     *FilterPtr;
+       16: 1603:   uint32               AppID = CFE_EVS_UNDEF_APPID;
+       16: 1604:   int32                Status = TRUE;
+        -: 1605:   EVS_AppData_t       *AppDataPtr;
+        -: 1606:
+        -: 1607:   /* Retreive application data */
+       16: 1608:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1609:
+       16: 1610:   if(Status == CFE_SUCCESS)
+        -: 1611:   {
+       13: 1612:      AppDataPtr = &CFE_EVS_GlobalData.AppData[AppID];
+        -: 1613:
+        -: 1614:      /* Check to see if this event is already registered for filtering */
+       13: 1615:      FilterPtr = EVS_FindEventID(CmdPtr->EventID, AppDataPtr->BinFilters);
+        -: 1616:
+        -: 1617:      /* FilterPtr != NULL means that this Event ID was found as already being registered */
+       13: 1618:      if (FilterPtr != NULL)
+        -: 1619:      {
+        2: 1620:          EVS_SendEvent(CFE_EVS_EVT_FILTERED_EID, CFE_EVS_ERROR,
+        -: 1621:                      "Add Filter Command:AppName = %s, EventID = 0x%08x is already registered for filtering",
+        -: 1622:                      CmdPtr->AppName, CmdPtr->EventID);
+        2: 1623:          Status = FALSE;
+        -: 1624:      }
+        -: 1625:      else
+        -: 1626:      {
+        -: 1627:          /* now check to see if there is a free slot */
+       11: 1628:           FilterPtr = EVS_FindEventID(CFE_EVS_FREE_SLOT, AppDataPtr->BinFilters);
+        -: 1629:
+       11: 1630:            if (FilterPtr != NULL)
+        -: 1631:            {
+        -: 1632:               /* Add Filter Contents */
+       10: 1633:               FilterPtr->EventID = CmdPtr->EventID;
+       10: 1634:               FilterPtr->Mask = CmdPtr->Mask;
+       10: 1635:               FilterPtr->Count = 0;
+        -: 1636:
+       10: 1637:               EVS_SendEvent(CFE_EVS_ADDFILTER_EID, CFE_EVS_DEBUG,
+        -: 1638:                                 "Add Filter Command Received with AppName = %s, EventID = 0x%08x, Mask = 0x%04x",
+        -: 1639:                                 CmdPtr->AppName, CmdPtr->EventID, CmdPtr->Mask);
+        -: 1640:
+       10: 1641:               Status = TRUE;
+        -: 1642:            }
+        -: 1643:            else
+        -: 1644:            {
+        1: 1645:               EVS_SendEvent(CFE_EVS_ERR_MAXREGSFILTER_EID, CFE_EVS_ERROR,
+        -: 1646:                                 "Add Filter Command: number of registered filters has reached max = %d",
+        -: 1647:                                 CFE_EVS_MAX_EVENT_FILTERS);
+        -: 1648:
+        1: 1649:               Status = FALSE;
+        -: 1650:            }
+        -: 1651:      }/* end else*/
+        -: 1652:   } /* end if (Status == CFE_SUCCESS) */
+        -: 1653:
+        3: 1654:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1655:   {
+        1: 1656:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1657:                        "%s not registered with EVS: CC = %lu",
+        -: 1658:                        CmdPtr->AppName, CFE_EVS_ADD_EVENT_FILTER_CC);
+        1: 1659:      Status = FALSE;
+        -: 1660:   }
+        2: 1661:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1662:   {
+        1: 1663:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1664:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1665:                        AppID, CmdPtr->AppName, CFE_EVS_ADD_EVENT_FILTER_CC);
+        1: 1666:      Status = FALSE;
+        -: 1667:   }
+        -: 1668:   else
+        -: 1669:   {
+        1: 1670:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1671:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -: 1672:                        CmdPtr->AppName,CFE_EVS_ADD_EVENT_FILTER_CC);
+        1: 1673:      Status = FALSE;
+        -: 1674:   }
+        -: 1675:
+       16: 1676:   return (boolean)Status;
+        -: 1677:
+        -: 1678:} /* CFE_End EVS_AddEventFilterCmd */
+        -: 1679:
+        -: 1680:/*
+        -: 1681:**             Function Prologue
+        -: 1682:**
+        -: 1683:** Function Name:      CFE_EVS_DeleteEventFilterCmd
+        -: 1684:**
+        -: 1685:** Purpose:  This routine deletes the event filter for the given application
+        -: 1686:**           identifer and event identifier
+        -: 1687:**
+        -: 1688:** Assumptions and Notes:
+        -: 1689:**
+        -: 1690:*/
+        -: 1691:boolean CFE_EVS_DeleteEventFilterCmd (const CFE_EVS_AppNameEventIDCmd_t *CmdPtr)
+        6: 1692:{
+        -: 1693:   EVS_BinFilter_t     *FilterPtr;
+        6: 1694:   uint32               AppID = CFE_EVS_UNDEF_APPID;
+        6: 1695:   int32                Status = TRUE;
+        -: 1696:   EVS_AppData_t       *AppDataPtr;
+        -: 1697:
+        -: 1698:   /* Retreive application data */
+        6: 1699:   Status = EVS_GetApplicationInfo(&AppID, (char *)CmdPtr->AppName);
+        -: 1700:
+        6: 1701:   if(Status == CFE_SUCCESS)
+        -: 1702:   {
+        3: 1703:      AppDataPtr = &CFE_EVS_GlobalData.AppData[AppID];
+        -: 1704:
+        3: 1705:      FilterPtr = EVS_FindEventID(CmdPtr->EventID, AppDataPtr->BinFilters);
+        -: 1706:
+        3: 1707:      if(FilterPtr != NULL)
+        -: 1708:      {
+        -: 1709:         /* Clear Filter Contents */
+        2: 1710:         FilterPtr->EventID = CFE_EVS_FREE_SLOT;
+        2: 1711:         FilterPtr->Mask = CFE_EVS_NO_MASK;
+        2: 1712:         FilterPtr->Count = 0;
+        -: 1713:
+        2: 1714:         EVS_SendEvent(CFE_EVS_DELFILTER_EID, CFE_EVS_DEBUG,
+        -: 1715:                           "Delete Filter Command Received with AppName = %s, EventID = 0x%08x",
+        -: 1716:                           CmdPtr->AppName, CmdPtr->EventID);
+        -: 1717:
+        2: 1718:         Status = TRUE;
+        -: 1719:      }
+        -: 1720:      else
+        -: 1721:      {
+        1: 1722:         EVS_SendEvent(CFE_EVS_ERR_EVTIDNOREGS_EID, CFE_EVS_ERROR,
+        -: 1723:                           "%s Event ID %d not registered for filtering: CC = %lu",
+        -: 1724:                           CmdPtr->AppName, CmdPtr->EventID, CFE_EVS_DELETE_EVENT_FILTER_CC);
+        1: 1725:         Status = FALSE;
+        -: 1726:      }
+        -: 1727:   }
+        3: 1728:   else if(Status == CFE_EVS_APP_NOT_REGISTERED)
+        -: 1729:   {
+        1: 1730:      EVS_SendEvent(CFE_EVS_ERR_APPNOREGS_EID, CFE_EVS_ERROR,
+        -: 1731:                        "%s not registered with EVS: CC = %lu",
+        -: 1732:                        CmdPtr->AppName, CFE_EVS_DELETE_EVENT_FILTER_CC);
+        1: 1733:      Status = FALSE;
+        -: 1734:   }
+        2: 1735:   else if(Status == CFE_EVS_APP_ILLEGAL_APP_ID)
+        -: 1736:   {
+        1: 1737:      EVS_SendEvent(CFE_EVS_ERR_ILLAPPIDRANGE_EID, CFE_EVS_ERROR,
+        -: 1738:                        "Illegal application ID %d retrieved for %s: CC = %lu",
+        -: 1739:                        AppID, CmdPtr->AppName, CFE_EVS_DELETE_EVENT_FILTER_CC);
+        1: 1740:      Status = FALSE;
+        -: 1741:   }
+        -: 1742:   else
+        -: 1743:   {
+        1: 1744:      EVS_SendEvent(CFE_EVS_ERR_NOAPPIDFOUND_EID, CFE_EVS_ERROR,
+        -: 1745:                        "Unable to retrieve application ID for %s: CC = %lu",
+        -: 1746:                        CmdPtr->AppName, CFE_EVS_DELETE_EVENT_FILTER_CC);
+        1: 1747:      Status = FALSE;
+        -: 1748:   }
+        -: 1749:
+        6: 1750:   return (boolean)Status;
+        -: 1751:
+        -: 1752:} /* End EVS_DeleteEventFilterCmd */
+        -: 1753:
+        -: 1754:
+        -: 1755:/*
+        -: 1756:**             Function Prologue
+        -: 1757:**
+        -: 1758:** Function Name:      CFE_EVS_WriteAppDataCmd
+        -: 1759:**
+        -: 1760:** Purpose:  This routine writes all application data to a file for all applications that
+        -: 1761:**           have registered with the EVS.  The application data includes the Application ID,
+        -: 1762:**           Active Flag, Event Count, Event Types Active Flag, and Filter Data.
+        -: 1763:**
+        -: 1764:** Assumptions and Notes:
+        -: 1765:**
+        -: 1766:*/
+        -: 1767:boolean CFE_EVS_WriteAppDataCmd ( const CFE_EVS_AppDataCmd_t *CmdPtr )
+        3: 1768:{
+        3: 1769:   boolean                           Result = FALSE;
+        -: 1770:   int32                             FileHandle;
+        -: 1771:   int32                             BytesWritten;
+        3: 1772:   uint32                            EntryCount = 0;
+        -: 1773:   uint32                            i;
+        -: 1774:   static CFE_EVS_AppDataFile_t      AppDataFile;
+        -: 1775:   CFE_FS_Header_t                   FileHdr;
+        -: 1776:   EVS_AppData_t                    *AppDataPtr;
+        -: 1777:   char                              AppDataFilename[OS_MAX_PATH_LEN];
+        -: 1778:
+        -: 1779:   /* Copy the commanded filename into local buffer to ensure size limitation and to allow for modification */
+        3: 1780:   CFE_PSP_MemCpy(AppDataFilename, (void *) CmdPtr->AppDataFilename, OS_MAX_PATH_LEN);
+        -: 1781:
+        -: 1782:   /* Check to see if a default filename should be used */
+        3: 1783:   if (AppDataFilename[0] == '\0')
+        -: 1784:   {
+        3: 1785:      strncpy(AppDataFilename, CFE_EVS_DEFAULT_APP_DATA_FILE , OS_MAX_PATH_LEN);
+        -: 1786:   }
+        -: 1787:
+        -: 1788:   /* Make sure all strings are null terminated before attempting to process them */
+        3: 1789:   AppDataFilename[OS_MAX_PATH_LEN-1] = '\0';
+        -: 1790:
+        -: 1791:   /* Create Application Data File */
+        3: 1792:   FileHandle = OS_creat(AppDataFilename, OS_WRITE_ONLY);
+        -: 1793:
+        3: 1794:   if (FileHandle < OS_FS_SUCCESS)
+        -: 1795:   {
+        1: 1796:      EVS_SendEvent(CFE_EVS_ERR_CRDATFILE_EID, CFE_EVS_ERROR,
+        -: 1797:                   "Write App Data Command Error: OS_creat = 0x%08X, filename = %s",
+        -: 1798:                    FileHandle, AppDataFilename);
+        -: 1799:   }
+        -: 1800:   else
+        -: 1801:   {
+        -: 1802:      /* Initialize cFE file header */
+        2: 1803:      CFE_PSP_MemSet(&FileHdr, 0, sizeof(CFE_FS_Header_t));
+        2: 1804:      strcpy(&FileHdr.Description[0], "EVS Application Data File");
+        2: 1805:      FileHdr.SubType = CFE_FS_EVS_APPDATA_SUBTYPE;
+        -: 1806:
+        -: 1807:      /* Write cFE file header to the App File */
+        2: 1808:      BytesWritten = CFE_FS_WriteHeader(FileHandle, &FileHdr);
+        -: 1809:
+        2: 1810:      if (BytesWritten == sizeof(CFE_FS_Header_t))
+        -: 1811:      {
+       34: 1812:         for (i = 0; i < CFE_ES_MAX_APPLICATIONS; i++)
+        -: 1813:         {
+        -: 1814:            /* Only have data for apps that are registered */
+       33: 1815:            if (CFE_EVS_GlobalData.AppData[i].RegisterFlag == TRUE)
+        -: 1816:            {
+        2: 1817:               AppDataPtr = &CFE_EVS_GlobalData.AppData[i];
+        -: 1818:
+        -: 1819:               /* Clear application file data record */
+        2: 1820:               CFE_PSP_MemSet(&AppDataFile, 0, sizeof(CFE_EVS_AppDataFile_t));
+        -: 1821:
+        -: 1822:               /* Copy application data to application file data record */
+        2: 1823:               CFE_ES_GetAppName(AppDataFile.AppName, i, OS_MAX_API_NAME);
+        2: 1824:               AppDataFile.ActiveFlag = AppDataPtr->ActiveFlag;
+        2: 1825:               AppDataFile.EventCount = AppDataPtr->EventCount;
+        2: 1826:               AppDataFile.EventTypesActiveFlag = AppDataPtr->EventTypesActiveFlag;
+        -: 1827:
+        -: 1828:               /* Copy application filter data to application file data record */
+        2: 1829:               CFE_PSP_MemCpy(AppDataFile.Filters, AppDataPtr->BinFilters,
+        -: 1830:                              CFE_EVS_MAX_EVENT_FILTERS * sizeof(EVS_BinFilter_t));
+        -: 1831:
+        -: 1832:               /* Write application data record to file */
+        2: 1833:               BytesWritten = OS_write(FileHandle, &AppDataFile, sizeof(CFE_EVS_AppDataFile_t));
+        -: 1834:
+        2: 1835:               if (BytesWritten == sizeof(CFE_EVS_AppDataFile_t))
+        -: 1836:               {
+        1: 1837:                  EntryCount++;
+        -: 1838:               }
+        -: 1839:               else
+        -: 1840:               {
+        1: 1841:                  EVS_SendEvent(CFE_EVS_ERR_WRDATFILE_EID, CFE_EVS_ERROR,
+        -: 1842:                               "Write App Data Command Error: OS_write = 0x%08X, filename = %s",
+        -: 1843:                                BytesWritten, AppDataFilename);
+        1: 1844:                  break;
+        -: 1845:               }
+        -: 1846:            }
+        -: 1847:         }
+        -: 1848:
+        -: 1849:         /* Process command handler success result */
+        2: 1850:         if (i == CFE_ES_MAX_APPLICATIONS)
+        -: 1851:         {
+        1: 1852:            EVS_SendEvent(CFE_EVS_WRDAT_EID, CFE_EVS_DEBUG,
+        -: 1853:                         "Write App Data Command: %d application data entries written to %s",
+        -: 1854:                          EntryCount, AppDataFilename);
+        1: 1855:            Result = TRUE;
+        -: 1856:         }
+        -: 1857:      }
+        -: 1858:
+        2: 1859:      OS_close(FileHandle);
+        -: 1860:   }
+        -: 1861:
+        3: 1862:   return(Result);
+        -: 1863:
+        -: 1864:} /* CFE_End EVS_WriteAppDataCmd */
+        -: 1865:
+        -: 1866:
+        -: 1867:/* End cfe_evs_task */
