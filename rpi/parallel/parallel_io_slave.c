@@ -10,6 +10,17 @@
 #include <stdlib.h>  /* system() */
 #include <stdint.h>
 
+/**
+ * Here is an example of a generated template by the doxydoxygen package for sublime
+ *
+ * @brief      { function_description }
+ *
+ * @param      data   { parameter_description }
+ * @param[in]  bit_n  { parameter_description }
+ *
+ * @return     { description_of_the_return_value }
+ */
+
 uint8_t bit_test(uint8_t* data, uint8_t bit_n);
 uint8_t gpio_write(uint8_t gpio_pin, uint8_t value);
 uint8_t gpio_read(uint8_t gpio_pin);
@@ -51,6 +62,7 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
+
 /*
 ** uint8_t bit_test(uint8_t* data, uint8_t bit_n)
 ** 
@@ -73,8 +85,19 @@ int main(int argc, char* argv[])
 ** 0 if GPIO read to be low
 ** 1 if GPIO read to be HIGH
 ** -1 if error
-**
+** 
 */
+
+/**
+ *	And here's another for this function.
+ *
+ * @brief      { function_description }
+ *
+ * @param      data   { parameter_description }
+ * @param[in]  bit_n  { parameter_description }
+ *
+ * @return     { description_of_the_return_value }
+ */
 uint8_t bit_test(uint8_t* data, uint8_t bit_n)
 {
 	if( (sizeof(data) * 8) <= bit_n )
