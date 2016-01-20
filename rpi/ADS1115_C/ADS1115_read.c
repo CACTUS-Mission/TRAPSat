@@ -20,12 +20,17 @@
 #include <linux/i2c-dev.h> // I2C bus definitions
 
 float ads1115_read(int pin) {
+
+  // only accept valid pin values
+  if (pin > 3)
+    return float(void); // not sure if this will work, I just want to return an error immediately -Zach
 	
   int ADS_address = 0x49;	// Address of our device on the I2C bus
   int I2CFile;
   
-  uint8_t writeBuf[3];		// Buffer to store the 3 bytes that we write to the I2C device
+  uint8_t writeBuf[3];	// Buffer to store the 3 bytes that we write to the I2C device
   uint8_t readBuf[2];		// 2 byte buffer to store the data read from the I2C device
+  uint8_t ads_read_pin; // Buffer to use as a mask to select ADS input 
   
   int16_t val;				// Stores the 16 bit value of our ADC conversion
   
@@ -35,9 +40,21 @@ float ads1115_read(int pin) {
 	  
   // These three bytes are written to the ADS1115 to set the config register and start a conversion 
   writeBuf[0] = 1;			// This sets the pointer register so that the following two bytes write to the config register
-  writeBuf[1] = 0xC3;   	// This sets the 8 MSBs of the config register (bits 15-8) to 11000011 -- C can be changed to C-F to select the channel to read
+  writeBuf[1] = 0xC3;   	// This sets the 8 MSBs of the config register (bits 15-8) to 11000011 -- C can be changed to C-F to select the channel to read. Default as C for AIN0
   writeBuf[2] = 0x03;  		// This sets the 8 LSBs of the config register (bits 7-0) to 00000011
   
+  // Set the pin to be read from based on input parameter
+  switch (pin)
+  {
+    case 0 : ads_read_pin = 0x40; break;
+    case 1 : ads_read_pin = 0x50; break;
+    case 2 : ads_read_pin = 0x60; break;
+    case 3 : ads_read_pin = 0x70; break;
+    default: ads_read_pin = 0x40; break;
+  }
+  
+  writeBuf[1] |= ads_read_pin; // mask other set flags, only change the read pin
+
   // Initialize the buffer used to read data from the ADS1115 to 0
   readBuf[0]= 0;		
   readBuf[1]= 0;
