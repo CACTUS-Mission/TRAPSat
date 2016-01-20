@@ -1,6 +1,17 @@
 /* 
 	ADS1115_sample.c - 12/9/2013. Written by David Purdie as part of the openlabtools initiative
 	Initiates and reads a single sample from the ADS1115 (without error handling)
+	
+	edited by Zach Richard to work with the TRAPSat Custom IO board for the RockSat-x 2016 mission.
+	* changed address to 0x49 (previously 0x48)
+	* changed int main() to float ads1115_read()
+	* changed printf("Voltage Reading %f (V) \n", (float)val*4.096/32767.0); to return (float)val*4.096/32767.0;
+
+
+	USE:
+	* Function accepts an integer from 0 to 3 to select which pin to read from
+	* Function returns the reading from the chosen pin in mV
+
 */
 
 #include <stdio.h>
@@ -8,7 +19,7 @@
 #include <inttypes.h>  // uint8_t, etc
 #include <linux/i2c-dev.h> // I2C bus definitions
 
-int main() {
+float ads1115_read(int pin) {
 	
   int ADS_address = 0x49;	// Address of our device on the I2C bus
   int I2CFile;
@@ -24,7 +35,7 @@ int main() {
 	  
   // These three bytes are written to the ADS1115 to set the config register and start a conversion 
   writeBuf[0] = 1;			// This sets the pointer register so that the following two bytes write to the config register
-  writeBuf[1] = 0xC3;   	// This sets the 8 MSBs of the config register (bits 15-8) to 11000011
+  writeBuf[1] = 0xC3;   	// This sets the 8 MSBs of the config register (bits 15-8) to 11000011 -- C can be changed to C-F to select the channel to read
   writeBuf[2] = 0x03;  		// This sets the 8 LSBs of the config register (bits 7-0) to 00000011
   
   // Initialize the buffer used to read data from the ADS1115 to 0
@@ -47,12 +58,10 @@ int main() {
   read(I2CFile, readBuf, 2);		// Read the contents of the conversion register into readBuf
 
   val = readBuf[0] << 8 | readBuf[1];	// Combine the two bytes of readBuf into a single 16 bit result 
-  
-  printf("Voltage Reading %f (V) \n", (float)val*4.096/32767.0);	// Print the result to terminal, first convert from binary value to mV
 		
   close(I2CFile);
   
-  return 0;
+  return (float)val*4.096/32767.0; // return the Voltage read in mV
 
 }
 
