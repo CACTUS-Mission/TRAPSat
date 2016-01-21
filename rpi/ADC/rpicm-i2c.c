@@ -96,10 +96,6 @@ int main(int argc, char *argv[])
 {
     int bus_id;
     int i2c_fd;
-    int io_res;
-    //uint8_t i2c_cfg_data[3] = {ADS1115_CFG_ADDR, ADS1115_CFG_DEFAULT_MSB, ADS1115_CFG_DEFAULT_LSB};
-    uint8_t i2c_cfg_data[3] = {ADS1115_CFG_DEFAULT_LSB, ADS1115_CFG_DEFAULT_MSB, ADS1115_CFG_ADDR};
-    uint8_t i2c_data[2] = {0x00, 0x00};
     
     if ((bus_id = rpicm_i2c_detect_bus()) < 0)
     {
@@ -120,13 +116,19 @@ int main(int argc, char *argv[])
 	{
     	printf("rpicm_i2c_open_bus(%d) = %d\n", bus_id, i2c_fd); 
 	}
+	
+	/* Testing */
+
+    int io_res;
+    uint8_t i2c_cfg_data[3] = {0x01, 0xC3, 0x03};
+    uint8_t i2c_data[2] = {0x00, 0x00};
 
 	/*
 	** Address the I2C device
 	*/
     if ((io_res = ioctl(i2c_fd, I2C_SLAVE, ADS1115_ADDR)) < 0)
     {
-        fprintf(stderr, "failed control io device, io_res = %d\n", io_res);
+        fprintf(stderr, "IO Control Failed: Returned %c\n", strerror(io_res));
         exit(-1);
     }
     
@@ -134,76 +136,51 @@ int main(int argc, char *argv[])
     /*
     ** Configure I2C device
     */
-     if ((io_res = i2c_smbus_write_byte(i2c_fd, ADS1115_LISTEN_CMD)) < 0)
+     if ((io_res =write(i2c_fd, i2c_cfg_data, 3)) < 0)
     {
-        fprintf(stderr, "cfg step 1 failed writing to i2c device, io_res = %d\n", io_res);
+        fprintf(stderr, "I2C Configuration Failure: Returned %c\n", strerror(io_res));
     }
-    else
+    else if (io_res != 3)
     {
-         if ((io_res = i2c_smbus_write_byte(i2c_fd, ADS1115_CFG_ADDR)) < 0)
-         {
-            fprintf(stderr, "failed writing CFG_ADDR to i2c device, io_res = %d\n", io_res);
-         }
-         if ((io_res = i2c_smbus_write_byte(i2c_fd, ADS1115_CFG_DEFAULT_MSB)) < 0)
-         {
-            fprintf(stderr, "failed writing CFG_MSB to i2c device, io_res = %d\n", io_res);
-         }
-         if ((io_res = i2c_smbus_write_byte(i2c_fd, ADS1115_CFG_DEFAULT_LSB)) < 0)
-         {
-            fprintf(stderr, "failed writing CFG_LSB to i2c device, io_res = %d\n", io_res);
-         }
-        
-        if ((io_res = i2c_smbus_write_byte_data(i2c_fd, ADS1115_LISTEN_CMD, ADS1115_CONV_ADDR)) < 0)
-        {
-            fprintf(stderr, "cfg step 2 failed writing to i2c device, io_res = %d\n", io_res);
-        }
+        fprintf(stderr, "I2C Configuration Error: expected to write 3 bytes, %d bytes written\n", strerror(io_res));
     }
 
     /*
-    ** Read loop
+    ** Wait for Operational Status flag (bit 15 of config register) to be set - (0=Busy/1=Not Busy)
     */
-	while(1)
-    {    
-        /*
-        ** Send I2C device post data command
-        */
-        i2c_data[1] = 0x00;
-        i2c_data[0] = 0x00;
-        if ( (io_res = i2c_smbus_read_i2c_block_data(i2c_fd, ADS1115_POST_DATA_CMD, 2, i2c_data)) < 0)
+    while ( !(i2c_data[0] & 0x80) )
+    {
+        if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
         {
-            fprintf(stderr, "Failed reading data from i2c device\n");
+            fprintf(stderr, "I2C Read Failure: Returned %c\n", strerror(io_res));
         }
-        else
-        {
-            printf("Data[0]: %#2.2X \t %d\n", i2c_data[0], i2c_data[0]);
-            printf("Data[1]: %#2.2X \t %d\n", i2c_data[1], i2c_data[1]);
-            printf("Hex Data: %#2.2X\n", i2c_data);
-            int data = i2c_data[1] << 8 | i2c_data[0];
-            printf("Dec Data: %d\n", data);
-        }
-        /*
-        printf("\n");
-        i2c_data[1] = 0x00;
-        i2c_data[0] = 0x00;
-        
-        if ((io_res = i2c_smbus_write_byte(i2c_fd, ADS1115_POST_DATA_CMD)) < 0)
-        {
-            fprintf(stderr, "failed writing to i2c device, io_res = %d\n", io_res);
-        }
-        else
-        {
-            i2c_data[1] = 0;
-            i2c_data[0] = 0;
-            i2c_data[1] = i2c_smbus_read_byte(i2c_fd);
-            i2c_data[0] = i2c_smbus_read_byte(i2c_fd);
-            printf("Hex Data: %#4.4X\n", i2c_data);
-            int data;
-            data = i2c_data[1] << 8 | i2c_data[0];
-            printf("Dec Data: %d\n", data);
-        }
-        */
-        sleep(1);
     }
+    
+    /*
+    ** Set Pointer Register to 0 (To read from conversion register)
+    */
+    i2c_cfg_data[0] = 0x00; 
+    if ((io_res = write(i2c_fd, i2c_cfg_data, 1)) < 0)
+    {
+        fprintf(stderr, "I2C Configuration Failure: Returned %c\n", strerror(io_res));
+    }
+    else if (io_res != 1)
+    {
+        fprintf(stderr, "I2C Configuration Error: expected to write 1 bytes, %d bytes written\n", strerror(io_res));
+    }
+    
+    if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
+    {
+        fprintf(stderr, "I2C Read Failure: Returned %c\n", strerror(io_res));
+    }
+    
+    uint16_t val = i2c_data[0] << 8 | i2c_data[1];	// Combine the two bytes of readBuf into a single 16 bit result 
+		
+    close(i2c_fd);
+  
+    printf("Voltage: %f V\n", val*4.096/32767.0);
+    
+    
 	return 0;
 }
 
