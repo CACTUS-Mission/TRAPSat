@@ -14,16 +14,13 @@
 
 */
 
-#include <stdio.h>
-#include <fcntl.h>     // open
-#include <inttypes.h>  // uint8_t, etc
-#include <linux/i2c-dev.h> // I2C bus definitions
+#include "ADS1115_read.h"
 
 float ads1115_read(int pin) {
 
   // only accept valid pin values
   if (pin > 3)
-    return float(void); // not sure if this will work, I just want to return an error immediately -Zach
+    return (float)(0); // not sure if this will work, I just want to return an error immediately -Zach
 	
   int ADS_address = 0x49;	// Address of our device on the I2C bus
   int I2CFile;
