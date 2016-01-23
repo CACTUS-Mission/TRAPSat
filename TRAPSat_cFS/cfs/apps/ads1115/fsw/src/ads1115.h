@@ -31,6 +31,22 @@
 ** Type Definitions
 *************************************************************************/
 
+/*
+** ADS1115 Channel Data Buffers
+**	
+** Each ADC channel measures a voltage (0V - 5V)
+** The ADC converts the voltage reading to a 16-bit value
+** between --> ((2^16) - 1).
+*/
+typedef struct
+{
+	uint8_t adc_ch_0[2];
+	uint8_t adc_ch_1[2];
+	uint8_t adc_ch_2[2];
+	uint8_t adc_ch_3[2];
+} ADS1115_ChannelData_t;
+
+
 /****************************************************************************/
 /*
 ** Local function prototypes.
