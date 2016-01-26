@@ -1,16 +1,8 @@
 /*
-**
+** Required Headers
 */
-
-#include "cfe.h"
 #include "ads1115.h"
-#include "ads1115_perfids.h"
-#include "ads1115_msgids.h"
-#include "ads1115_msg.h"
-#include "ads1115_events.h"
 #include "ads1115_child.h"
-
-#include <string.h>
 
 int ADS1115_ReadADCChannels(void);
 

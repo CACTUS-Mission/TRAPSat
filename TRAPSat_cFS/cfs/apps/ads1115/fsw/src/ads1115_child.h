@@ -3,7 +3,22 @@
 #ifndef _ads1115_child_h_
 #define _ads1115_child_h_
 
-#include "cfe.h"
+/*
+** ADS1115 Master Header
+*/
+#include "ads1115.h"
+
+/*
+** Platform Required header files
+*/
+#include <stdio.h>   /* Standard input/output definitions */
+#include <fcntl.h>   /* File control definitions */
+#include <termios.h> /* POSIX terminal control definitions */
+#include <stdlib.h>
+#include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
+/* Check necessity of each of these to trim fat */
 
 extern ads1115_hk_tlm_t       ADS1115_HkTelemetryPkt;
 extern uint32                 ADS1115_ADC_ChildTaskID;

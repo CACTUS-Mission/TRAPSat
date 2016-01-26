@@ -11,7 +11,15 @@
 #define _ads1115_h_
 
 /*
-** Required header files.
+** Platform Required header files
+** Check necessity of these
+*/
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+
+/*
+** cFS Required header files.
 */
 #include "cfe.h"
 #include "cfe_error.h"
@@ -19,9 +27,16 @@
 #include "cfe_sb.h"
 #include "cfe_es.h"
 
-#include <string.h>
-#include <errno.h>
-#include <unistd.h>
+/*
+** Application Required Header Files
+*/
+#include "ads1115_perfids.h"
+#include "ads1115_msgids.h"
+#include "ads1115_msg.h"
+#include "ads1115_events.h"
+#include "ads1115_version.h"
+
+#include "ads1115_child.h"
 
 /***********************************************************************/
 
