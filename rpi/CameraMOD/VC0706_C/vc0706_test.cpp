@@ -1,3 +1,7 @@
+/*
+ * Test program for vc0706.cpp
+ * compile with: $g++ vc0706_test.cpp -o vc0706_test -lwiringPi
+ */
 #include <stdio.h>
 #include "vc0706.cpp" // will probably be changed to vc0706.h eventually
 
@@ -8,13 +12,12 @@ int main ()
 
 	Camera cam;
 
-	Char *vptr = NULL;
-	Char *picfile = NULL;
+	//char *vptr = NULL;
+	//char *picfile = NULL;
 
-	if(retptr=cam.getVersion() != NULL)
+	if(cam.getVersion() != NULL)
 	{
-		if(picfile=cam.takePicture() != NULL)
-			cout << "picture stored at " << *picfile << endl;
+		cam.takePicture();
 	}
 	
 

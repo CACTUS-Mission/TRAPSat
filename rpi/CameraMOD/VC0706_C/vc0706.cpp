@@ -26,14 +26,17 @@
 #include <unistd.h>
 
 using namespace std;
-using namespace v8;
-using namespace node;
+//using namespace v8;
+//using namespace node;
 
 
-extern "C"  {
-#include "deps/wiringSerial.h"
-#include "deps/wiringPi.h"
-}
+//extern "C"  {
+//#include "deps/wiringSerial.h"
+//#include "deps/wiringPi.h"
+//}
+
+#include <wiringSerial.h>
+#include <wiringPi.h>
 
 
 // Brian's Defines
