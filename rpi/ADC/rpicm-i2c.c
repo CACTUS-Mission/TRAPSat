@@ -3,17 +3,17 @@
 */
 
 #include <stdio.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <stdint.h>
-#include <string.h>
-#include <limits.h>
-#include <unistd.h> /* Unix standard function definitions */
+//#include <string.h>
+//#include <limits.h>
+//#include <unistd.h> /* Unix standard function definitions */
 #include <fcntl.h> /* File control definitions */
 #include <errno.h> /* Error number definitons */
-#include <sys/ioctl.h>
+//#include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 
-#include "ads1115_device.h"
+//#include "ads1115_device.h"
 
 
 int rpicm_i2c_detect_bus()

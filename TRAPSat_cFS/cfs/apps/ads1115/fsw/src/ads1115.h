@@ -34,6 +34,7 @@
 #define ADS1115_ADC_CHILD_TASK_NAME        "ADC_MONITOR"
 #define ADS1115_ADC_CHILD_TASK_STACK_SIZE  8192               
 #define ADS1115_ADC_CHILD_TASK_PRIORITY    200
+#define ADS1115_ADDR                       0b01001001
 
 
 /************************************************************************

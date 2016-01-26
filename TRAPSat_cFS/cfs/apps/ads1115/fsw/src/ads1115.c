@@ -101,6 +101,8 @@ void ADS1115_AppInit(void)
 
     ADS1115_ResetCounters();
 
+    ADS1115_ChildInit();
+
     CFE_SB_InitMsg(&ADS1115_HkTelemetryPkt,
                    ADS1115_HK_TLM_MID,
                    ADS1115_HK_TLM_LNGTH, TRUE);

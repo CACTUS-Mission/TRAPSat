@@ -75,8 +75,12 @@ void ADS1115_ADC_ChildTask(void)
     {
         CFE_EVS_SendEvent(ADS1115_CHILD_INIT_EID, CFE_EVS_INFORMATION,
            "%s initialization complete", TaskText);
-        /* Child task process loop */
+
+        /* 
+        ** Child task process loop
+        */
         ADS1115_ReadADCChannels();
+        /*ADS1115_ChildLoop();*/
     }
 
     /* This call allows cFE to clean-up system resources */
