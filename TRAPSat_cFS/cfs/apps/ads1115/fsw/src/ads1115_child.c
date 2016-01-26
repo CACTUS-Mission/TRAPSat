@@ -37,6 +37,12 @@ int32 ADS1115_ChildInit(void)
            "%s initialization error: create task failed: result = %d",
             TaskText, Result);
     }
+    else
+    {
+        CFE_EVS_SendEvent(ADS1115_CHILD_INIT_EID, CFE_EVS_INFORMATION,
+           "%s initialization info: create task complete: result = %d",
+            TaskText, Result);
+    }
 
 
     if (Result != CFE_SUCCESS)
