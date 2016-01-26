@@ -27,6 +27,15 @@
 
 #define ADS1115_PIPE_DEPTH                     32
 
+
+/*
+** ADS1115 Child Task Definitions
+*/
+#define ADS1115_ADC_CHILD_TASK_NAME        "ADC_MONITOR"
+#define ADS1115_ADC_CHILD_TASK_STACK_SIZE  8192               
+#define ADS1115_ADC_CHILD_TASK_PRIORITY    200
+
+
 /************************************************************************
 ** Type Definitions
 *************************************************************************/
@@ -44,7 +53,7 @@ typedef struct
 	uint8_t adc_ch_1[2];
 	uint8_t adc_ch_2[2];
 	uint8_t adc_ch_3[2];
-} ADS1115_ChannelData_t;
+} ADS1115_Ch_Data_t;
 
 
 /****************************************************************************/

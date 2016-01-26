@@ -37,7 +37,7 @@ typedef struct
     uint8              TlmHeader[CFE_SB_TLM_HDR_SIZE];
     uint8              ads1115_command_error_count;
     uint8              ads1115_command_count;
-    uint8              spare[2];
+    ADS1115_Ch_Data_t  ads1115_ch_data;
 
 }   OS_PACK ads1115_hk_tlm_t  ;
 

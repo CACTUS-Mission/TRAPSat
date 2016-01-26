@@ -19,7 +19,13 @@
 #define ADS1115_COMMANDNOP_INF_EID        3 
 #define ADS1115_COMMANDRST_INF_EID        4
 #define ADS1115_INVALID_MSGID_ERR_EID     5 
-#define ADS1115_LEN_ERR_EID               6 
+#define ADS1115_LEN_ERR_EID               6
+
+/*
+** Child Task Event IDs
+*/
+#define ADS1115_CHILD_INIT_ERR_EID        7 
+#define ADS1115_CHILD_INIT_EID            8 
 
 #endif /* _ads1115_events_h_ */
 
