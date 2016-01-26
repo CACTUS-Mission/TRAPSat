@@ -15,11 +15,11 @@
 ** Check necessity of these
 */
 #include <stdint.h>
-/*
 #include <string.h>
+
 #include <errno.h>
 #include <unistd.h>
-*/
+
 /*
 ** cFS Required header files.
 */
