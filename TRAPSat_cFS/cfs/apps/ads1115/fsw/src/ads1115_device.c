@@ -112,10 +112,10 @@ int ADS1115_ReadADCChannels(void)
 	    }
 	    
 	    i2c_data_word = i2c_data[0] << 8 | i2c_data[1];
-	  
+	    
 	    OS_printf("Voltage: %f V\n", (float) i2c_data_word*4.096/32767.0);
 
-        memcpy(&ADS1115_ChannelData.adc_ch_1, &i2c_data_word, size_of(adc_ch_1));
+        memcpy(&ADS1115_ChannelData.adc_ch_1, &i2c_data_word, sizeof(adc_ch_1));
 
 	    OS_TaskDelay(2000);
 	}

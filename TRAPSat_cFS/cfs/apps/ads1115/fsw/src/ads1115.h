@@ -14,6 +14,7 @@
 ** Platform Required header files
 ** Check necessity of these
 */
+#include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 
