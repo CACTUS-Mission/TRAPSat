@@ -1,6 +1,6 @@
 /*
  * Retrieved from https://github.com/vyykn/VC0706
- * 
+ *
  *
  */
 
@@ -41,6 +41,7 @@ using namespace std;
 
 // Brian's Defines
 #define BAUD 38400
+//#define BAUD 115200
 
 #define RESET 0x26
 #define GEN_VERSION 0x11

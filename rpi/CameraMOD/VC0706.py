@@ -8,9 +8,7 @@ import serial
 
 BAUD = 38400
 # this is the port on the Raspberry Pi; it will be different for serial ports on other systems.
-#PORT = "/dev/ttyAMA0"
-
-PORT = "/dev/ttyAMA0" # USB -> Serial  Converter
+PORT = "/dev/ttyAMA0" 
 
 TIMEOUT = 0.5    # I needed a longer timeout than ladyada's 0.2 value
 SERIALNUM = 0    # start with 0, each camera should have a unique ID.
@@ -151,10 +149,10 @@ def readbuffer(bytes):
 	return photo
 
 
-######## main
+######## main -> takePic
 
 s = serial.Serial( PORT, baudrate=BAUD, timeout = TIMEOUT )
-def main():
+def takePic(filename="VC0706.jpg"):
 	reset()
 	if( not getversion() ):
 		print "Camera not found"
@@ -171,7 +169,7 @@ def main():
 	
 	photo = readbuffer( bytes )
 	
-	f = open( "SerialUSBphoto.jpg", 'w' )
+	f = open( filename, 'w' )
 	
 	photodata = ''.join( photo )
 	
