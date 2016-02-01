@@ -3,7 +3,7 @@ http://www.pieter-jan.com/node/15
 2013 Pieter-Jan Van de Maele All Rights Reserved
 */
 
-#include "RPI.h"
+#include "RPi.h"
  
 struct bcm2835_peripheral gpio = {GPIO_BASE};
  

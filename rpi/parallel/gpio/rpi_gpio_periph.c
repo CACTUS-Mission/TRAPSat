@@ -1,6 +1,16 @@
-#include "RPI.h"
+/*
+http://www.pieter-jan.com/node/15
+2013 Pieter-Jan Van de Maele All Rights Reserved
+*/
+/********************************************************
+** Editted by Keegan Moore:
+*  Fixed variable scope issues with struct bcm2835_peripheral gpio
+*  
+*/
+
+#include "rpi_gpio_periph.h"
  
-struct bcm2835_peripheral gpio = {GPIO_BASE};
+extern struct bcm2835_peripheral gpio = {GPIO_BASE};
  
 // Exposes the physical address defined in the passed structure using mmap on /dev/mem
 int map_peripheral(struct bcm2835_peripheral *p)

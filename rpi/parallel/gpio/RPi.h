@@ -1,16 +1,19 @@
 /*
 http://www.pieter-jan.com/node/15
 2013 Pieter-Jan Van de Maele All Rights Reserved
+*********************************************************
+** Editted by Keegan Moore:
+*  Fi
 */
 
-#include <stdio.h>
- 
+#include <stdio.h> 
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
- 
 #include <unistd.h>
  
+#include <fcntl.h>
+
 #define BCM2708_PERI_BASE       0x20000000
 #define GPIO_BASE               (BCM2708_PERI_BASE + 0x200000)	// GPIO controller 
  

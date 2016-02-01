@@ -2,7 +2,7 @@
 http://www.pieter-jan.com/node/15
 2013 Pieter-Jan Van de Maele All Rights Reserved
 */
-#include "rpi_gpio_periph.h"
+#include "RPi.h"
 
 int main()
 {
