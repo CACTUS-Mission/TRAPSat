@@ -9,8 +9,7 @@ http://www.pieter-jan.com/node/15
 */
 
 #include "rpi_gpio_periph.h"
- 
-extern struct bcm2835_peripheral gpio = {GPIO_BASE};
+
  
 // Exposes the physical address defined in the passed structure using mmap on /dev/mem
 int map_peripheral(struct bcm2835_peripheral *p)
