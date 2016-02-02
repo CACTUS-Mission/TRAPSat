@@ -176,3 +176,5 @@ def takePic(filename="VC0706.jpg"):
 	f.write( photodata )
 	
 	f.close()
+
+takePic()

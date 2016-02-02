@@ -80,7 +80,7 @@ using namespace std;
 #define CAMERADELAY 10
 
 #define TO_SCALE 1
-#define TO_U 500000
+#define TO_U 200000
 //#define TO_U 1000000
 
 
@@ -96,14 +96,13 @@ public:
     void clearBuffer();
     bool motionDetected();
     char * getVersion();
-    char * takePicture();
+    char * takePicture(const char * file_path);
     int motion;
     int ready;
     int fd;
 
 private:
     void resumeVideo();
-
     uint8_t offscreen[8]; // font width;
 
     int frameptr;
@@ -155,7 +154,7 @@ bool Camera::checkReply(int cmd, int size) {
     int t_count = 0;
     int length = 0;
     int avail = 0;
-    int timeout = 5 * TO_SCALE;
+    int timeout = 3 * TO_SCALE; // test 3 was 5
     
     while ((timeout != t_count) && (length != CAMERABUFFSIZ) && length < size)
     {
@@ -270,7 +269,7 @@ void Camera::setMotionDetect(int flag)
 }
 
 
-char * Camera::takePicture()
+char * Camera::takePicture(const char * file_path)
 {
     frameptr = 0;
 
@@ -324,7 +323,7 @@ char * Camera::takePicture()
         printf("To Large... \n");
         resumeVideo();
         clearBuffer();
-        return Camera::takePicture();
+        return Camera::takePicture(file_path);
     }
     
     char image[len];
@@ -389,11 +388,11 @@ char * Camera::takePicture()
     }
 
     
-    char name[23];
-    int t = (int)time(NULL);
-    sprintf(name, "images/%u.jpg", t);
     
-    FILE *jpg = fopen(name, "w");
+    //char name[23];
+    //int t = (int)time(NULL);
+    //sprintf(name, "images/%u.jpg", t);
+    FILE *jpg = fopen(file_path, "w");
     if (jpg != NULL)
     {
         fwrite(image, sizeof(char), sizeof(image), jpg);
@@ -404,7 +403,7 @@ char * Camera::takePicture()
         printf("IMAGE COULD NOT BE OPENED/MADE!\n");
     }
     
-    sprintf(imageName, "%u.jpg", t);
+    sprintf(imageName, "%s", file_path);
     
     resumeVideo();
 
@@ -416,7 +415,6 @@ char * Camera::takePicture()
 
     
     return imageName;
-    
 }
 
 // End Brian's Methods
