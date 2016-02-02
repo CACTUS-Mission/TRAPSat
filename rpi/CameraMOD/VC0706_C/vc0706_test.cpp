@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 //#include <cstring>
-#include "vc0706.cpp" // will probably be changed to vc0706.h eventually
+#include "vc0706.h"
 
 using namespace std;
 
