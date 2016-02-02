@@ -34,7 +34,7 @@ takephotocommand = [COMMANDSEND, SERIALNUM, CMD_TAKEPHOTO, 0x01, FBUF_STOPCURREN
 getbufflencommand = [COMMANDSEND, SERIALNUM, CMD_GETBUFFLEN, 0x01, FBUF_CURRENTFRAME]
 
 def checkreply(r, b):
-	r = map( ord, r )
+	r = map( ord, r ) # ord(elem in r[]) aka converts chars to hex
 	if( r[0] == COMMANDREPLY and r[1] == SERIALNUM and r[2] == b and r[3] == 0x00):
 		return True
 	return False

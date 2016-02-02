@@ -27,6 +27,7 @@
 #define FBUF_CURRENTFRAME  0x00
 #define FBUF_NEXTFRAME  0x01
 #define FBUF_STOPCURRENTFRAME  0x00
+#define SLEEP_TIME 500000
 
 
 typedef struct VC0706 {
@@ -50,7 +51,32 @@ bool init()
 
 bool check_reply(int CMD, int size)
 {
+    int reply[size];
+    int t_count = 0;
+    int length = 0;
+    int avail = 0;
+    int timeout = 0.5;
 
+    while ((timeout != t_count) && (length != CAMERABUFFSIZ) && length < size)
+    {
+        avail = serialDataAvail(cam.fd);
+        if (avail <= 0)
+        {
+            usleep(SLEEP_TIME);
+            t_count++;
+            continue;
+        }
+        t_count = 0;
+        // there's a byte!
+        int newChar = serialGetchar(fd);
+        reply[length++] = (char)newChar;
+    }
+
+    //Check the reply
+    if (reply[0] != 0x76 && reply[1] != 0x00 && reply[2] != cmd)
+        return false;
+    else
+        return true;
 }
 
 bool reset()

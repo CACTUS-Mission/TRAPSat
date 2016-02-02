@@ -80,7 +80,8 @@ using namespace std;
 #define CAMERADELAY 10
 
 #define TO_SCALE 1
-#define TO_U 1000000
+#define TO_U 500000 //test
+//#define TO_U 1000000
 
 
 
