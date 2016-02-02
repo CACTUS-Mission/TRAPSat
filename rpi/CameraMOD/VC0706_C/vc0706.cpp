@@ -80,7 +80,7 @@ using namespace std;
 #define CAMERADELAY 10
 
 #define TO_SCALE 1
-#define TO_U 500000 //test
+#define TO_U 500000
 //#define TO_U 1000000
 
 
@@ -275,7 +275,7 @@ char * Camera::takePicture()
     frameptr = 0;
 
     // Force Stop motion detect
-    setMotionDetect(0);
+    //setMotionDetect(0);
 
     //Clear Buffer
     clearBuffer();
@@ -412,7 +412,7 @@ char * Camera::takePicture()
     clearBuffer();
 
     // Force Stop motion detect
-    setMotionDetect(0);
+    //setMotionDetect(0);
 
     
     return imageName;
