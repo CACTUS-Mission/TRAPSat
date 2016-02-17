@@ -75,7 +75,7 @@ float ads1115_read(int pin) {
 		
   close(I2CFile);
   
-  return (float)val*4.096/32767.0; // return the Voltage read in mV
+  return (float)val*4096/32767.0 ; // return the Voltage read in Volts
 
 }
 
