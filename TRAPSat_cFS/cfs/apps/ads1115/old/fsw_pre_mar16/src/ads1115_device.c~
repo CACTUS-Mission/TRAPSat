@@ -3,9 +3,6 @@
 **
 ** Purpose:
 **   This is a source file for the ADS1115 application
-**   
-**   int ADS1115_ReadADCChannels(void) "ADS1115 REad ADC Channels Loop"
-**     -  
 **
 *******************************************************************************/
 /*
@@ -40,9 +37,6 @@ int ADS1115_ReadADCChannels(void)
     int ads_ch_mask = 0;
     int adc_ch_sel = 0;
 	
-    /*
-    **
-    */
 	if ((i2c_fd = open(dev_i2c_f, O_RDWR)) < 0)
 	{
 	    OS_printf( "Failed opening \'%s\' with return value %d\n", dev_i2c_f, i2c_fd);
@@ -50,7 +44,11 @@ int ADS1115_ReadADCChannels(void)
 	}
 	else
 	{
+    	/*
+    	** Debug
+    	*/
     	OS_printf("Debug: open(%s) = %d\n", dev_i2c_f, i2c_fd);
+    	/*printf("open(%d) = %d\n", bus_id, i2c_fd); */
 	}
 	
 	/*
@@ -64,7 +62,7 @@ int ADS1115_ReadADCChannels(void)
 
     /*
     ** infinite read loop
-    ** w/ 5 second delay 
+    ** w/ 2 second delay 
     */
     for ( ; ; )
     {
@@ -82,22 +80,22 @@ int ADS1115_ReadADCChannels(void)
 	        i2c_data[0] = 0x00;
             i2c_data[1] = 0x00;
             
-            /*
-            ** Set the ADC Channel Selector mask
-            */
-            switch (adc_ch_sel)
-            {
-              case 0 : ads_ch_mask = 0x40; break;
-              case 1 : ads_ch_mask = 0x50; break;
-              case 2 : ads_ch_mask = 0x60; break;
-              case 3 : ads_ch_mask = 0x70; break;
-              default: ads_ch_mask = 0x40; break;
-            }
-            
-            /*
-            ** Adjust Config Flags with channel mask
-            */
-            i2c_cfg_data[1] |= ads_ch_mask; 
+              /*
+              ** Set the ADC Channel Selector mask
+              */
+              switch (adc_ch_sel)
+              {
+                case 0 : ads_ch_mask = 0x40; break;
+                case 1 : ads_ch_mask = 0x50; break;
+                case 2 : ads_ch_mask = 0x60; break;
+                case 3 : ads_ch_mask = 0x70; break;
+                default: ads_ch_mask = 0x40; break;
+              }
+              
+              /*
+              ** Adjust Config Flags with channel mask
+              */
+              i2c_cfg_data[1] |= ads_ch_mask; 
               
 	        /*
 	        ** Configure I2C device
@@ -112,9 +110,7 @@ int ADS1115_ReadADCChannels(void)
 	        }
 
 	        /*
-	        ** Wait for Operational Status flag to be set 
-            ** (bit 15 of config register) 
-            ** (0=Busy/1=Not Busy)
+	        ** Wait for Operational Status flag (bit 15 of config register) to be set - (0=Busy/1=Not Busy)
 	        */
 	        while ( !(i2c_data[0] & 0x80) )
 	        {
@@ -127,7 +123,7 @@ int ADS1115_ReadADCChannels(void)
 	        /*
 	        ** Set Pointer Register to 0 (To read from conversion register)
 	        */
-	        i2c_cfg_data[0] = 0x00;
+	        i2c_cfg_data[0] = 0x00; 
 	        if ((io_res = write(i2c_fd, i2c_cfg_data, 1)) < 0)
 	        {
 	            OS_printf( "I2C Configuration Failure: Returned %d\n", io_res);
@@ -146,29 +142,22 @@ int ADS1115_ReadADCChannels(void)
 	        
 	        OS_printf("Channel %d Voltage: %f V\n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
 
-            /*
-            ** double check sizeof(ADS1115_ChannelData.adc_ch_1)
-            ** OS_printf("sizeof(ADS1115_ChannelData.adc_ch_1) = %d\n", sizeof(ADS1115_ChannelData.adc_ch_1));
-            */
             memcpy((&ADS1115_ChannelData.adc_ch_1 + (sizeof(ADS1115_ChannelData.adc_ch_1)*adc_ch_sel)), 
                     &i2c_data_word, 
                     sizeof(ADS1115_ChannelData.adc_ch_1));
             
-            if(adc_ch_sel >= 3)
+            if(adc_ch_sel > 3)
             {
                 adc_ch_sel = 0;
             }
             
         } /* Channel Select Loop End Here */
 
-	    OS_TaskDelay(5000);
-
-
-
+	    OS_TaskDelay(2000);
 	    
 	} /* Infinite ADC Read Loop End Here */
 
     close(i2c_fd);
 
-    return(0);
+   return (0);
 }

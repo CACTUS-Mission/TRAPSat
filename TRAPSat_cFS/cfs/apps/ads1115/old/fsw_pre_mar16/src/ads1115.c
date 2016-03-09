@@ -176,11 +176,6 @@ void ADS1115_ProcessGroundCommand(void)
             ADS1115_ResetCounters();
             break;
 
-        case ADS1115_SET_DELAY_CC:
-            ADS1115_HkTelemetryPkt.ads1115_command_count++;
-            ADS1115_SetDelay(ADS1115_MsgPtr);
-            break;
-
         /* default case already found during FC vs length test */
         default:
             break;
@@ -275,40 +270,3 @@ boolean ADS1115_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
 
 } /* End of ADS1115_VerifyCmdLength() */
 
-
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
-/*  Name:  ADS1115_SetDelay(void);                                            */
-/*                                                                            */
-/*  Purpose:                                                                  */
-/*         This function is triggered in response to a change loop delay      */
-/*         command.                                                           */  
-/*                                                                            */
-/* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
-void ADS1115_SetDelay(CFE_SB_MsgPtr_t msg)
-{
-    /*
-    ** Copy loop delay
-    */
-    uint8* loop_delay = (uint8*) CFE_SB_GetUserData(msg);
-
-    switch(*loop_delay)
-    {
-        case 0x00:  ADS1115_HkTelemetryPkt.childloop_delay = 0;
-                    break;
-        case 0x01:  ADS1115_HkTelemetryPkt.childloop_delay = 1;
-                    break;
-        case 0x02:  ADS1115_HkTelemetryPkt.childloop_delay = 2;
-                    break;
-        case 0x03:  ADS1115_HkTelemetryPkt.childloop_delay = 3;
-                    break;
-        default:    ADS1115_HkTelemetryPkt.childloop_delay = 1;
-                    CFE_EVS_SendEvent(ADS1115_COMMANDSETDLY_ERR_EID,CFE_EVS_ERROR,
-                        "ADS1115: SET_DELAY err arg [%d] unrecognized.", *loop_delay);
-                    break;
-    }
-
-    CFE_EVS_SendEvent(ADS1115_COMMANDSETDLY_INF_EID,CFE_EVS_INFORMATION,
-            "ADS1115: ADC Loop Delay Set to %d", ADS1115_HkTelemetryPkt.childloop_delay);
-    return;
-} /* End of ADS1115_ReportHousekeeping() */

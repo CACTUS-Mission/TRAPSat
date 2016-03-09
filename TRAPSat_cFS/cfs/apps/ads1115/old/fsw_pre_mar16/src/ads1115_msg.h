@@ -17,7 +17,6 @@
 */
 #define ADS1115_NOOP_CC                 0
 #define ADS1115_RESET_COUNTERS_CC       1
-#define ADS1115_SET_DELAY_CC            2
 
 /*************************************************************************/
 /*
@@ -28,16 +27,6 @@ typedef struct
    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
 
 } ADS1115_NoArgsCmd_t;
-
-
-/*
-** Type definition ("Change Delay" command)
-*/
-typedef struct
-{
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint8    loop_delay;
-} ADS1115_SetDelayCmd_t;
 
 /*************************************************************************/
 /*

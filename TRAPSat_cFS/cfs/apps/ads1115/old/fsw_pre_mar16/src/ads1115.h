@@ -66,7 +66,6 @@ typedef struct
 	uint8_t adc_ch_1[2];
 	uint8_t adc_ch_2[2];
 	uint8_t adc_ch_3[2];
-    uint8_t childloop_delay;
 } ADS1115_Ch_Data_t;
 
 
@@ -83,7 +82,6 @@ void ADS1115_ProcessCommandPacket(void);
 void ADS1115_ProcessGroundCommand(void);
 void ADS1115_ReportHousekeeping(void);
 void ADS1115_ResetCounters(void);
-void ADS1115_SetDelay(void);
 
 boolean ADS1115_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength);
 

@@ -12,9 +12,7 @@
 #ifndef _ads1115_events_h_
 #define _ads1115_events_h_
 
-/*
-** Main Task Event IDs
-*/
+
 #define ADS1115_RESERVED_EID              0
 #define ADS1115_STARTUP_INF_EID           1 
 #define ADS1115_COMMAND_ERR_EID           2
@@ -22,8 +20,6 @@
 #define ADS1115_COMMANDRST_INF_EID        4
 #define ADS1115_INVALID_MSGID_ERR_EID     5 
 #define ADS1115_LEN_ERR_EID               6
-#define ADS1115_COMMANDSETDLY_INF_EID     9
-#define ADS1115_COMMANDSETDLY_ERR_EID    10
 
 /*
 ** Child Task Event IDs
