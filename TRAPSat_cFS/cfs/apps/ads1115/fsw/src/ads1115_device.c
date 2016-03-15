@@ -6,7 +6,7 @@
 **   
 **   int ADS1115_ReadADCChannels(void) "ADS1115 REad ADC Channels Loop"
 **     -  
-**
+** This function should be called from the ADS1115_ADC_ChildTask
 *******************************************************************************/
 /*
 ** ADS1115 Master Header
