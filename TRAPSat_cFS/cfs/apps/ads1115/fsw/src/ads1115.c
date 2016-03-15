@@ -294,21 +294,21 @@ void ADS1115_SetDelay(CFE_SB_MsgPtr_t msg)
 
     switch(*loop_delay)
     {
-        case 0x00:  ADS1115_HkTelemetryPkt.childloop_delay = 0;
+        case 0x00:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                     break;
-        case 0x01:  ADS1115_HkTelemetryPkt.childloop_delay = 1;
+        case 0x01:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 1;
                     break;
-        case 0x02:  ADS1115_HkTelemetryPkt.childloop_delay = 2;
+        case 0x02:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 2;
                     break;
-        case 0x03:  ADS1115_HkTelemetryPkt.childloop_delay = 3;
+        case 0x03:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 3;
                     break;
-        default:    ADS1115_HkTelemetryPkt.childloop_delay = 1;
+        default:    ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                     CFE_EVS_SendEvent(ADS1115_COMMANDSETDLY_ERR_EID,CFE_EVS_ERROR,
                         "ADS1115: SET_DELAY err arg [%d] unrecognized.", *loop_delay);
                     break;
     }
 
     CFE_EVS_SendEvent(ADS1115_COMMANDSETDLY_INF_EID,CFE_EVS_INFORMATION,
-            "ADS1115: ADC Loop Delay Set to %d", ADS1115_HkTelemetryPkt.childloop_delay);
+            "ADS1115: ADC Loop Delay Set to %d", ADS1115_HkTelemetryPkt.ads1115_childloop_delay);
     return;
 } /* End of ADS1115_ReportHousekeeping() */

@@ -32,11 +32,17 @@ typedef struct
 
 /*
 ** Type definition ("Change Delay" command)
+**
+** uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+**  Command Header using CCSDS standard
+**
+** uint8    childloop_state;
+**  
 */
 typedef struct
 {
    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint8    loop_delay;
+   uint8    childloop_state;
 } ADS1115_SetDelayCmd_t;
 
 /*************************************************************************/
@@ -49,7 +55,7 @@ typedef struct
     uint8              ads1115_command_error_count;
     uint8              ads1115_command_count;
     ADS1115_Ch_Data_t  ads1115_ch_data;
-
+    uint8              ads1115_childloop_state;
 }   OS_PACK ads1115_hk_tlm_t  ;
 
 #define ADS1115_HK_TLM_LNGTH   sizeof ( ads1115_hk_tlm_t )

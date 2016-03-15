@@ -92,6 +92,15 @@ void ADS1115_ADC_ChildTask(void);
 void ADS1115_ChildLoop(void);
 
 
+/*
+** int ADS1115_ReadADCChannels(void);
+**
+** Read the four channels of the ADC and update HK.
+** Returns 0 on success.
+*/
+int ADS1115_ReadADCChannels(void);
+
+
 #endif /* _ads1115_child_h_ */
 
 /************************/

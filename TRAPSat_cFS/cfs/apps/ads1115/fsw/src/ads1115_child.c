@@ -9,8 +9,6 @@
 #include "ads1115_version.h"
 #include "ads1115_child.h"
 
-int ADS1115_ReadADCChannels(void);
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
 /* ADS1115 child task -- startup initialization                        */
@@ -61,7 +59,6 @@ void ADS1115_ADC_ChildTask(void)
 {
     char *TaskText = "ADS1115 Child Task";
     int32 Result;
-
     /*
     ** The child task runs until the parent dies (normal end) or
     **  until it encounters a fatal error (semaphore error, etc.)...
@@ -82,7 +79,7 @@ void ADS1115_ADC_ChildTask(void)
         /* 
         ** Child task process loop
         */
-        ADS1115_ReadADCChannels();
+        ADS1115_ReadADCChannelsLoop();
         /*ADS1115_ChildLoop();*/
     }
 
@@ -93,3 +90,52 @@ void ADS1115_ADC_ChildTask(void)
 
 } /* End of ADS1115_ADC_ChildTask() */
 
+
+
+
+/*
+** ADS1115 Child Loop
+** 
+** Determine Delay/Action
+** Read ADC
+** Loop
+*/
+int ADS1115_ChildLoop(void)
+{
+    /*
+    ** infinite read loop
+    ** w/ 5 second delay
+    */
+    for ( ; ; )
+    {
+        /*
+        ** Control Loop Mechanism Here
+        ** based on childloop_state
+        */
+        switch(ADS1115_HkTelemetryPkt.ads1115_childloop_state)
+        {
+            case 0:     /* Infinite Update Loop */
+                        ADS1115_ReadADCChannels();
+                        break;
+            case 1:     /* Read Once */
+                        if(it not set)
+                        {
+                            ADS1115_ReadADCChannels();
+                            set it;
+                        }
+                        break;
+            default:    continue;
+                        break;
+        }
+
+        /*
+        ** End control loop delay mech
+        */
+
+        OS_TaskDelay(5000);
+
+        
+    } /* Infinite ADC Read Loop End Here */
+
+    return(0);
+}
