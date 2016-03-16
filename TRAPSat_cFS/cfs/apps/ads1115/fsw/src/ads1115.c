@@ -25,8 +25,12 @@ CFE_SB_PipeId_t    ADS1115_CommandPipe;
 CFE_SB_MsgPtr_t    ADS1115_MsgPtr;
 
 ADS1115_Ch_Data_t  ADS1115_ChannelData;
-uint32             ADS1115_ADC_ChildTaskID;
 
+/*
+** ADS1115 
+*/
+uint32             ADS1115_ADC_ChildTaskID;
+uint8       ads1115_childtask_read_once = 0;
 
 static CFE_EVS_BinFilter_t  ADS1115_EventFilters[] =
        {  /* Event ID    mask */
@@ -291,6 +295,11 @@ void ADS1115_SetDelay(CFE_SB_MsgPtr_t msg)
     ** Copy loop delay
     */
     uint8* loop_delay = (uint8*) CFE_SB_GetUserData(msg);
+
+    /*
+    ** Clear Read Once Flag (for childtask)
+    */
+    ads1115_childtask_read_once = 0;
 
     switch(*loop_delay)
     {

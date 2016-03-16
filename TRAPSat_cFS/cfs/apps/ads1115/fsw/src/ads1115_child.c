@@ -9,6 +9,9 @@
 #include "ads1115_version.h"
 #include "ads1115_child.h"
 
+uint8 ads1115_childtask_loop_state = 0;
+extern uint8 ads1115_childtask_read_once = 0;
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
 /* ADS1115 child task -- startup initialization                        */
@@ -85,13 +88,10 @@ void ADS1115_ADC_ChildTask(void)
 
     /* This call allows cFE to clean-up system resources */
     CFE_ES_ExitChildTask();
-
-    return;
+ 
+   return;
 
 } /* End of ADS1115_ADC_ChildTask() */
-
-
-
 
 /*
 ** ADS1115 Child Loop
@@ -117,14 +117,16 @@ int ADS1115_ChildLoop(void)
             case 0:     /* Infinite Update Loop */
                         ADS1115_ReadADCChannels();
                         break;
-            case 1:     /* Read Once */
-                        if(it not set)
+            case 1:     /* Read Once, Set Flag */
+                        if(ads1115_childtask_read_once == 0)
                         {
                             ADS1115_ReadADCChannels();
-                            set it;
+                            ads1115_childtask_read_once = 1;
                         }
                         break;
-            default:    continue;
+            default:    ads1115_childtask_loop_set = 0;
+                        ads1115_childloop_state = 0;
+                        /* EVS Msg Here */
                         break;
         }
 
