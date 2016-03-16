@@ -43,7 +43,7 @@ typedef struct
 {
    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
    uint8    childloop_state;
-} ADS1115_SetDelayCmd_t;
+} ADS1115_SetChildLoopStateCmd_t;
 
 /*************************************************************************/
 /*

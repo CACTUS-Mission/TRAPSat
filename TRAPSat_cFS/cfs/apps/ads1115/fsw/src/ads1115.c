@@ -22,11 +22,8 @@
 */
 CFE_SB_PipeId_t    ADS1115_CommandPipe;
 CFE_SB_MsgPtr_t    ADS1115_MsgPtr;
-
 ads1115_hk_tlm_t   ADS1115_HkTelemetryPkt;
 ADS1115_Ch_Data_t  ADS1115_ChannelData;
-
-
 uint32             ADS1115_ADC_ChildTaskID;
 uint8              ads1115_childtask_read_once;
 
@@ -289,10 +286,12 @@ boolean ADS1115_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 void ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg)
 {
+    ADS1115_SetChildLoopStateCmd_t* new_cmd = (ADS1115_SetChildLoopStateCmd_t *) &msg;
+
     /*
     ** Copy loop delay
     */
-    uint8* loop_state = (uint8*) CFE_SB_GetUserData(msg);
+    uint8 loop_state = new_cmd->childloop_state;
 
     /*
     ** Clear Read Once Flag (for childtask)
@@ -303,7 +302,7 @@ void ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg)
     */
     ads1115_childtask_read_once = 0;
 
-    switch(*loop_state)
+    switch(loop_state)
     {
         case 0x00:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                     break;
@@ -315,7 +314,7 @@ void ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg)
                     break;
         default:    ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                     CFE_EVS_SendEvent(ADS1115_CMD_SET_CH_ST_ERR_EID,CFE_EVS_ERROR,
-                        "ADS1115: CMD Set Child Loop State Argument [%d] unrecognized.", *loop_state);
+                        "ADS1115: CMD Set Child Loop State Argument [%d] unrecognized.", loop_state);
                     break;
     }
 
