@@ -180,9 +180,9 @@ void ADS1115_ProcessGroundCommand(void)
             ADS1115_ResetCounters();
             break;
 
-        case ADS1115_SET_DELAY_CC:
+        case ADS1115_SET_CHILD_LP_ST_CC:
             ADS1115_HkTelemetryPkt.ads1115_command_count++;
-            ADS1115_SetDelay(ADS1115_MsgPtr);
+            ADS1115_SetChildLoopState(ADS1115_MsgPtr);
             break;
 
         /* default case already found during FC vs length test */
@@ -282,26 +282,30 @@ boolean ADS1115_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
-/*  Name:  ADS1115_SetDelay(void);                                            */
+/*  Name:  ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg);                                            */
 /*                                                                            */
 /*  Purpose:                                                                  */
 /*         This function is triggered in response to a change loop delay      */
 /*         command.                                                           */  
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
-void ADS1115_SetDelay(CFE_SB_MsgPtr_t msg)
+void ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg)
 {
     /*
     ** Copy loop delay
     */
-    uint8* loop_delay = (uint8*) CFE_SB_GetUserData(msg);
+    uint8* loop_state = (uint8*) CFE_SB_GetUserData(msg);
 
     /*
     ** Clear Read Once Flag (for childtask)
+    ** - ads1115_childtask_read_once set in ADS1115_ChildLoop()
+    **
+    ** clearing the flag makes sure that if we get multiple "read once" commands
+    ** we will be sure to read from the adc each time.
     */
     ads1115_childtask_read_once = 0;
 
-    switch(*loop_delay)
+    switch(*loop_state)
     {
         case 0x00:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                     break;
@@ -312,12 +316,13 @@ void ADS1115_SetDelay(CFE_SB_MsgPtr_t msg)
         case 0x03:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 3;
                     break;
         default:    ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
-                    CFE_EVS_SendEvent(ADS1115_COMMANDSETDLY_ERR_EID,CFE_EVS_ERROR,
-                        "ADS1115: SET_DELAY err arg [%d] unrecognized.", *loop_delay);
+                    CFE_EVS_SendEvent(ADS1115_CMD_SET_CH_ST_ERR_EID,CFE_EVS_ERROR,
+                        "ADS1115: CMD Set Child Loop State Argument [%d] unrecognized.", *loop_delay);
                     break;
     }
 
-    CFE_EVS_SendEvent(ADS1115_COMMANDSETDLY_INF_EID,CFE_EVS_INFORMATION,
-            "ADS1115: ADC Loop Delay Set to %d", ADS1115_HkTelemetryPkt.ads1115_childloop_delay);
+    CFE_EVS_SendEvent(ADS1115_CMD_SET_CH_ST_INF_EID,CFE_EVS_INFORMATION,
+            "ADS1115: ADC Loop state set to %d", ADS1115_HkTelemetryPkt.ads1115_childloop_state);
+    
     return;
 } /* End of ADS1115_ReportHousekeeping() */

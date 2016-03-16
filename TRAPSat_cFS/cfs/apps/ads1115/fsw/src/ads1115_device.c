@@ -31,6 +31,10 @@ extern ADS1115_Ch_Data_t ADS1115_ChannelData;
 ** Read from all four channels of the ADS1115
 ** (Analog to Digital Converter (16-bit buffer per channel))
 ** Assumed to be mounted at /dev/i2c-1
+**
+** Returns:
+**    zero on success
+**    negative value on error
 */
 int ADS1115_ReadADCChannels(void)
 {
@@ -72,11 +76,15 @@ int ADS1115_ReadADCChannels(void)
     for( adc_ch_sel = 0; adc_ch_sel < 4; adc_ch_sel++)
     {
         /*
-        ** Reset data/config registers
+        ** Reset ADC data/config registers
         */
-        i2c_cfg_data[0] = 0x01;
-        i2c_cfg_data[1] = 0xC3;
-        i2c_cfg_data[2] = 0x03;
+        i2c_cfg_data[0] = 0x01; /* Address config reg */
+        i2c_cfg_data[1] = 0xC3; /* MSB of config reg */
+        i2c_cfg_data[2] = 0x03; /* LSB of config reg */
+
+        /*
+        ** Clear Data Buffer of all previous data
+        */
         i2c_data[0] = 0x00;
         i2c_data[1] = 0x00;
         
@@ -103,10 +111,12 @@ int ADS1115_ReadADCChannels(void)
          if ((io_res = write(i2c_fd, i2c_cfg_data, 3)) < 0)
         {
             OS_printf( "I2C Configuration Failure: Returned %d\n", io_res);
+            //return -1;
         }
         else if (io_res != 3)
         {
             OS_printf( "I2C Configuration Error: expected to write 3 bytes, %d bytes written\n", io_res);
+            //return -1;
         }
 
         /*
@@ -119,7 +129,7 @@ int ADS1115_ReadADCChannels(void)
             if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
             {
                 OS_printf( "I2C Read Failure: Returned %d\n", io_res);
-                return(-1);
+                //return(-1);
             }
         }
         

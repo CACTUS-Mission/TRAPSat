@@ -17,7 +17,7 @@
 */
 #define ADS1115_NOOP_CC                 0
 #define ADS1115_RESET_COUNTERS_CC       1
-#define ADS1115_SET_DELAY_CC            2
+#define ADS1115_SET_CHILD_LP_ST_CC      2
 
 /*************************************************************************/
 /*

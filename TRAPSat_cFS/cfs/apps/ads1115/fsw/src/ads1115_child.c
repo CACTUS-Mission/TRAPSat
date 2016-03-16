@@ -9,7 +9,7 @@
 #include "ads1115_version.h"
 #include "ads1115_child.h"
 
-uint8 ads1115_childtask_loop_state = 0;
+extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
 extern uint8 ads1115_childtask_read_once = 0;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -82,8 +82,8 @@ void ADS1115_ADC_ChildTask(void)
         /* 
         ** Child task process loop
         */
-        ADS1115_ReadADCChannelsLoop();
-        /*ADS1115_ChildLoop();*/
+        /*ADS1115_ReadADCChannelsLoop(); */
+        ADS1115_ChildLoop();
     }
 
     /* This call allows cFE to clean-up system resources */
@@ -94,50 +94,69 @@ void ADS1115_ADC_ChildTask(void)
 } /* End of ADS1115_ADC_ChildTask() */
 
 /*
-** ADS1115 Child Loop
+** ADS1115 Infinite Child Loop
 ** 
-** Determine Delay/Action
-** Read ADC
+** Check State
+**  - Read ADC or not
 ** Loop
 */
-int ADS1115_ChildLoop(void)
+void ADS1115_ChildLoop(void)
 {
+    int adc_ret_val = 0; /* Buffer for ADC Read return value */
+    
     /*
-    ** infinite read loop
-    ** w/ 5 second delay
+    ** infinite read loop w/ 5 second delay
+    ** Should never return from this loop during runtime
     */
     for ( ; ; )
     {
+        /* 
+        ** Clear ret before every ADC Read call 
+        */
+        adc_ret_val = 0;
+
         /*
-        ** Control Loop Mechanism Here
-        ** based on childloop_state
+        ** Determine ADC Read Action based on childloop_state
         */
         switch(ADS1115_HkTelemetryPkt.ads1115_childloop_state)
         {
-            case 0:     /* Infinite Update Loop */
-                        ADS1115_ReadADCChannels();
+            case 0:     /* Infinite Read Loop */
+                        if ((adc_ret_val = ADS1115_ReadADCChannels()) < 0)
+                        {
+                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
+                                "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", adc_ret_val);
+                        }
                         break;
-            case 1:     /* Read Once, Set Flag */
+
+            case 1:     /* Read Once, Set Flag to not read again */
                         if(ads1115_childtask_read_once == 0)
                         {
-                            ADS1115_ReadADCChannels();
+                            if ((adc_ret_val = ADS1115_ReadADCChannels()) < 0)
+                            {
+                                CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
+                                    "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", adc_ret_val);
+                            }
                             ads1115_childtask_read_once = 1;
                         }
                         break;
-            default:    ads1115_childtask_loop_set = 0;
-                        ads1115_childloop_state = 0;
-                        /* EVS Msg Here */
+
+            default:    /* Unknown State: Log it, Reset Flags, Continue */
+                        CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
+                                    "ADS1115: ADC Child Loop State Argument [%d] unrecognized.", 
+                                    ADS1115_HkTelemetryPkt.ads1115_childloop_state);
+                        CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
+                                    "ADS1115: Resetting \'Child Loop State\' and \'Read Once Flag\'.");
+                        ads1115_childtask_read_once = 0;
+                        ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                         break;
         }
 
         /*
-        ** End control loop delay mech
+        ** Delay 5 Seconds (5000 milliseconds)
         */
-
         OS_TaskDelay(5000);
-
         
     } /* Infinite ADC Read Loop End Here */
 
-    return(0);
-}
+    return;
+} /* End of: int ADS1115_ChildLoop(void) */
