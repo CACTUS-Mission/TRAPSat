@@ -154,6 +154,7 @@ void ADS1115_ChildLoop(void)
         /*
         ** Delay 5 Seconds (5000 milliseconds)
         */
+        OS_printf("ADS1115: ADC Loop current state [%d]. Delay 5s.\n", ADS1115_HkTelemetryPkt.ads1115_childloop_state);
         OS_TaskDelay(5000);
         
     } /* Infinite ADC Read Loop End Here */
