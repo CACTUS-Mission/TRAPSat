@@ -82,7 +82,8 @@ void ADS1115_ProcessCommandPacket(void);
 void ADS1115_ProcessGroundCommand(void);
 void ADS1115_ReportHousekeeping(void);
 void ADS1115_ResetCounters(void);
-void ADS1115_SetChildLoopDelay(void);
+
+void ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg)
 
 boolean ADS1115_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength);
 

@@ -18,19 +18,17 @@
 #include "ads1115_child.h"
 
 /*
-** global data structures
+** ADS1115 global data structures
 */
-ads1115_hk_tlm_t   ADS1115_HkTelemetryPkt;
 CFE_SB_PipeId_t    ADS1115_CommandPipe;
 CFE_SB_MsgPtr_t    ADS1115_MsgPtr;
 
+ads1115_hk_tlm_t   ADS1115_HkTelemetryPkt;
 ADS1115_Ch_Data_t  ADS1115_ChannelData;
 
-/*
-** ADS1115 
-*/
+
 uint32             ADS1115_ADC_ChildTaskID;
-uint8       ads1115_childtask_read_once = 0;
+uint8              ads1115_childtask_read_once;
 
 static CFE_EVS_BinFilter_t  ADS1115_EventFilters[] =
        {  /* Event ID    mask */

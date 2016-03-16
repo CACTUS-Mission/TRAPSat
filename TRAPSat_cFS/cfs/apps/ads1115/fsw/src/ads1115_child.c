@@ -10,7 +10,7 @@
 #include "ads1115_child.h"
 
 extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
-extern uint8 ads1115_childtask_read_once = 0;
+extern uint8 ads1115_childtask_read_once;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
