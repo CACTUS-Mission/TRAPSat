@@ -177,7 +177,7 @@ void ADS1115_ProcessGroundCommand(void)
 
         case ADS1115_SET_CHILD_LP_ST_CC:
             ADS1115_HkTelemetryPkt.ads1115_command_count++;
-            ADS1115_SetChildLoopState(ADS1115_MsgPtr);
+            ADS1115_SetChildLoopState();
             break;
 
         /* default case already found during FC vs length test */
@@ -277,21 +277,22 @@ boolean ADS1115_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
-/*  Name:  ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg);                                            */
+/*  Name:  ADS1115_SetChildLoopState(void);                                            */
 /*                                                                            */
 /*  Purpose:                                                                  */
 /*         This function is triggered in response to a change loop delay      */
 /*         command.                                                           */  
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
-void ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg)
+void ADS1115_SetChildLoopState(void)
 {
-    ADS1115_SetChildLoopStateCmd_t* new_cmd = (ADS1115_SetChildLoopStateCmd_t *) &msg;
+    ADS1115_SetChildLoopStateCmd_t *new_cmd_ptr;
+    new_cmd_ptr = (ADS1115_SetChildLoopStateCmd_t*) ADS1115_MsgPtr;
 
     /*
     ** Copy loop delay
     */
-    uint8 loop_state = new_cmd->childloop_state;
+    uint8 loop_state = new_cmd_ptr->childloop_state;
 
     /*
     ** Clear Read Once Flag (for childtask)
