@@ -317,12 +317,12 @@ void ADS1115_SetChildLoopState(CFE_SB_MsgPtr_t msg)
                     break;
         default:    ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                     CFE_EVS_SendEvent(ADS1115_CMD_SET_CH_ST_ERR_EID,CFE_EVS_ERROR,
-                        "ADS1115: CMD Set Child Loop State Argument [%d] unrecognized.", *loop_delay);
+                        "ADS1115: CMD Set Child Loop State Argument [%d] unrecognized.", *loop_state);
                     break;
     }
 
     CFE_EVS_SendEvent(ADS1115_CMD_SET_CH_ST_INF_EID,CFE_EVS_INFORMATION,
             "ADS1115: ADC Loop state set to %d", ADS1115_HkTelemetryPkt.ads1115_childloop_state);
-    
+
     return;
 } /* End of ADS1115_ReportHousekeeping() */
