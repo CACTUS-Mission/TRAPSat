@@ -163,10 +163,13 @@ int ADS1115_ReadADCChannels(void)
                 &i2c_data_word, 
                 sizeof(ADS1115_ChannelData.adc_ch_1));
         
+        /*
+        Inf loop? lol
         if(adc_ch_sel >= 3)
         {
             adc_ch_sel = 0;
         }
+        */
         
     } /* Channel Select Loop End Here */
 
