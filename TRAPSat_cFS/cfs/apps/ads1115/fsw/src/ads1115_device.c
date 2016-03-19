@@ -278,16 +278,44 @@ int ADS1115_StoreADCChannels(void)
     }
     */
 
+
     /*
     ** Write adc channel data to data file
     ** from start of channel data (&ADS1115_ChannelData.adc_ch_1)
     ** continuing 8 bytes (2 bytes per channel, 4 channels)
     */
+    /* OLD, but worked
     if ( (os_ret_val = OS_write(os_fd, (void *) &ADS1115_ChannelData.adc_ch_1, 8)) < 0 )
     {
         OS_printf("ADS1115: OS_TranslatePath Status: %d \n", os_ret_val);
         OS_close(os_fd);
         return -1;
+    }
+    */
+
+
+    /*
+    ** Write adc channel data to data file
+    ** from start of channel data (&ADS1115_ChannelData.adc_ch_1)
+    ** continuing 8 bytes (2 bytes per channel, 4 channels)
+    */
+    int adc_ch_sel = 0;
+    const char csv = {", "};
+
+    for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
+    {
+        if ( (os_ret_val = OS_write(os_fd, (void *) (&ADS1115_ChannelData.adc_ch_1 + adc_ch_sel), 2)) < 0 )
+        {
+            OS_printf("ADS1115: ADC Data OS_Write Failed, Retuned [%d] \n", os_ret_val);
+            OS_close(os_fd);
+            return -1;
+        }
+        if ((adc_ch_sel != 3) && ((os_ret_val = OS_write(os_fd, (void *) &csv, 2)) < 0))
+        {
+            OS_printf("ADS1115: ADC Data OS_Write csv Failed, Retuned [%d] \n", os_ret_val);
+            OS_close(os_fd);
+            return -1;
+        }
     }
 
 
