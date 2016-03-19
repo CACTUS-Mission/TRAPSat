@@ -82,14 +82,20 @@ void ADS1115_ADC_ChildTask(void)
         CFE_EVS_SendEvent(ADS1115_CHILD_INIT_EID, CFE_EVS_INFORMATION,
            "%s initialization complete", TaskText);
 
-        /* 
-        ** Child task process loop
+        /*
+        ** instatiate global ADC Read Samples Counter 
         */
-        /*ADS1115_ReadADCChannelsLoop(); */
+        ads1115_adc_read_count = 0; 
+
+        /* 
+        ** Child task process loop 
+        */
         ADS1115_ChildLoop();
     }
 
-    /* This call allows cFE to clean-up system resources */
+    /* 
+    ** This call allows cFE to clean-up system resources 
+    */
     CFE_ES_ExitChildTask();
  
    return;
@@ -105,8 +111,10 @@ void ADS1115_ADC_ChildTask(void)
 */
 void ADS1115_ChildLoop(void)
 {
-    int ret_val = 0; /* Buffer for ADC/OS call return values */
-    ads1115_adc_read_count = 0; /* ADC Read Samples Counter */
+    /* 
+    ** Buffer for ADC/OS call return values 
+    */
+    int ret_val = 0; 
 
     /*
     ** infinite read loop w/ 5 second delay
@@ -124,7 +132,7 @@ void ADS1115_ChildLoop(void)
         */
         switch(ADS1115_HkTelemetryPkt.ads1115_childloop_state)
         {
-            case 0:     /* Infinite Read Loop */
+            case 0:     /* Infinite Read && Store Loop */
                         if ((ret_val = ADS1115_ReadADCChannels()) < 0)
                         {
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
@@ -141,7 +149,7 @@ void ADS1115_ChildLoop(void)
                         }
                         break;
 
-            case 1:     /* Read Once, Set Flag to not read again */
+            case 1:     /* Read Once && Set Flag to not read again && store to file */
                         if(ads1115_childtask_read_once == 0)
                         {
                             if ((ret_val = ADS1115_ReadADCChannels()) < 0)

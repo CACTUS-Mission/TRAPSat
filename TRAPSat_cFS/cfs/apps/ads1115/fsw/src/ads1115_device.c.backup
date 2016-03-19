@@ -22,7 +22,7 @@
 /*
 ** Global Variables
 */
-uint16 ads1115_adc_read_count;
+uint8 ads1115_adc_read_count;
 
 /*
 ** External References
@@ -133,7 +133,7 @@ int ADS1115_ReadADCChannels(void)
         {
             if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
             {
-                OS_printf( "ADS1115: I2C Read Failure: Returned [%d]\n", io_res);
+                OS_printf( "ADS1115: I2C Read Failure: Returned %d\n", io_res);
                 //return(-1);
             }
         }
@@ -204,44 +204,67 @@ int ADS1115_StoreADCChannels(void)
     ** exe/ram/temps/ must be created before running
     */
     char virtual_path[OS_MAX_PATH_LEN];
-    if((os_ret_val = sprintf(virtual_path, "%s", "/ram/tempsets/") < 0)
-    {
-        OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
-        OS_printf("ADS1115: target virtual_path: \'%s\'\n", virtual_path);
-    }
+    strcpy(virtual_path, "/ram/temps/");
 
     /*
-    ** Longest filename: 000_tempset_00000.csv (21 chars)
-    **  - data_filename[0:2] == num of resets
-    **  - data_filename[12:16] == adc read count
+    ** local_path[] will hold the platform-absolute location
+    */
+    //char local_path[ OS_MAX_PATH_LEN ];
+
+    /*
+    ** buffer for the filename. This will need to be filled
+    ** with num-restarts_time.csv
+    ** double check how small we can make this buffer
     */
     char data_filename[32];
-    memset(data_filename, '\0', sizeof(data_filename));
+
+    /*
+    ** file mode flags
+    */
+    /*
+    mode_t file_mode = ((S_IRUSR | S_IWUSR) |
+                        (S_IRGRP | S_IWGRP) |
+                        (S_IROTH | S_IWOTH));
+    */
 
     /*
     ** full_path[] will hold the path and filename together
     */
     char full_path[ OS_MAX_LOCAL_PATH_LEN ];
-    memset(full_path, '\0', sizeof(full_path));
 
     /*
-    ** Concatonate filename with ADC read count
-    ** This will be where number of resets may be added to the front of the file name. 
+    ** Concatonate filename
     */
-    if((os_ret_val = sprintf(data_filename, "%3u%s%5u%s", "_tempset_", ads1115_adc_read_count, ".csv")) < 0)
+    //sprintf(data_filename, "%s.csv", "temps");
+    sprintf(data_filename, "%s%u%s", "temps", ads1115_adc_read_count, ".txt");
+
+    /*
+    ** Pre Translate Debug
+    */
+    OS_printf("ADS1115: ADC Data File Virtual Path: %s\n", virtual_path);
+    OS_printf("ADS1115: ADC Data File Name: %s\n", data_filename);
+
+    /*
+    ** Translate the relative path to an absoulte path
+    */
+    /*
+    if ( (os_ret_val = OS_TranslatePath((const char *) virtual_path, (char *)local_path)) != OS_FS_SUCCESS )
     {
-        OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
-        OS_printf("ADS1115: target data_filename: \'%s\'\n", data_filename);
+        OS_printf("ADS1115: OS_TranslatePath Status: %d \n", os_ret_val);
+        return -1;
     }
+    */
 
     /*
     ** concatonate path and filename
     */
-    if((os_ret_val = sprintf(full_path, "%s%s", virtual_path, data_filename)) < 0)
-    {
-        OS_printf("ADS1115: sprintf returned [%d] (expected non-negative)\n", os_ret_val);
-        OS_printf("ADS1115: target full_path: \'%s\'\n", full_path);
-    }
+    sprintf(full_path, "%s%s", virtual_path, data_filename);
+
+    /*
+    ** Post Translate Debug
+    */
+    //OS_printf("ADS1115: ADC Data File Local Path: %s\n", local_path);    
+    OS_printf("ADS1115: ADC Data File Full Path: %s\n", full_path);
 
     /*
     ** Create Data File
@@ -254,15 +277,32 @@ int ADS1115_StoreADCChannels(void)
         return -1;
     }
 
-    /*
-    ** 
+    /* 
+    ** Open Data File
     */
-    char csv[3];
-    if((os_ret_val = sprintf(csv, "%s", ", ") < 0)
+    /*
+    if ((os_fd = OS_open(full_path, OS_READ_WRITE, file_mode)) < OS_FS_SUCCESS)
     {
-        OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
-        OS_printf("ADS1115: target csv[%d]: \'%s\'\n", sizeof(csv), csv);
+        OS_printf("ADC file could not be opened.");
+        return -1;
     }
+    */
+
+
+    /*
+    ** Write adc channel data to data file
+    ** from start of channel data (&ADS1115_ChannelData.adc_ch_1)
+    ** continuing 8 bytes (2 bytes per channel, 4 channels)
+    */
+    /* OLD, but worked
+    if ( (os_ret_val = OS_write(os_fd, (void *) &ADS1115_ChannelData.adc_ch_1, 8)) < 0 )
+    {
+        OS_printf("ADS1115: OS_TranslatePath Status: %d \n", os_ret_val);
+        OS_close(os_fd);
+        return -1;
+    }
+    */
+
 
     /*
     ** Write adc channel data to data file
@@ -270,25 +310,17 @@ int ADS1115_StoreADCChannels(void)
     ** continuing 8 bytes (2 bytes per channel, 4 channels)
     */
     int adc_ch_sel = 0;
+    char csv[3];
+    strcpy(csv, ", ");
+
     for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
     {
-        /*
-        ** Write voltage data from ADC to file
-        */
         if ( (os_ret_val = OS_write(os_fd, (void *) (&ADS1115_ChannelData.adc_ch_1 + adc_ch_sel), 2)) < 0 )
         {
             OS_printf("ADS1115: ADC Data OS_Write Failed, Retuned [%d] \n", os_ret_val);
             OS_close(os_fd);
             return -1;
         }
-        else
-        {
-            OS_printf("ADS1115: data written to file [%#2x]\n", (uint16 *) (&ADS1115_ChannelData.adc_ch_1 + adc_ch_sel));
-        }
-
-        /*
-        ** Write ', ' ([comma] and [space]) to format for CSV file
-        */
         if ((adc_ch_sel != 3) && ((os_ret_val = OS_write(os_fd, (void *) &csv, 2)) < 0))
         {
             OS_printf("ADS1115: ADC Data OS_Write csv Failed, Retuned [%d] \n", os_ret_val);
@@ -296,6 +328,7 @@ int ADS1115_StoreADCChannels(void)
             return -1;
         }
     }
+
 
     OS_close(os_fd);
 
