@@ -193,7 +193,8 @@ int ADS1115_StoreADCChannels(void)
     ** virtual_path[] holds the cFS-relative location
     ** exe/ram/temps/ must be created before running
     */
-    char virtual_path[] = {"/ram/temps/"};
+    char virtual_path[OS_MAX_PATH_LEN];
+    strcpy(virtual_path, "/ram/temps/");
 
     /*
     ** local_path[] will hold the platform-absolute location
@@ -225,9 +226,15 @@ int ADS1115_StoreADCChannels(void)
     sprintf(data_filename, "%s.csv", "temps");
 
     /*
+    ** Pre Translate Debug
+    */
+    OS_printf("Virtual Path: %s\n", virtual_path);
+    OS_printf("File Name: %s\n", virtual_path);
+
+    /*
     ** Translate the relative path to an absoulte path
     */
-    if ( (os_ret_val = OS_TranslatePath(virtual_path, (char *)local_path)) != OS_FS_SUCCESS )
+    if ( (os_ret_val = OS_TranslatePath((const char *) virtual_path, (char *)local_path)) != OS_FS_SUCCESS )
     {
         OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
         return -1;
@@ -238,18 +245,34 @@ int ADS1115_StoreADCChannels(void)
     */
     sprintf(full_path, "%s%s", local_path, data_filename);
 
-    OS_printf("Local Path: %s\n", virtual_path);
+    /*
+    ** Post Translate Debug
+    */
     OS_printf("Local Path: %s\n", local_path);    
     OS_printf("Full Path: %s\n", full_path);
+
+    /*
+    ** Create Data File
+    ** returns file descriptor on success,
+    ** exit on failure
+    */
+    if ((os_fd = OS_creat(full_path, OS_READ_WRITE) < OS_FS_SUCCESS)
+    {
+        OS_printf("ADC data file could not be opened.");
+        OS_close(os_fd);
+        return -1;
+    }
 
     /* 
     ** Open Data File
     */
-    if ((os_fd = OS_open(full_path, OS_READ_WRITE, file_mode)) < 0)
+    /*
+    if ((os_fd = OS_open(full_path, OS_READ_WRITE, file_mode)) < OS_FS_SUCCESS)
     {
         OS_printf("ADC file could not be opened.");
         return -1;
     }
+    */
 
     /*
     ** Write adc channel data to data file
@@ -259,11 +282,12 @@ int ADS1115_StoreADCChannels(void)
     if ( (os_ret_val = OS_write(os_fd, &ADS1115_ChannelData.adc_ch_1, 8)) < 0 )
     {
         OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
+        OS_close(os_fd);
         return -1;
     }
 
 
     OS_close(os_fd);
 
-    return(0);
+    return 0;
 }
