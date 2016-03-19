@@ -166,8 +166,8 @@ int ADS1115_ReadADCChannels(void)
         */
 
         
-        *(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)) = i2c_data[0];
-        *(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel) + 1) = i2c_data[1];
+        (uint8 *)(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)) = i2c_data[0];
+        (uint8 *)(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel) + 1) = i2c_data[1];
         
         
         /*
