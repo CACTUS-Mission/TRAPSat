@@ -162,15 +162,29 @@ int ADS1115_ReadADCChannels(void)
 
         /*
         ** double check ADS1115_ADC_CH_BUF_SIZE
-        */
         OS_printf("sizeof(ADS1115_ChannelData.adc_ch_1) = %d\n", sizeof(ADS1115_ChannelData.adc_ch_1));
+        */
+
+        /*
+        *(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)) = i2c_data[0];
+        *(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel) + 1) = i2c_data[1];
+        */
         
+        memcpy((&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
+                &i2c_data, 
+                ADS1115_ADC_CH_BUF_SIZE);
+        
+        /*
         memcpy((&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
                 &i2c_data_word, 
                 ADS1115_ADC_CH_BUF_SIZE);
+        */
 
-        OS_printf("ADS1115: Struct Data => Channel %d Voltage: %f V\n", adc_ch_sel, 
-            (float) ((uint16*)(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel))*4.096/32767.0));       
+        float voltage = (uint16 *)(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel));
+        voltage *= (4.096/32767.0);
+
+        OS_printf("ADS1115: Struct Data => Channel %d Voltage: %f V\n", adc_ch_sel, voltage); 
+
     } /* Channel Select Loop End Here */
 
     /*
