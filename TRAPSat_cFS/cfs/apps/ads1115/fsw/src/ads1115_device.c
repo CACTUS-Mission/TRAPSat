@@ -182,7 +182,7 @@ int ADS1115_ReadADCChannels(void)
                 ADS1115_ADC_CH_BUF_SIZE);
         */
 
-        float voltage = (float)(uint16)(uint16 *)(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel));
+        float voltage = (float)(uint16)(uint16 *)(ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel));
         voltage *= (4.096/32767.0);
 
         OS_printf("ADS1115: Struct Data => Channel %d Voltage: %f V\n", adc_ch_sel, voltage); 
