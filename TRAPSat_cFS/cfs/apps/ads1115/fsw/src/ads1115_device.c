@@ -204,7 +204,7 @@ int ADS1115_StoreADCChannels(void)
     ** exe/ram/temps/ must be created before running
     */
     char virtual_path[OS_MAX_PATH_LEN];
-    if((os_ret_val = sprintf(virtual_path, "%s", "/ram/tempsets/") < 0))
+    if((os_ret_val = sprintf(virtual_path, "%s", "/ram/temps/") < 0))
     {
         OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target virtual_path: \'%s\'\n", virtual_path);
@@ -228,7 +228,7 @@ int ADS1115_StoreADCChannels(void)
     ** Concatonate filename with ADC read count
     ** This will be where number of resets may be added to the front of the file name. 
     */
-    if((os_ret_val = sprintf(data_filename, "%3u%s%5u%s", 0, "_tempset_", ads1115_adc_read_count, ".csv")) < 0)
+    if((os_ret_val = sprintf(data_filename, "%3u%s%5u%s", 0, "_t_", ads1115_adc_read_count, ".csv")) < 0)
     {
         OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target data_filename: \'%s\'\n", data_filename);
@@ -243,6 +243,8 @@ int ADS1115_StoreADCChannels(void)
         OS_printf("ADS1115: target full_path: \'%s\'\n", full_path);
     }
 
+    OS_printf("ADS1115: Data File full_path[%d]: \'%s\'\n", sizeof(full_path), full_path);
+
     /*
     ** Create Data File
     ** returns file descriptor on success,
@@ -251,6 +253,7 @@ int ADS1115_StoreADCChannels(void)
     if ((os_fd = OS_creat((const char * ) full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
         OS_printf("ADS1115: ADC File Create Returned [%d] (expected non-negative value).\n", os_fd);
+        OS_printf("ADS1115: ADC File Create Returned [%s]\n", errname);
         return(-1);
     }
 
