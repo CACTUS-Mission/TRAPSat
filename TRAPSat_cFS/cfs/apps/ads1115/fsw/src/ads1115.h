@@ -38,7 +38,7 @@
 /***********************************************************************/
 
 #define ADS1115_PIPE_DEPTH                     32
-
+#define ADS1115_ADC_CH_BUF_SIZE                 2   /* in bytes */
 
 /*
 ** ADS1115 Child Task Definitions
@@ -47,7 +47,6 @@
 #define ADS1115_ADC_CHILD_TASK_STACK_SIZE  8192               
 #define ADS1115_ADC_CHILD_TASK_PRIORITY    200
 #define ADS1115_ADDR                       0b01001001
-
 
 /************************************************************************
 ** Type Definitions
@@ -67,6 +66,7 @@ typedef struct
 	uint8 adc_ch_2[2];
 	uint8 adc_ch_3[2];
 } ADS1115_Ch_Data_t;
+
 
 
 /****************************************************************************/
