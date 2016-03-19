@@ -280,7 +280,7 @@ int ADS1115_StoreADCChannels(void)
         /*
         ** point buffer to channel data with index*2 offset
         */
-        adc_ch_buf = (&ADS1115_ChannelData.adc_ch_1 + (adc_ch_sel*sizeof(ADS1115_ChannelData.adc_ch_1)));
+        adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_1 + (adc_ch_sel*sizeof(ADS1115_ChannelData.adc_ch_1)));
 
         /*
         ** Write voltage data from ADC to file
