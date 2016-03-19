@@ -124,7 +124,7 @@ void ADS1115_ChildLoop(void)
                         if ((ret_val = ADS1115_ReadADCChannels()) < 0)
                         {
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", ret_val);
+                                "ADC Read Ret Val=[%d]. Expected non-negative val.", ret_val);
                         }
                         else
                         {
@@ -132,7 +132,7 @@ void ADS1115_ChildLoop(void)
                             if( (ret_val = ADS1115_StoreADCChannels()) < 0)
                             {
                                 CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                    "ADS1115: OS Store Ret Val=[%d]. Expected non-negative val.", ret_val);
+                                    "OS Store Ret Val=[%d]. Expected non-negative val.", ret_val);
                             }
                         }
                         break;
@@ -143,7 +143,7 @@ void ADS1115_ChildLoop(void)
                             if ((ret_val = ADS1115_ReadADCChannels()) < 0)
                             {
                                 CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                    "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", ret_val);
+                                    "ADC Read Ret Val=[%d]. Expected non-negative val.", ret_val);
                             }
                             else
                             {
@@ -154,7 +154,7 @@ void ADS1115_ChildLoop(void)
                                 if( (ret_val = ADS1115_StoreADCChannels()) < 0)
                                 {
                                     CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                        "ADS1115: OS Store Ret Val=[%d]. Expected non-negative val.", ret_val);
+                                        "OS Store Ret Val=[%d]. Expected non-negative val.", ret_val);
                                 }
                             }
                             
@@ -163,10 +163,10 @@ void ADS1115_ChildLoop(void)
 
             default:    /* Unknown State: Log it, Reset Flags, Continue */
                         CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                    "ADS1115: ADC Child Loop State Argument [%d] unrecognized.", 
+                                    "ADC Child Loop State Argument [%d] unrecognized.", 
                                     ADS1115_HkTelemetryPkt.ads1115_childloop_state);
                         CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                    "ADS1115: Resetting \'Child Loop State\' and \'Read Once Flag\'.");
+                                    "Resetting \'Child Loop State\' and \'Read Once Flag\'.");
                         ads1115_childtask_read_once = 0;
                         ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
                         break;

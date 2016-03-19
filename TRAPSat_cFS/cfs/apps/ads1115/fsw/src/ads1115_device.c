@@ -52,12 +52,12 @@ int ADS1115_ReadADCChannels(void)
     */
     if ((i2c_fd = open(dev_i2c_f, O_RDWR)) < 0)
     {
-        OS_printf( "Failed opening \'%s\' with return value %d\n", dev_i2c_f, i2c_fd);
+        OS_printf( "ADS1115: Failed opening \'%s\' with return value %d\n", dev_i2c_f, i2c_fd);
         return -1;
     }
     else
     {
-        OS_printf("Debug: open(%s) = %d\n", dev_i2c_f, i2c_fd);
+        OS_printf("ADS1115: open(%s) = %d\n", dev_i2c_f, i2c_fd);
     }
     
     /*
@@ -65,7 +65,7 @@ int ADS1115_ReadADCChannels(void)
     */
     if ((io_res = ioctl(i2c_fd, I2C_SLAVE, ADS1115_ADDR)) < 0)
     {
-        OS_printf("IO Control Failed: Returned %d\n", io_res);
+        OS_printf("ADS1115: IO Control Failed: Returned %d\n", io_res);
         return -1;
     }
 
@@ -110,12 +110,12 @@ int ADS1115_ReadADCChannels(void)
         */
          if ((io_res = write(i2c_fd, i2c_cfg_data, 3)) < 0)
         {
-            OS_printf( "I2C Configuration Failure: Returned %d\n", io_res);
+            OS_printf( "ADS1115: I2C Configuration Failure: Returned %d\n", io_res);
             //return -1;
         }
         else if (io_res != 3)
         {
-            OS_printf( "I2C Configuration Error: expected to write 3 bytes, %d bytes written\n", io_res);
+            OS_printf( "ADS1115: I2C Configuration Error: expected to write 3 bytes, %d bytes written\n", io_res);
             //return -1;
         }
 
@@ -128,7 +128,7 @@ int ADS1115_ReadADCChannels(void)
         {
             if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
             {
-                OS_printf( "I2C Read Failure: Returned %d\n", io_res);
+                OS_printf( "ADS1115: I2C Read Failure: Returned %d\n", io_res);
                 //return(-1);
             }
         }
@@ -139,21 +139,21 @@ int ADS1115_ReadADCChannels(void)
         i2c_cfg_data[0] = 0x00;
         if ((io_res = write(i2c_fd, i2c_cfg_data, 1)) < 0)
         {
-            OS_printf( "I2C Configuration Failure: Returned %d\n", io_res);
+            OS_printf( "ADS1115: I2C Configuration Failure: Returned %d\n", io_res);
         }
         else if (io_res != 1)
         {
-            OS_printf( "I2C Configuration Error: expected to write 1 bytes, %d bytes written\n", io_res);
+            OS_printf( "ADS1115: I2C Configuration Error: expected to write 1 bytes, %d bytes written\n", io_res);
         }
         
         if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
         {
-            OS_printf( "I2C Read Failure: Returned %d\n", io_res);
+            OS_printf( "ADS1115: I2C Read Failure: Returned %d\n", io_res);
         }
         
         i2c_data_word = i2c_data[0] << 8 | i2c_data[1];
         
-        OS_printf("Channel %d Voltage: %f V\n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
+        OS_printf("ADS1115: Channel %d Voltage: %f V\n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
 
         /*
         ** double check sizeof(ADS1115_ChannelData.adc_ch_1)
@@ -239,7 +239,7 @@ int ADS1115_StoreADCChannels(void)
     */
     if ( (os_ret_val = OS_TranslatePath((const char *) virtual_path, (char *)local_path)) != OS_FS_SUCCESS )
     {
-        OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
+        OS_printf("ADS1115: OS_TranslatePath Status: %d \n", os_ret_val);
         return -1;
     }
 
@@ -261,7 +261,7 @@ int ADS1115_StoreADCChannels(void)
     */
     if ((os_fd = OS_creat(full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
-        OS_printf("ADC data file could not be created.\n");
+        OS_printf("ADS1115: ADC File Create Returned [%d]. Expected non-negative value.\n");
         return -1;
     }
 
@@ -283,7 +283,7 @@ int ADS1115_StoreADCChannels(void)
     */
     if ( (os_ret_val = OS_write(os_fd, (void *) &ADS1115_ChannelData.adc_ch_1, 8)) < 0 )
     {
-        OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
+        OS_printf("ADS1115: OS_TranslatePath Status: %d \n", os_ret_val);
         OS_close(os_fd);
         return -1;
     }
