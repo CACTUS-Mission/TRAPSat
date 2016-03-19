@@ -93,12 +93,27 @@ void ADS1115_ChildLoop(void);
 
 
 /*
-** int ADS1115_ReadADCChannels(void);
+** int ADS1115_ReadADCChannels(void)
 **
-** Read the four channels of the ADC and update HK.
-** Returns 0 on success.
+** Read from all four channels of the ADS1115
+** (Analog to Digital Converter (16-bit buffer per channel))
+** Assumed to be mounted at /dev/i2c-1
+**
+** Returns:
+**    zero on success
+**    negative value on error
 */
 int ADS1115_ReadADCChannels(void);
+
+/*
+** int ADS1115_StoreADCChannels(void);
+**
+** Read the ADC channel data struct, store to file
+** Returns
+**    0 on success.
+**    negative on error
+*/
+int ADS1115_StoreADCChannels(void);
 
 
 #endif /* _ads1115_child_h_ */

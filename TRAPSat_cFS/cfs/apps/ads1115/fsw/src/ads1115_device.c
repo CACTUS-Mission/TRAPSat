@@ -161,19 +161,105 @@ int ADS1115_ReadADCChannels(void)
         */
         memcpy((&ADS1115_ChannelData.adc_ch_1 + (sizeof(ADS1115_ChannelData.adc_ch_1)*adc_ch_sel)), 
                 &i2c_data_word, 
-                sizeof(ADS1115_ChannelData.adc_ch_1));
-        
-        /*
-        Inf loop? lol
-        if(adc_ch_sel >= 3)
-        {
-            adc_ch_sel = 0;
-        }
-        */
-        
+                sizeof(ADS1115_ChannelData.adc_ch_1));        
     } /* Channel Select Loop End Here */
 
     close(i2c_fd);
+
+    return(0);
+}
+
+/*
+** int ADS1115_StoreADCChannels(void)
+**
+** Read the ADC channel data struct, store to file
+** Returns
+**    0 on success.
+**    negative on error
+*/
+int ADS1115_StoreADCChannels(void)
+{
+    /*
+    ** Return Value for OSAL calls
+    */
+    int32 os_ret_val = 0;
+
+    /*
+    ** File Descriptor buffer for OS_open
+    */
+    int32 os_fd = 0;
+
+    /*
+    ** virtual_path[] holds the cFS-relative location
+    ** exe/ram/temps/ must be created before running
+    */
+    char virtual_path[] = {"/ram/temps/"};
+
+    /*
+    ** local_path[] will hold the platform-absolute location
+    */
+    char local_path[ OS_MAX_PATH_LEN ];
+
+    /*
+    ** buffer for the filename. This will need to be filled
+    ** with num-restarts_time.csv
+    ** double check how small we can make this buffer
+    */
+    char data_filename[32];
+
+    /*
+    ** file mode flags
+    */
+    mode_t file_mode = (S_IRUSR | S_IWUSR) |
+                        (S_IRGRP | S_IWGRP) |
+                        ((S_IROTH | S_IWOTH);
+
+    /*
+    ** full_path[] will hold the path and filename together
+    */
+    char full_path[ OS_MAX_LOCAL_PATH_LEN ];
+
+    /*
+    ** Concatonate filename
+    */
+    sprintf(data_filename, "%s.csv", "temps");
+
+    /*
+    ** Translate the relative path to an absoulte path
+    */
+    if ( (os_ret_val = OS_TranslatePath(virtual_path, (char *)local_path)) != OS_FS_SUCCESS )
+    {
+        OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
+        return -1;
+    }
+
+    /*
+    ** concatonate path and filename
+    */
+    sprintf(full_path, "%s%s", local_path, data_filename);
+
+    /* 
+    ** Open Data File
+    */
+    if ((os_fd = OS_open(full_path, OS_READ_WRITE, file_mode)) < 0)
+    {
+        OS_printf("ADC file could not be opened.");
+        return -1;
+    }
+
+    /*
+    ** Write adc channel data to data file
+    ** from start of channel data (&ADS1115_ChannelData.adc_ch_1)
+    ** continuing 8 bytes (2 bytes per channel, 4 channels)
+    */
+    if ( (os_ret_val = OS_write(os_fd, &ADS1115_ChannelData.adc_ch_1, 8) < 0 )
+    {
+        OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
+        return -1;
+    }
+
+
+    OS_close(os_fd);
 
     return(0);
 }
