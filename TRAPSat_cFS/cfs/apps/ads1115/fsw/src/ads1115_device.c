@@ -165,15 +165,17 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("sizeof(ADS1115_ChannelData.adc_ch_1) = %d\n", sizeof(ADS1115_ChannelData.adc_ch_1));
         */
 
-        /*
+        
         *(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)) = i2c_data[0];
         *(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel) + 1) = i2c_data[1];
-        */
         
+        
+        /*
         memcpy((&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
                 &i2c_data, 
                 ADS1115_ADC_CH_BUF_SIZE);
-        
+        */
+
         /*
         memcpy((&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
                 &i2c_data_word, 
