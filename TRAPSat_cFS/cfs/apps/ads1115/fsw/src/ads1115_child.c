@@ -12,6 +12,9 @@
 extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
 extern uint8 ads1115_childtask_read_once;
 
+extern uint8 ads1115_adc_read_count;
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
 /* ADS1115 child task -- startup initialization                        */
@@ -103,7 +106,8 @@ void ADS1115_ADC_ChildTask(void)
 void ADS1115_ChildLoop(void)
 {
     int ret_val = 0; /* Buffer for ADC/OS call return values */
-    
+    ads1115_adc_read_count = 0; /* ADC Read Samples Counter */
+
     /*
     ** infinite read loop w/ 5 second delay
     ** Should never return from this loop during runtime

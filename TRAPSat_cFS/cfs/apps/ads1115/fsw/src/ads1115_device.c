@@ -19,11 +19,16 @@
 #include "ads1115_version.h"
 #include "ads1115_child.h"
 
+/*
+** Global Variables
+*/
+uint8 ads1115_adc_read_count;
 
 /*
 ** External References
 */
 extern ADS1115_Ch_Data_t ADS1115_ChannelData;
+
 
 /*
 ** int ADS1115_ReadADCChannels(void)
@@ -111,12 +116,12 @@ int ADS1115_ReadADCChannels(void)
          if ((io_res = write(i2c_fd, i2c_cfg_data, 3)) < 0)
         {
             OS_printf( "ADS1115: I2C Configuration Failure: Returned %d\n", io_res);
-            //return -1;
+            return -1;
         }
         else if (io_res != 3)
         {
             OS_printf( "ADS1115: I2C Configuration Error: expected to write 3 bytes, %d bytes written\n", io_res);
-            //return -1;
+            return -1;
         }
 
         /*
@@ -163,6 +168,11 @@ int ADS1115_ReadADCChannels(void)
                 &i2c_data_word, 
                 sizeof(ADS1115_ChannelData.adc_ch_1));        
     } /* Channel Select Loop End Here */
+
+    /*
+    ** Increment ADC Read sample counter after 
+    */
+    ads1115_adc_read_count++;
 
     close(i2c_fd);
 
@@ -226,7 +236,7 @@ int ADS1115_StoreADCChannels(void)
     ** Concatonate filename
     */
     //sprintf(data_filename, "%s.csv", "temps");
-    sprintf(data_filename, "%s", "temps.txt");
+    sprintf(data_filename, "%s%u%s", "temps", ads1115_adc_read_count, ".txt");
 
     /*
     ** Pre Translate Debug
@@ -300,7 +310,8 @@ int ADS1115_StoreADCChannels(void)
     ** continuing 8 bytes (2 bytes per channel, 4 channels)
     */
     int adc_ch_sel = 0;
-    const char csv = {", "};
+    char csv[3];
+    strcpy(csv, ", ");
 
     for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
     {
