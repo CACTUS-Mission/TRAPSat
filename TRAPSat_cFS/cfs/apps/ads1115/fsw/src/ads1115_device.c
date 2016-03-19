@@ -226,7 +226,7 @@ int ADS1115_StoreADCChannels(void)
     ** Concatonate filename
     */
     //sprintf(data_filename, "%s.csv", "temps");
-    sprintf(data_filename, "%s", "temps");
+    sprintf(data_filename, "%s", "temps.txt");
 
     /*
     ** Pre Translate Debug
@@ -261,7 +261,7 @@ int ADS1115_StoreADCChannels(void)
     */
     if ((os_fd = OS_creat(full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
-        OS_printf("ADS1115: ADC File Create Returned [%d]. Expected non-negative value.\n");
+        OS_printf("ADS1115: ADC File Create Returned [%d] (expected non-negative value).\n", os_fd);
         return -1;
     }
 
