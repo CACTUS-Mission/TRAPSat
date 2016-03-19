@@ -273,12 +273,16 @@ int ADS1115_StoreADCChannels(void)
     ** continuing 8 bytes (2 bytes per channel, 4 channels)
     */
     int adc_ch_sel = 0;
+    uint16* adc_ch_buf;
+
     for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
     {
+        adc_ch_buf = (&ADS1115_ChannelData.adc_ch_1 + (adc_ch_sel*2));
+
         /*
         ** Write voltage data from ADC to file
         */
-        if ( (os_ret_val = OS_write(os_fd, (void *) (&ADS1115_ChannelData.adc_ch_1 + adc_ch_sel), 2)) < 0 )
+        if ( (os_ret_val = OS_write(os_fd, (void *) adc_ch_buf, 2)) < 0 )
         {
             OS_printf("ADS1115: ADC Data OS_Write Failed, Retuned [%d] \n", os_ret_val);
             OS_close(os_fd);
@@ -286,7 +290,7 @@ int ADS1115_StoreADCChannels(void)
         }
         else
         {
-            OS_printf("ADS1115: data written to file [%#2x]\n", (uint16 *) (&ADS1115_ChannelData.adc_ch_1 + adc_ch_sel));
+            OS_printf("ADS1115: data written to file [%#2x]\n", (uint16 *) adc_ch_buf);
         }
 
         /*
