@@ -199,7 +199,7 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** local_path[] will hold the platform-absolute location
     */
-    char local_path[ OS_MAX_PATH_LEN ];
+    //char local_path[ OS_MAX_PATH_LEN ];
 
     /*
     ** buffer for the filename. This will need to be filled
@@ -237,21 +237,23 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** Translate the relative path to an absoulte path
     */
+    /*
     if ( (os_ret_val = OS_TranslatePath((const char *) virtual_path, (char *)local_path)) != OS_FS_SUCCESS )
     {
         OS_printf("ADS1115: OS_TranslatePath Status: %d \n", os_ret_val);
         return -1;
     }
+    */
 
     /*
     ** concatonate path and filename
     */
-    sprintf(full_path, "%s%s", local_path, data_filename);
+    sprintf(full_path, "%s%s", virtual_path, data_filename);
 
     /*
     ** Post Translate Debug
     */
-    OS_printf("ADS1115: ADC Data File Local Path: %s\n", local_path);    
+    //OS_printf("ADS1115: ADC Data File Local Path: %s\n", local_path);    
     OS_printf("ADS1115: ADC Data File Full Path: %s\n", full_path);
 
     /*
@@ -259,7 +261,7 @@ int ADS1115_StoreADCChannels(void)
     ** returns file descriptor on success,
     ** exit on failure
     */
-    if ((os_fd = OS_creat(full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
+    if ((os_fd = OS_creat((const char * ) full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
         OS_printf("ADS1115: ADC File Create Returned [%d] (expected non-negative value).\n", os_fd);
         return -1;
