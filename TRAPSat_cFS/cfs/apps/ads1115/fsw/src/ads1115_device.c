@@ -258,10 +258,9 @@ int ADS1115_StoreADCChannels(void)
     ** returns file descriptor on success,
     ** exit on failure
     */
-    if ((os_fd = OS_creat(full_path, OS_READ_WRITE, 644)) < OS_FS_SUCCESS)
+    if ((os_fd = OS_creat(full_path, OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
         OS_printf("ADC data file could not be opened.");
-        OS_close(os_fd);
         return -1;
     }
 
@@ -281,7 +280,7 @@ int ADS1115_StoreADCChannels(void)
     ** from start of channel data (&ADS1115_ChannelData.adc_ch_1)
     ** continuing 8 bytes (2 bytes per channel, 4 channels)
     */
-    if ( (os_ret_val = OS_write(os_fd, &ADS1115_ChannelData.adc_ch_1, 8)) < 0 )
+    if ( (os_ret_val = OS_write(os_fd, (void *) &ADS1115_ChannelData.adc_ch_1, 8)) < 0 )
     {
         OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
         OS_close(os_fd);
