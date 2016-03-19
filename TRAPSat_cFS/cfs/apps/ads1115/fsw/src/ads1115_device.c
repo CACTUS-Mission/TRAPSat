@@ -204,7 +204,7 @@ int ADS1115_StoreADCChannels(void)
     ** exe/ram/temps/ must be created before running
     */
     char virtual_path[OS_MAX_PATH_LEN];
-    if((os_ret_val = sprintf(virtual_path, "%s", "/ram/tempsets/") < 0)
+    if((os_ret_val = sprintf(virtual_path, "%s", "/ram/tempsets/") < 0))
     {
         OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target virtual_path: \'%s\'\n", virtual_path);
