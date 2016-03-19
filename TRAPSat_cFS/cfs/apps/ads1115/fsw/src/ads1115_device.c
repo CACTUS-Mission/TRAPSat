@@ -228,7 +228,7 @@ int ADS1115_StoreADCChannels(void)
     ** Concatonate filename with ADC read count
     ** This will be where number of resets may be added to the front of the file name. 
     */
-    if((os_ret_val = sprintf(data_filename, "%3u%s%5u%s", 0, "_t_", ads1115_adc_read_count, ".csv")) < 0)
+    if((os_ret_val = sprintf(data_filename, "%.3u%s%.5u%s", 0, "_t_", ads1115_adc_read_count, ".csv")) < 0)
     {
         OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target data_filename: \'%s\'\n", data_filename);
