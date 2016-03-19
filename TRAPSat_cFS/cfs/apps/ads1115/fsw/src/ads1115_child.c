@@ -102,7 +102,7 @@ void ADS1115_ADC_ChildTask(void)
 */
 void ADS1115_ChildLoop(void)
 {
-    int adc_ret_val = 0; /* Buffer for ADC Read return value */
+    int ret_val = 0; /* Buffer for ADC/OS call return values */
     
     /*
     ** infinite read loop w/ 5 second delay
@@ -113,7 +113,7 @@ void ADS1115_ChildLoop(void)
         /* 
         ** Clear ret before every ADC Read call 
         */
-        adc_ret_val = 0;
+        ret_val = 0;
 
         /*
         ** Determine ADC Read Action based on childloop_state
@@ -121,22 +121,43 @@ void ADS1115_ChildLoop(void)
         switch(ADS1115_HkTelemetryPkt.ads1115_childloop_state)
         {
             case 0:     /* Infinite Read Loop */
-                        if ((adc_ret_val = ADS1115_ReadADCChannels()) < 0)
+                        if ((ret_val = ADS1115_ReadADCChannels()) < 0)
                         {
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", adc_ret_val);
+                                "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", ret_val);
+                        }
+                        else
+                        {
+                            /* Store Data */
+                            if( (ret_val = ADS1115_StoreADCChannels()) < 0)
+                            {
+                                CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
+                                    "ADS1115: OS Store Ret Val=[%d]. Expected non-negative val.", ret_val);
+                            }
                         }
                         break;
 
             case 1:     /* Read Once, Set Flag to not read again */
                         if(ads1115_childtask_read_once == 0)
                         {
-                            if ((adc_ret_val = ADS1115_ReadADCChannels()) < 0)
+                            if ((ret_val = ADS1115_ReadADCChannels()) < 0)
                             {
                                 CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                    "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", adc_ret_val);
+                                    "ADS1115: ADC Read Ret Val=[%d]. Expected non-negative val.", ret_val);
                             }
-                            ads1115_childtask_read_once = 1;
+                            else
+                            {
+                                /* Set Flag */
+                                ads1115_childtask_read_once = 1;
+
+                                /* Store Data */
+                                if( (ret_val = ADS1115_StoreADCChannels()) < 0)
+                                {
+                                    CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
+                                        "ADS1115: OS Store Ret Val=[%d]. Expected non-negative val.", ret_val);
+                                }
+                            }
+                            
                         }
                         break;
 
