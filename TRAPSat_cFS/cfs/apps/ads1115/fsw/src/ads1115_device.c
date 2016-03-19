@@ -211,9 +211,11 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** file mode flags
     */
+    /*
     mode_t file_mode = ((S_IRUSR | S_IWUSR) |
                         (S_IRGRP | S_IWGRP) |
                         (S_IROTH | S_IWOTH));
+    */
 
     /*
     ** full_path[] will hold the path and filename together
@@ -256,7 +258,7 @@ int ADS1115_StoreADCChannels(void)
     ** returns file descriptor on success,
     ** exit on failure
     */
-    if ((os_fd = OS_creat(full_path, OS_READ_WRITE) < OS_FS_SUCCESS)
+    if ((os_fd = OS_creat(full_path, OS_READ_WRITE, 644)) < OS_FS_SUCCESS)
     {
         OS_printf("ADC data file could not be opened.");
         OS_close(os_fd);
