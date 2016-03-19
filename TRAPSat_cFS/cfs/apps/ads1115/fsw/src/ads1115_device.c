@@ -225,13 +225,14 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** Concatonate filename
     */
-    sprintf(data_filename, "%s.csv", "temps");
+    //sprintf(data_filename, "%s.csv", "temps");
+    sprintf(data_filename, "%s", "temps");
 
     /*
     ** Pre Translate Debug
     */
-    OS_printf("Virtual Path: %s\n", virtual_path);
-    OS_printf("File Name: %s\n", virtual_path);
+    OS_printf("ADS1115: ADC Data File Virtual Path: %s\n", virtual_path);
+    OS_printf("ADS1115: ADC Data File Name: %s\n", data_filename);
 
     /*
     ** Translate the relative path to an absoulte path
@@ -250,17 +251,17 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** Post Translate Debug
     */
-    OS_printf("Local Path: %s\n", local_path);    
-    OS_printf("Full Path: %s\n", full_path);
+    OS_printf("ADS1115: ADC Data File Local Path: %s\n", local_path);    
+    OS_printf("ADS1115: ADC Data File Full Path: %s\n", full_path);
 
     /*
     ** Create Data File
     ** returns file descriptor on success,
     ** exit on failure
     */
-    if ((os_fd = OS_creat(full_path, OS_READ_WRITE)) < OS_FS_SUCCESS)
+    if ((os_fd = OS_creat(full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
-        OS_printf("ADC data file could not be opened.");
+        OS_printf("ADC data file could not be created.\n");
         return -1;
     }
 
