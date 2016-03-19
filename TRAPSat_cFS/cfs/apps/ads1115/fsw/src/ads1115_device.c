@@ -210,9 +210,9 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** file mode flags
     */
-    mode_t file_mode = (S_IRUSR | S_IWUSR) |
+    mode_t file_mode = ((S_IRUSR | S_IWUSR) |
                         (S_IRGRP | S_IWGRP) |
-                        ((S_IROTH | S_IWOTH);
+                        (S_IROTH | S_IWOTH));
 
     /*
     ** full_path[] will hold the path and filename together
