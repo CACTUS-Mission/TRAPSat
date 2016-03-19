@@ -277,7 +277,10 @@ int ADS1115_StoreADCChannels(void)
 
     for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
     {
-        adc_ch_buf = (&ADS1115_ChannelData.adc_ch_1 + (adc_ch_sel*2));
+        /*
+        ** point buffer to channel data with index*2 offset
+        */
+        adc_ch_buf = (&ADS1115_ChannelData.adc_ch_1 + (adc_ch_sel*sizeof(ADS1115_ChannelData.adc_ch_1)));
 
         /*
         ** Write voltage data from ADC to file
