@@ -170,7 +170,7 @@ int ADS1115_ReadADCChannels(void)
                 ADS1115_ADC_CH_BUF_SIZE);
 
         OS_printf("ADS1115: Struct Data => Channel %d Voltage: %f V\n", adc_ch_sel, 
-            (float) (&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel))*4.096/32767.0);       
+            (float) ((uint16*)(&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel))*4.096/32767.0));       
     } /* Channel Select Loop End Here */
 
     /*
