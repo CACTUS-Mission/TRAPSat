@@ -253,7 +253,7 @@ int ADS1115_StoreADCChannels(void)
     if ((os_fd = OS_creat((const char * ) full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
         OS_printf("ADS1115: ADC File Create Returned [%d] (expected non-negative value).\n", os_fd);
-        OS_printf("ADS1115: ADC File Create Returned [%s]\n", errname);
+        //OS_printf("ADS1115: ADC File Create Returned [%s]\n", errname);
         return(-1);
     }
 
