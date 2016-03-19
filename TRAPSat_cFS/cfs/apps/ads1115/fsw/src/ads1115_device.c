@@ -252,7 +252,7 @@ int ADS1115_StoreADCChannels(void)
     ** from start of channel data (&ADS1115_ChannelData.adc_ch_1)
     ** continuing 8 bytes (2 bytes per channel, 4 channels)
     */
-    if ( (os_ret_val = OS_write(os_fd, &ADS1115_ChannelData.adc_ch_1, 8) < 0 )
+    if ( (os_ret_val = OS_write(os_fd, &ADS1115_ChannelData.adc_ch_1, 8)) < 0 )
     {
         OS_printf("OS_TranslatePath Status: %d \n", os_ret_val);
         return -1;
