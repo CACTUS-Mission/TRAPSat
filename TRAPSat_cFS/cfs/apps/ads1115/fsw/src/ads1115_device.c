@@ -238,7 +238,7 @@ int ADS1115_StoreADCChannels(void)
     */
     sprintf(full_path, "%s%s", local_path, data_filename);
 
-    
+    OS_printf("Local Path: %s\n", virtual_path);
     OS_printf("Local Path: %s\n", local_path);    
     OS_printf("Full Path: %s\n", full_path);
 
