@@ -228,7 +228,7 @@ int ADS1115_StoreADCChannels(void)
     ** Concatonate filename with ADC read count
     ** This will be where number of resets may be added to the front of the file name. 
     */
-    if((os_ret_val = sprintf(data_filename, "%3u%s%5u%s", "_tempset_", ads1115_adc_read_count, ".csv")) < 0)
+    if((os_ret_val = sprintf(data_filename, "%3u%s%5u%s", 0, "_tempset_", ads1115_adc_read_count, ".csv")) < 0)
     {
         OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target data_filename: \'%s\'\n", data_filename);
@@ -251,14 +251,14 @@ int ADS1115_StoreADCChannels(void)
     if ((os_fd = OS_creat((const char * ) full_path, (int32) OS_READ_WRITE)) < OS_FS_SUCCESS)
     {
         OS_printf("ADS1115: ADC File Create Returned [%d] (expected non-negative value).\n", os_fd);
-        return -1;
+        return(-1);
     }
 
     /*
     ** 
     */
     char csv[3];
-    if((os_ret_val = sprintf(csv, "%s", ", ") < 0)
+    if((os_ret_val = sprintf(csv, "%s", ", ") < 0))
     {
         OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target csv[%d]: \'%s\'\n", sizeof(csv), csv);
@@ -279,7 +279,7 @@ int ADS1115_StoreADCChannels(void)
         {
             OS_printf("ADS1115: ADC Data OS_Write Failed, Retuned [%d] \n", os_ret_val);
             OS_close(os_fd);
-            return -1;
+            return(-1);
         }
         else
         {
@@ -293,11 +293,11 @@ int ADS1115_StoreADCChannels(void)
         {
             OS_printf("ADS1115: ADC Data OS_Write csv Failed, Retuned [%d] \n", os_ret_val);
             OS_close(os_fd);
-            return -1;
+            return(-1);
         }
     }
 
     OS_close(os_fd);
 
-    return 0;
+    return(0);
 }
