@@ -372,7 +372,7 @@ int ADS1115_StoreADCChannels(void)
         ** point buffer to channel data with index offset
         ** Note: this will flip the data 0x[LSB][MSB]
         */
-        adc_ch_buf = (uint16 *) ((((uint8 *)(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE))) << 8) & 
+        adc_ch_buf = (uint16 *) ((((uint8 *)(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE))) << (uint8) 8) & 
                        ((uint8 *)(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE)))) ;
 
         OS_printf("Writting channel %d data to file.\n", adc_ch_sel);
