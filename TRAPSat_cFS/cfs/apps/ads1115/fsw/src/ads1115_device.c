@@ -51,7 +51,7 @@ int ADS1115_ReadADCChannels(void)
     uint16 i2c_data_word;
     int ads_ch_mask = 0;
     int adc_ch_sel = 0;
-    
+   
     /*
     **
     */
@@ -73,6 +73,13 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("ADS1115: IO Control Failed: Returned %d\n", io_res);
         return -1;
     }
+
+    /*
+    ** Clear previous data in the struct (for debugging)
+    **
+    ** we should remove this during flight!
+    */
+    memset(&ADS1115_ChannelData.adc_ch_0[0], 0, 8);
 
     /*
     ** For each ADC channel
@@ -183,8 +190,6 @@ int ADS1115_ReadADCChannels(void)
         ** double check ADS1115_ADC_CH_BUF_SIZE
         OS_printf("sizeof(ADS1115_ChannelData.adc_ch_1) = %d\n", sizeof(ADS1115_ChannelData.adc_ch_1));
         */
-
-        memset(&ADS1115_ChannelData.adc_ch_0[0], 0, 8);
 
         OS_printf("Before copy:\n");
         OS_printf("ADS1115_ChannelData.adc_ch_0[0]: *[%u] = [%#.2X]\n", &ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[0]);
