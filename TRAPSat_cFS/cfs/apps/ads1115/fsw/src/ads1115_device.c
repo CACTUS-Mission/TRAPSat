@@ -92,6 +92,10 @@ int ADS1115_ReadADCChannels(void)
         */
         i2c_data[0] = 0x00;
         i2c_data[1] = 0x00;
+
+        OS_printf("Before I2C Read:\n");
+        OS_printf("i2c_data[%d]: *[%u] = [%#.2X]\n", 0, &i2c_data[0], i2c_data[0]);
+        OS_printf("i2c_data[%d]: *[%u] = [%#.2X]\n", 1, &i2c_data[1], i2c_data[1]);
         
         /*
         ** Set the ADC Channel Selector mask
@@ -166,7 +170,7 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("..\n");
 
         OS_printf("Before pack:\n");
-        OS_printf("i2c_data_word: [%u], [%#X]\n", &i2c_data_word, i2c_data_word);
+        OS_printf("i2c_data_word: [%u], [%#.4X]\n", &i2c_data_word, i2c_data_word);
 
         i2c_data_word = i2c_data[0] << 8 | i2c_data[1];
 
@@ -179,6 +183,8 @@ int ADS1115_ReadADCChannels(void)
         ** double check ADS1115_ADC_CH_BUF_SIZE
         OS_printf("sizeof(ADS1115_ChannelData.adc_ch_1) = %d\n", sizeof(ADS1115_ChannelData.adc_ch_1));
         */
+
+        memset(&ADS1115_ChannelData.adc_ch_0[0], 0, 8);
 
         OS_printf("Before copy:\n");
         OS_printf("ADS1115_ChannelData.adc_ch_0[0]: *[%u] = [%#.2X]\n", &ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[0]);
@@ -354,7 +360,7 @@ int ADS1115_StoreADCChannels(void)
         /*
         ** point buffer to channel data with index*2 offset
         */
-        adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_1 + (adc_ch_sel * ADS1115_ADC_CH_BUF_SIZE));
+        adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel);
 
         /*
         ** Write voltage data from ADC to file
