@@ -156,7 +156,23 @@ int ADS1115_ReadADCChannels(void)
             OS_printf( "ADS1115: I2C Read Failure: Returned %d\n", io_res);
         }
         
+        /*
+        **print values here
+        */
+        OS_printf("After Read:\n");
+        OS_printf("\'i2c_data[index]\': &i2c_data[index], i2c_data[index]\n");
+        OS_printf("i2c_data[%d]: *[%d] = [%#X]\n", 0, &i2c_data[0], i2c_data[0]);
+        OS_printf("i2c_data[%d]: *[%d] = [%#X]\n", 1, &i2c_data[1], i2c_data[1]);
+        OS_printf("..\n");
+        OS_printf("Before pack:\n");
+        OS_printf("i2c_data_word: [%d], [%#X]\n", &i2c_data_word, i2c_data_word);
+
+
         i2c_data_word = i2c_data[0] << 8 | i2c_data[1];
+
+        OS_printf("After pack:\n");
+        OS_printf("i2c_data_word: *[%d] = [%#X]\n", &i2c_data_word, i2c_data_word);
+
         
         OS_printf("ADS1115: Channel %d Voltage: %f V\n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
 
@@ -165,27 +181,63 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("sizeof(ADS1115_ChannelData.adc_ch_1) = %d\n", sizeof(ADS1115_ChannelData.adc_ch_1));
         */
 
-        
-        *(ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)) = i2c_data[1];
-        *(ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel) + 1) = i2c_data[0];
-        
-        
-        /*
-        memcpy((&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
-                &i2c_data, 
-                ADS1115_ADC_CH_BUF_SIZE);
-        */
 
+        OS_printf("Before copy:\n");
+        OS_printf("ADS1115_ChannelData.adc_ch_0[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_0[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[1]);
+
+        OS_printf("ADS1115_ChannelData.adc_ch_1[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_1[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[1]);
+
+
+        OS_printf("ADS1115_ChannelData.adc_ch_2[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_2[0], ADS1115_ChannelData.adc_ch_2[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_2[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[1]);
+
+        OS_printf("ADS1115_ChannelData.adc_ch_3[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_3[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[1]);
+
+        /*
+        ** Copy Data to ChannelData struct
+        **
+        */
         /*
         memcpy((&ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
                 &i2c_data_word, 
                 ADS1115_ADC_CH_BUF_SIZE);
         */
+        /*
+        *((uint8 *) ADS1115_ChannelData.adc_ch_0 + (void) (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)) = i2c_data[0];
+        *((uint8 *) ADS1115_ChannelData.adc_ch_0 + (void) (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel) + 1) = i2c_data[1];
+        */
 
+        memcpy((&ADS1115_ChannelData.adc_ch_0 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
+                &i2c_data, 
+                ADS1115_ADC_CH_BUF_SIZE);
+
+
+
+        OS_printf("After copy:\n");
+        OS_printf("ADS1115_ChannelData.adc_ch_0[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_0[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[1]);
+
+        OS_printf("ADS1115_ChannelData.adc_ch_1[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_1[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[1]);
+
+
+        OS_printf("ADS1115_ChannelData.adc_ch_2[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_2[0], ADS1115_ChannelData.adc_ch_2[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_2[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[1]);
+
+        OS_printf("ADS1115_ChannelData.adc_ch_3[0]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[0]);
+        OS_printf("ADS1115_ChannelData.adc_ch_3[1]: *[%d] = [%#X]\n", &ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[1]);
+
+
+        /*
         float voltage = (float)(uint16)(uint16 *)(ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel));
         voltage *= (4.096/32767.0);
-
+        
         OS_printf("ADS1115: Struct Data => Channel %d Voltage: %f V\n", adc_ch_sel, voltage); 
+        */
+
 
     } /* Channel Select Loop End Here */
 
