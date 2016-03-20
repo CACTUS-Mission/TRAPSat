@@ -366,6 +366,9 @@ int ADS1115_StoreADCChannels(void)
         ** point buffer to channel data with index*2 offset
         */
         adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0[0] + adc_ch_sel);
+        
+        OS_printf("Writting channel %d data to file.\n", adc_ch_sel);
+        OS_printf("adc_ch_buf = [%u], *adc_ch_buf = [%#.4X]\n", adc_ch_buf, *adc_ch_buf);
 
         /*
         ** Write voltage data from ADC to file
