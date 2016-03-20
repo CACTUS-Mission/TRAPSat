@@ -372,15 +372,24 @@ int ADS1115_StoreADCChannels(void)
         OS_printf("&adc_data_buf[1] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[1], adc_data_buff[1]);
 
         adc_data_buff[0] = (uint8) *(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
-
+        
+        /*
         OS_printf("&adc_data_buf[0] = [%u], adc_data_buff[0] = [%#.2X]\n", &adc_data_buff[0], adc_data_buff[0]);
         OS_printf("&adc_data_buf[1] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[1], adc_data_buff[1]);
+        */
 
         adc_data_buff[1] = (uint8) *(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
 
         OS_printf("post-swap\n");
         OS_printf("&adc_data_buf[0] = [%u], adc_data_buff[0] = [%#.2X]\n", &adc_data_buff[0], adc_data_buff[0]);
         OS_printf("&adc_data_buf[1] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[1], adc_data_buff[1]);
+
+        adc_data_buff[0] = 0xF3;
+        adc_data_buff[1] = 0xF3;
+        OS_printf("post-BOMB\n");
+        OS_printf("&adc_data_buf[0] = [%u], adc_data_buff[0] = [%#.2X]\n", &adc_data_buff[0], adc_data_buff[0]);
+        OS_printf("&adc_data_buf[1] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[1], adc_data_buff[1]);
+
 
         OS_printf("(void *) adc_data_buff = [%u] \n", ((void *) adc_data_buff));
 
