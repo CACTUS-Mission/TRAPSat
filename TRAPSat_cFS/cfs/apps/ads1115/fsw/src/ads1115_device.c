@@ -361,13 +361,19 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** Write adc channel data to data file
     ** from start of channel data (&ADS1115_ChannelData.adc_ch_0)
-    ** continuing 8 bytes (2 bytes per channel, 4 channels)
+    ** continuing 8 (2 bytes per channel, 4 channels)
     */
     int adc_ch_sel = 0;
-    uint16 adc_ch_buf;
+    //uint16 adc_ch_buf;
+    uint8 adc_data_buff[2];
+
 
     for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
     {
+
+        adc_data_buff[0] = 0;
+        adc_data_buff[1] = 0;
+
         OS_printf("Writting channel %d data to file.\n", adc_ch_sel);
 
         /*
@@ -375,30 +381,34 @@ int ADS1115_StoreADCChannels(void)
         ** Note: this will flip the data from 0x[LSB][MSB]
         **                                 to 0x[MSB][LSB]
         */
-        adc_ch_buf = (uint16) *(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE)) << 8;
+
+        //adc_ch_buf = (uint16) *(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE)) << 8;
+        //OS_printf("adc_ch_buf = [%u], *adc_ch_buf = [%#.4X]\n", &adc_ch_buf, adc_ch_buf);
+        //adc_ch_buf |= (uint16) *(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
+        //adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel);
+        //OS_printf("&adc_ch_buf = [%u], adc_ch_buf = [%#.4X]\n", &adc_ch_buf, adc_ch_buf);
 
         OS_printf("pre-swap\n");
-        OS_printf("adc_ch_buf = [%u], *adc_ch_buf = [%#.4X]\n", &adc_ch_buf, adc_ch_buf);
+        OS_printf("&adc_data_buf[0] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[0], adc_data_buff[0]);
 
-        adc_ch_buf |= (uint16) *(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
-        
-        //adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel);
+        adc_data_buff[0] = (uint8) *(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
+
+        OS_printf("&adc_data_buf[0] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[0], adc_data_buff[0]);
+
+        adc_data_buff[1] = (uint8) *(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
 
         OS_printf("post-swap\n");
-        OS_printf("adc_ch_buf = [%u], *adc_ch_buf = [%#.4X]\n", &adc_ch_buf, adc_ch_buf);
+        OS_printf("&adc_data_buf[0] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[0], adc_data_buff[0]);
+
 
         /*
         ** Write voltage data from ADC to file
         */
-        if ((os_ret_val = OS_write(os_fd, (void *) &adc_ch_buf, 2)) < 0)
+        if ((os_ret_val = OS_write(os_fd, (void *) &adc_data_buff[0], 2)) < 0)
         {
             OS_printf("ADS1115: ADC Data OS_Write Failed, Retuned [%d] \n", os_ret_val);
             OS_close(os_fd);
             return(-1);
-        }
-        else
-        {
-            OS_printf("ADS1115: data written to file [%#.4X]\n", adc_ch_buf);
         }
 
         /*
