@@ -214,7 +214,7 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("sizeof(memcpy dest) = %d\n", sizeof((&ADS1115_ChannelData.adc_ch_0 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel))));
         OS_printf("sizeof(&i2c_data) = %d\n", sizeof(&i2c_data));
 
-        memcpy((&ADS1115_ChannelData.adc_ch_0 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel)), 
+        memcpy((&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel), 
                 &i2c_data, 
                 ADS1115_ADC_CH_BUF_SIZE);
 
