@@ -380,7 +380,7 @@ int ADS1115_StoreADCChannels(void)
         OS_printf("pre-swap\n");
         OS_printf("adc_ch_buf = [%u], *adc_ch_buf = [%#.4X]\n", adc_ch_buf, *adc_ch_buf);
 
-        *adc_ch_buf &= (uint16) *(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE))
+        *adc_ch_buf &= (uint16) *(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
         
         //adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel);
 
