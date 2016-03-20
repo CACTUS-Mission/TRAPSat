@@ -162,6 +162,11 @@ int ADS1115_ReadADCChannels(void)
             OS_printf( "ADS1115: I2C Configuration Error: expected to write 1 bytes, %d bytes written\n", io_res);
         }
         
+        /*
+        ** Read 2 bytes into the i2c_data uint8 array
+        ** First byte is MSB of ADC conversion register
+        ** Second byte is LSB of ADC conversion register
+        */
         if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
         {
             OS_printf( "ADS1115: I2C Read Failure: Returned %d\n", io_res);
@@ -182,6 +187,7 @@ int ADS1115_ReadADCChannels(void)
         i2c_data_word = i2c_data[0] << 8 | i2c_data[1];
 
         OS_printf("After pack:\n");
+        OS_printf("i2c_data_word: *[%u] = [%#.4X]\n", &i2c_data_word, i2c_data_word);
         OS_printf("i2c_data_word: *[%u] = [%#.4X]\n", &i2c_data_word, i2c_data_word);
         
         OS_printf("ADS1115: Channel %d Voltage: %f V\n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
@@ -354,7 +360,7 @@ int ADS1115_StoreADCChannels(void)
 
     /*
     ** Write adc channel data to data file
-    ** from start of channel data (&ADS1115_ChannelData.adc_ch_1)
+    ** from start of channel data (&ADS1115_ChannelData.adc_ch_0)
     ** continuing 8 bytes (2 bytes per channel, 4 channels)
     */
     int adc_ch_sel = 0;
@@ -363,9 +369,11 @@ int ADS1115_StoreADCChannels(void)
     for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
     {
         /*
-        ** point buffer to channel data with index*2 offset
+        ** point buffer to channel data with index offset
+        ** Note: this will flip the data 0x[LSB][MSB]
         */
-        adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel);
+        adc_ch_buf = (uint16 *) ((((uint8 *)(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE))) << 8) & 
+                       ((uint8 *)(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE)))) ;
 
         OS_printf("Writting channel %d data to file.\n", adc_ch_sel);
         OS_printf("adc_ch_buf = [%u], *adc_ch_buf = [%#.4X]\n", adc_ch_buf, *adc_ch_buf);
