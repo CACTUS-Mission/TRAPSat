@@ -365,12 +365,12 @@ int ADS1115_StoreADCChannels(void)
         /*
         ** point buffer to channel data with index*2 offset
         */
-        adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel);
+        adc_ch_buf = (uint16 *)(&ADS1115_ChannelData.adc_ch_0[0] + adc_ch_sel);
 
         /*
         ** Write voltage data from ADC to file
         */
-        if ( (os_ret_val = OS_write(os_fd, (void *) adc_ch_buf, 2)) < 0 )
+        if ((os_ret_val = OS_write(os_fd, (void *) adc_ch_buf, 2)) < 0)
         {
             OS_printf("ADS1115: ADC Data OS_Write Failed, Retuned [%d] \n", os_ret_val);
             OS_close(os_fd);
@@ -384,7 +384,7 @@ int ADS1115_StoreADCChannels(void)
         /*
         ** Write ', ' ([comma] and [space]) to format for CSV file
         */
-        if ((adc_ch_sel != 3) && ((os_ret_val = OS_write(os_fd, (void *) &csv, 2)) < 0))
+        if((os_ret_val = OS_write(os_fd, (void *) &csv, 2)) < 0)
         {
             OS_printf("ADS1115: ADC Data OS_Write csv Failed, Retuned [%d] \n", os_ret_val);
             OS_close(os_fd);
