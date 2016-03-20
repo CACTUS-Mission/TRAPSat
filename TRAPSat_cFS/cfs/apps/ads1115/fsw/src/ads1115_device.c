@@ -384,8 +384,12 @@ int ADS1115_StoreADCChannels(void)
 
 
         OS_printf("(void *) adc_data_buff = [%u] \n", ((void *) adc_data_buff));
-        OS_printf("(unsigned char) *((void *) adc_data_buff) = [%#.2X] \n", (unsigned char) *((uint8 *) adc_data_buff));
-        OS_printf("(unsigned char) *((void *) adc_data_buff+1) = [%#.2X] \n", (unsigned char) *((uint8 *) adc_data_buff+1));
+
+        OS_printf("(unsigned char) *((uint8 *) adc_data_buff) = [%#.2X] \n", (unsigned char) *((uint8 *) adc_data_buff));
+        OS_printf("(unsigned char) *((uint8 *) adc_data_buff+1) = [%#.2X] \n", (unsigned char) *((uint8 *) adc_data_buff+1));
+
+        OS_printf("(char) *((uint8 *) adc_data_buff) = [%#.2X] \n", (char) *((uint8 *) adc_data_buff));
+        OS_printf("(char) *((uint8 *) adc_data_buff+1) = [%#.2X] \n", (char) *((uint8 *) adc_data_buff+1));
 
         /*
         ** Write voltage data from ADC to file
