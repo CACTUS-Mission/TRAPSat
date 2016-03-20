@@ -382,14 +382,13 @@ int ADS1115_StoreADCChannels(void)
         OS_printf("&adc_data_buf[0] = [%u], adc_data_buff[0] = [%#.2X]\n", &adc_data_buff[0], adc_data_buff[0]);
         OS_printf("&adc_data_buf[1] = [%u], adc_data_buff[1] = [%#.2X]\n", &adc_data_buff[1], adc_data_buff[1]);
 
-
         OS_printf("(void *) adc_data_buff = [%u] \n", ((void *) adc_data_buff));
 
-        OS_printf("(unsigned char) *((uint8 *) adc_data_buff) = [%#.2X] \n", (unsigned char) *((uint8 *) adc_data_buff));
-        OS_printf("(unsigned char) *((uint8 *) adc_data_buff+1) = [%#.2X] \n", (unsigned char) *((uint8 *) adc_data_buff+1));
+        OS_printf("(unsigned char) *((uint8 *) adc_data_buff) = [%#.2X] \n", (unsigned char) *((uint8 *) (void *) adc_data_buff));
+        OS_printf("(unsigned char) *((uint8 *) adc_data_buff+1) = [%#.2X] \n", (unsigned char) *((uint8 *) (void *) adc_data_buff+1));
 
-        OS_printf("(char) *((uint8 *) adc_data_buff) = [%#.2X] \n", (char) *((uint8 *) adc_data_buff));
-        OS_printf("(char) *((uint8 *) adc_data_buff+1) = [%#.2X] \n", (char) *((uint8 *) adc_data_buff+1));
+        OS_printf("(char) *((uint8 *) adc_data_buff) = [%#.2X] \n", (char) *((uint8 *) (void *) adc_data_buff));
+        OS_printf("(char) *((uint8 *) adc_data_buff+1) = [%#.2X] \n", (char) *((uint8 *) (void *) adc_data_buff+1));
 
         /*
         ** Write voltage data from ADC to file
