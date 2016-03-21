@@ -231,13 +231,22 @@ void ADS1115_ResetCounters(void)
     ** Should we clear scientific data, or let it sit on the buffers? 
     ** ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_0 = {0x00, 0x00};
     */
-    memset(&ADS1115_HkTelemetryPkt.ads1115_ch_data, 0, sizeof(ADS1115_Ch_Data_t));
+    //memset(ADS1115_HkTelemetryPkt.ads1115_ch_data, 0, sizeof(ADS1115_Ch_Data_t));
+
     /*
     ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_0 = {0x00, 0x00};
     ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_1 = {0x00, 0x00};
     ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_2 = {0x00, 0x00};
     ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_3 = {0x00, 0x00};
     */
+
+    /*
+    ** Should we reset this here?
+    */
+    //ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
+    memset(ADS1115_HkTelemetryPkt.ads1115_datafilepath, '\0', sizeof(ADS1115_Ch_Data_t));
+
+
     CFE_EVS_SendEvent(ADS1115_COMMANDRST_INF_EID, CFE_EVS_INFORMATION,
 		"ADS1115: RESET command");
     return;

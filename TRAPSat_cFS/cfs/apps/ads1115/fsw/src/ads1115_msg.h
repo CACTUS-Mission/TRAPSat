@@ -54,8 +54,8 @@ typedef struct
     uint8              TlmHeader[CFE_SB_TLM_HDR_SIZE];
     uint8              ads1115_command_error_count;
     uint8              ads1115_command_count;
-    ADS1115_Ch_Data_t  ads1115_ch_data;
     uint8              ads1115_childloop_state;
+    char               ads1115_datafilepath[OS_MAX_PATH_LEN];
 }   OS_PACK ads1115_hk_tlm_t  ;
 
 #define ADS1115_HK_TLM_LNGTH   sizeof ( ads1115_hk_tlm_t )

@@ -11,9 +11,7 @@
 
 extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
 extern uint8 ads1115_childtask_read_once;
-
 extern uint8 ads1115_adc_read_count;
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
@@ -140,11 +138,38 @@ void ADS1115_ChildLoop(void)
                         }
                         else
                         {
+                            /*
+                            ** Log ADC Data to cFS Event Message Output
+                            */
+                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
+                                   "ADC Channel 0 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[1]);
+
+                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
+                                   "ADC Channel 1 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[1]);
+
+                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
+                                   "ADC Channel 2 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   ADS1115_ChannelData.adc_ch_2[0], ADS1115_ChannelData.adc_ch_2[1]);
+
+                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
+                                   "ADC Channel 3 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[1]);
+
                             /* Store Data */
                             if( (ret_val = ADS1115_StoreADCChannels()) < 0)
                             {
                                 CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                    "OS Store Ret Val=[%d]. Expected non-negative val.", ret_val);
+                                    "ADS1115_StoreADCChannels() = [%d]. Expected non-negative val.", ret_val);
+                            }
+                            else
+                            {
+                                /*
+                                ** Log File Data to cFS Event Message Output
+                                */
+                                CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
+                                   "Last Data File Stored = %s.", ADS1115_HkTelemetryPkt.ads1115_datafilepath);
                             }
                         }
                         break;

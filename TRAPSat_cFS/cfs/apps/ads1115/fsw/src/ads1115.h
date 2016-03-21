@@ -67,8 +67,6 @@ typedef struct
 	uint8 adc_ch_3[2];
 } ADS1115_Ch_Data_t;
 
-
-
 /****************************************************************************/
 /*
 ** Local function prototypes.

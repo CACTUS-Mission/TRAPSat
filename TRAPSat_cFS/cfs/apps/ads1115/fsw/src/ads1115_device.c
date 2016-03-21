@@ -27,8 +27,8 @@ uint16 ads1115_adc_read_count;
 /*
 ** External References
 */
+extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
 extern ADS1115_Ch_Data_t ADS1115_ChannelData;
-
 
 /*
 ** int ADS1115_ReadADCChannels(void)
@@ -48,7 +48,7 @@ int ADS1115_ReadADCChannels(void)
     int io_res;
     uint8 i2c_cfg_data[3];
     uint8 i2c_data[2];
-    uint16 i2c_data_word;
+    
     int ads_ch_mask = 0;
     int adc_ch_sel = 0;
    
@@ -180,13 +180,9 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("i2c_data[%d]: *[%u] = [%#.2X]\n", 1, &i2c_data[1], i2c_data[1]);
         */
 
+
         OS_printf("ADS1115: ADC Channel [%d] Conversion Register MSB: [%#.2X] \n", adc_ch_sel, i2c_data[0]);
         OS_printf("ADS1115: ADC Channel [%d] Conversion Register LSB: [%#.2X] \n", adc_ch_sel, i2c_data[1]);
-
-        /*
-        OS_printf("Before pack:\n");
-        OS_printf("i2c_data_word: [%u], [%#.4X]\n", &i2c_data_word, i2c_data_word);
-        */
 
 
         /*
@@ -194,13 +190,20 @@ int ADS1115_ReadADCChannels(void)
         ** This Section COULD be removed before launch to save processor time,
         ** OR we can keep it to have the voltage printout in our logs.
         */
-        /*
-        **
-        */
+
+        uint16 i2c_data_word;
+        
+        //OS_printf("Before pack:\n");
+        //OS_printf("i2c_data_word: [%u], [%#.4X]\n", &i2c_data_word, i2c_data_word);
+        
+
         i2c_data_word = i2c_data[0] << 8 | i2c_data[1];
-        OS_printf("After pack:\n");
-        OS_printf("i2c_data_word: *[%u] = [%#.4X]\n", &i2c_data_word, i2c_data_word);
+        
+        //OS_printf("After pack:\n");
+        //OS_printf("i2c_data_word: *[%u] = [%#.4X]\n", &i2c_data_word, i2c_data_word);
+
         OS_printf("ADS1115: ADC Channel [%d] Voltage: %f V \n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
+        
         /*
         ** End of Section 1
         */
@@ -230,10 +233,9 @@ int ADS1115_ReadADCChannels(void)
         ** Copy Data to ChannelData struct
         **
         */
-        memcpy((&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel), 
-                &i2c_data, 
-                ADS1115_ADC_CH_BUF_SIZE);
+        memcpy((&ADS1115_ChannelData.adc_ch_0 + adc_ch_sel), &i2c_data, ADS1115_ADC_CH_BUF_SIZE);
 
+        /*
         OS_printf("Data after copy from i2c_data to ADS1115_ChannelData:\n");
         OS_printf("ADS1115_ChannelData.adc_ch_0[0]: *[%u] = [%#.2X]\n", &ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[0]);
         OS_printf("ADS1115_ChannelData.adc_ch_0[1]: *[%u] = [%#.2X]\n", &ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[1]);
@@ -243,7 +245,7 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("ADS1115_ChannelData.adc_ch_2[1]: *[%u] = [%#.2X]\n", &ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[1]);
         OS_printf("ADS1115_ChannelData.adc_ch_3[0]: *[%u] = [%#.2X]\n", &ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[0]);
         OS_printf("ADS1115_ChannelData.adc_ch_3[1]: *[%u] = [%#.2X]\n", &ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[1]);
-
+        */
 
         /*
         float voltage = (float)(uint16)(uint16 *)(ADS1115_ChannelData.adc_ch_1 + (ADS1115_ADC_CH_BUF_SIZE*adc_ch_sel));
@@ -290,9 +292,9 @@ int ADS1115_StoreADCChannels(void)
     ** exe/ram/temps/ must be created before running
     */
     char virtual_path[OS_MAX_PATH_LEN];
-    if((os_ret_val = sprintf(virtual_path, "%s", "/ram/temps/") < 0))
+    if((os_ret_val = snprintf(virtual_path, sizeof(virtual_path), "%s", "/ram/temps/") < 0))
     {
-        OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
+        OS_printf("ADS1115: snprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target virtual_path: \'%s\'\n", virtual_path);
     }
 
@@ -307,25 +309,25 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** full_path[] will hold the path and filename together
     */
-    char full_path[ OS_MAX_LOCAL_PATH_LEN ];
+    char full_path[ OS_MAX_PATH_LEN ];
     memset(full_path, '\0', sizeof(full_path));
 
     /*
     ** Concatonate filename with ADC read count
     ** This will be where number of resets may be added to the front of the file name. 
     */
-    if((os_ret_val = sprintf(data_filename, "%.3u%s%.5u%s", 0, "_t_", ads1115_adc_read_count, ".csv")) < 0)
+    if((os_ret_val = snprintf(data_filename, sizeof(data_filename), "%.3u%s%.5u%s", 0, "_t_", ads1115_adc_read_count, ".csv")) < 0)
     {
-        OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
+        OS_printf("ADS1115: snprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target data_filename: \'%s\'\n", data_filename);
     }
 
     /*
     ** concatonate path and filename
     */
-    if((os_ret_val = sprintf(full_path, "%s%s", virtual_path, data_filename)) < 0)
+    if((os_ret_val = snprintf(full_path, sizeof(full_path), "%s%s", virtual_path, data_filename)) < 0)
     {
-        OS_printf("ADS1115: sprintf returned [%d] (expected non-negative)\n", os_ret_val);
+        OS_printf("ADS1115: snprintf returned [%d] (expected non-negative)\n", os_ret_val);
         OS_printf("ADS1115: target full_path: \'%s\'\n", full_path);
     }
 
@@ -344,16 +346,6 @@ int ADS1115_StoreADCChannels(void)
     }
 
     /*
-    ** csv[] will hold ', ' (the CSV format for our data file)
-    */
-    char csv[3];
-    if((os_ret_val = sprintf(csv, "%s", ", ") < 0))
-    {
-        OS_printf("ADS1115: sprintf returned [%d] expected non-negative\n", os_ret_val);
-        OS_printf("ADS1115: target csv[%d]: \'%s\'\n", sizeof(csv), csv);
-    }
-
-    /*
     ** Write adc channel data to data file
     ** from start of channel data (&ADS1115_ChannelData.adc_ch_0)
     ** continuing 8 (2 bytes per channel, 4 channels)
@@ -368,6 +360,7 @@ int ADS1115_StoreADCChannels(void)
     ** file_data_buff[3] = ' ';
     */
     uint8 file_data_buff[4];
+
     file_data_buff[0] = 0;
     file_data_buff[1] = 0;
     file_data_buff[2] = ',';
@@ -379,34 +372,17 @@ int ADS1115_StoreADCChannels(void)
 
         file_data_buff[0] = 0;
         file_data_buff[1] = 0;
-        
-        /*
-        ** point buffer to channel data with index offset
-        ** Note: this will flip the data from 0x[LSB][MSB] to 0x[MSB][LSB]
-        **       
-        */
 
         /*
-        OS_printf("pre-swap\n");
+        OS_printf("\n");
         OS_printf("&adc_data_buf[0] = [%u], file_data_buff[0] = [%#.2X]\n", &file_data_buff[0], file_data_buff[0]);
         OS_printf("&adc_data_buf[1] = [%u], file_data_buff[1] = [%#.2X]\n", &file_data_buff[1], file_data_buff[1]);
+        OS_printf("&adc_data_buf[2] = [%u], file_data_buff[2] = [%#.2X]\n", &file_data_buff[2], file_data_buff[2]);
+        OS_printf("&adc_data_buf[3] = [%u], file_data_buff[3] = [%#.2X]\n", &file_data_buff[3], file_data_buff[3]);
         */
 
         file_data_buff[0] = (uint8) *(&ADS1115_ChannelData.adc_ch_0[0] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
-        
-        /*
-        OS_printf("&adc_data_buf[0] = [%u], file_data_buff[0] = [%#.2X]\n", &file_data_buff[0], file_data_buff[0]);
-        OS_printf("&adc_data_buf[1] = [%u], file_data_buff[1] = [%#.2X]\n", &file_data_buff[1], file_data_buff[1]);
-        */
-
         file_data_buff[1] = (uint8) *(&ADS1115_ChannelData.adc_ch_0[1] + (adc_ch_sel*ADS1115_ADC_CH_BUF_SIZE));
-
-        /*
-        OS_printf("post-swap (data to be written to file)\n");
-        OS_printf("&adc_data_buf[0] = [%u], file_data_buff[0] = [%#.2X]\n", &file_data_buff[0], file_data_buff[0]);
-        OS_printf("&adc_data_buf[1] = [%u], file_data_buff[1] = [%#.2X]\n", &file_data_buff[1], file_data_buff[1]);
-        */
-
         file_data_buff[2] = ',';
         file_data_buff[3] = ' ';
 
@@ -417,14 +393,6 @@ int ADS1115_StoreADCChannels(void)
         OS_printf("Byte 4: file_data_buff[3] = [%#.2X]\n", file_data_buff[3]);
 
         /*
-        file_data_buff[0] = 0xF3;
-        file_data_buff[1] = 0xF3;
-        OS_printf("post-F3-BOMB\n");
-        OS_printf("&adc_data_buf[0] = [%u], file_data_buff[0] = [%#.2X]\n", &file_data_buff[0], file_data_buff[0]);
-        OS_printf("&adc_data_buf[1] = [%u], file_data_buff[1] = [%#.2X]\n", &file_data_buff[1], file_data_buff[1]);
-        */
-
-        /*
         ** Write voltage data from ADC to file
         */
         if ((os_ret_val = OS_write(os_fd, (void *) file_data_buff, 4)) < 0)
@@ -433,21 +401,16 @@ int ADS1115_StoreADCChannels(void)
             OS_close(os_fd);
             return(-1);
         }
-
-        /*
-        ** Write ', ' ([comma] and [space]) to format for CSV file
-        */
-        /*
-        if((os_ret_val = OS_write(os_fd, (void *) &csv, 2)) < 0)
-        {
-            OS_printf("ADS1115: ADC Data OS_Write csv Failed, Retuned [%d] \n", os_ret_val);
-            OS_close(os_fd);
-            return(-1);
-        }
-        */
     }
 
     OS_close(os_fd);
+
+    //strncpy(ADS1115_HkTelemetryPkt.ads1115_datafilepath, full_path, sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilepath));
+
+    if((os_ret_val = snprintf(ADS1115_HkTelemetryPkt.ads1115_datafilepath, sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilepath), "%s", full_path)) < 0)
+    {
+        OS_printf("ADS1115: Failed moving filepath to HK Packet. snprintf ret = [%d]\n", os_ret_val);
+    }
 
     return(0);
 }
