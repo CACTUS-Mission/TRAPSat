@@ -10,6 +10,7 @@
 #include "ads1115_child.h"
 
 extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
+extern ADS1115_Ch_Data_t ADS1115_ChannelData;
 extern uint8 ads1115_childtask_read_once;
 extern uint8 ads1115_adc_read_count;
 
