@@ -39,6 +39,7 @@
 
 #define ADS1115_PIPE_DEPTH                     32
 #define ADS1115_ADC_CH_BUF_SIZE                 2   /* in bytes */
+#define ADS1115_MAX_FILENAME_LEN               22
 
 /*
 ** ADS1115 Child Task Definitions

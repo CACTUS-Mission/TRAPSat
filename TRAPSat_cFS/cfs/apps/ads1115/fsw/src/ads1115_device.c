@@ -303,7 +303,7 @@ int ADS1115_StoreADCChannels(void)
     **  - data_filename[0:2] == num of resets
     **  - data_filename[12:16] == adc read count
     */
-    char data_filename[32];
+    char data_filename[ADS1115_MAX_FILENAME_LEN];
     memset(data_filename, '\0', sizeof(data_filename));
 
     /*
@@ -405,11 +405,13 @@ int ADS1115_StoreADCChannels(void)
 
     OS_close(os_fd);
 
-    //strncpy(ADS1115_HkTelemetryPkt.ads1115_datafilepath, full_path, sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilepath));
-
-    if((os_ret_val = snprintf(ADS1115_HkTelemetryPkt.ads1115_datafilepath, sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilepath), "%s", full_path)) < 0)
+    /*
+    ** Copy data to HK pkt
+    */
+    if((os_ret_val = snprintf(ADS1115_HkTelemetryPkt.ads1115_datafilepath, sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilepath), "%s", data_filename)) < 0)
     {
         OS_printf("ADS1115: Failed moving filepath to HK Packet. snprintf ret = [%d]\n", os_ret_val);
+        return(-1);
     }
 
     return(0);
