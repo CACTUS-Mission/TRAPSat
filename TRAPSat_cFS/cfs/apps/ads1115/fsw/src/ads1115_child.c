@@ -143,19 +143,19 @@ void ADS1115_ChildLoop(void)
                             ** Log ADC Data to cFS Event Message Output
                             */
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 0 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   "ADC Channel 0 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
                                    ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[1]);
 
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 1 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   "ADC Channel 1 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
                                    ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[1]);
 
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 2 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   "ADC Channel 2 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
                                    ADS1115_ChannelData.adc_ch_2[0], ADS1115_ChannelData.adc_ch_2[1]);
 
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 3 Data: {MSB=[%#.2X], LSB=[%#.2X]}\n",  
+                                   "ADC Channel 3 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
                                    ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[1]);
 
                             /* Store Data */
@@ -213,7 +213,9 @@ void ADS1115_ChildLoop(void)
         /*
         ** Delay 5 Seconds (5000 milliseconds)
         */
+        /*
         OS_printf("ADS1115: ADC Loop current state [%d]. Delay 5s.\n", ADS1115_HkTelemetryPkt.ads1115_childloop_state);
+        */
         OS_TaskDelay(5000);
         
     } /* Infinite ADC Read Loop End Here */

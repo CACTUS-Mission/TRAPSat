@@ -53,17 +53,19 @@ int ADS1115_ReadADCChannels(void)
     int adc_ch_sel = 0;
    
     /*
-    **
+    ** Open file from linux /dev/i2c-1
     */
     if ((i2c_fd = open(dev_i2c_f, O_RDWR)) < 0)
     {
         OS_printf( "ADS1115: Failed opening \'%s\' with return value %d\n", dev_i2c_f, i2c_fd);
         return -1;
     }
+    /*
     else
     {
         OS_printf("ADS1115: open(%s) = %d\n", dev_i2c_f, i2c_fd);
     }
+    */
     
     /*
     ** Address the I2C device
@@ -77,7 +79,7 @@ int ADS1115_ReadADCChannels(void)
     /*
     ** Clear previous data in the struct (for debugging)
     **
-    ** we should remove this during flight!
+    ** we should remove this during flight?!
     */
     memset(&ADS1115_ChannelData.adc_ch_0[0], 0, 8);
 
@@ -100,10 +102,12 @@ int ADS1115_ReadADCChannels(void)
         i2c_data[0] = 0x00;
         i2c_data[1] = 0x00;
 
+        /*
         OS_printf("Before I2C Read:\n");
         OS_printf("i2c_data[%d]: *[%u] = [%#.2X]\n", 0, &i2c_data[0], i2c_data[0]);
         OS_printf("i2c_data[%d]: *[%u] = [%#.2X]\n", 1, &i2c_data[1], i2c_data[1]);
-        
+        */
+
         /*
         ** Set the ADC Channel Selector mask
         */
@@ -180,17 +184,17 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("i2c_data[%d]: *[%u] = [%#.2X]\n", 1, &i2c_data[1], i2c_data[1]);
         */
 
-
+        /*
         OS_printf("ADS1115: ADC Channel [%d] Conversion Register MSB: [%#.2X] \n", adc_ch_sel, i2c_data[0]);
         OS_printf("ADS1115: ADC Channel [%d] Conversion Register LSB: [%#.2X] \n", adc_ch_sel, i2c_data[1]);
-
+        */
 
         /*
         ** Section 1
         ** This Section COULD be removed before launch to save processor time,
         ** OR we can keep it to have the voltage printout in our logs.
         */
-
+        /*
         uint16 i2c_data_word;
         
         //OS_printf("Before pack:\n");
@@ -203,7 +207,7 @@ int ADS1115_ReadADCChannels(void)
         //OS_printf("i2c_data_word: *[%u] = [%#.4X]\n", &i2c_data_word, i2c_data_word);
 
         OS_printf("ADS1115: ADC Channel [%d] Voltage: %f V \n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
-        
+        */
         /*
         ** End of Section 1
         */
@@ -331,7 +335,9 @@ int ADS1115_StoreADCChannels(void)
         OS_printf("ADS1115: target full_path: \'%s\'\n", full_path);
     }
 
+    /*
     OS_printf("ADS1115: Data File full_path[%d]: \'%s\'\n", sizeof(full_path), full_path);
+    */
 
     /*
     ** Create Data File
@@ -368,7 +374,9 @@ int ADS1115_StoreADCChannels(void)
 
     for(adc_ch_sel = 0; adc_ch_sel <= 3; adc_ch_sel++)
     {
+        /*
         OS_printf("Writting channel [%d] data to file.\n", adc_ch_sel);
+        */
 
         file_data_buff[0] = 0;
         file_data_buff[1] = 0;
@@ -386,11 +394,13 @@ int ADS1115_StoreADCChannels(void)
         file_data_buff[2] = ',';
         file_data_buff[3] = ' ';
 
+        /*
         OS_printf("ADC Data to be written to file:\n");
         OS_printf("Byte 1: file_data_buff[0] = [%#.2X]\n", file_data_buff[0]);
         OS_printf("Byte 2: file_data_buff[1] = [%#.2X]\n", file_data_buff[1]);
         OS_printf("Byte 3: file_data_buff[2] = [%#.2X]\n", file_data_buff[2]);
         OS_printf("Byte 4: file_data_buff[3] = [%#.2X]\n", file_data_buff[3]);
+        */
 
         /*
         ** Write voltage data from ADC to file
