@@ -43,7 +43,7 @@
 #define TO_TASK_MSEC             500          /* run at 2 Hz */
 #define TO_UNUSED                  0
 
-#define cfgTLM_ADDR "192.168.1.81"
+#define cfgTLM_ADDR "192.168.1.26"
 #define cfgTLM_PORT 1235
 #define TO_LAB_VERSION_NUM "5.1.0"
 
