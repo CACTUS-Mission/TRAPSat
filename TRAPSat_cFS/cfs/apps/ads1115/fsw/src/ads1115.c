@@ -203,9 +203,11 @@ void ADS1115_ReportHousekeeping(void)
     ** Copy Application Data Structures
     ** to Housekeeping Data Packet
     */
+    /*
     memcpy((char *) &ADS1115_HkTelemetryPkt.ads1115_ch_data, 
         (char *) &ADS1115_ChannelData, sizeof(ADS1115_Ch_Data_t));
-
+    */
+    
     CFE_SB_TimeStampMsg((CFE_SB_Msg_t *) &ADS1115_HkTelemetryPkt);
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_HkTelemetryPkt);
 
