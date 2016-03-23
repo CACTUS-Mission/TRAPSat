@@ -11,7 +11,7 @@
 ##
 ##  OS          PSP
 ##
-##  posix       rpi-linux           (partial support)      
+##  posix       rpi-linux           (not for release!)      
 ##  posix       pc-linux            (fully supported)
 ##  rtems       mcf5235-rtems       (fully supported)
 ##  vxworks6    rad750-vxworks6.4   (fully supported)

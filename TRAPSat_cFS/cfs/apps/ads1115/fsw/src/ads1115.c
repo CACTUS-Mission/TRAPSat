@@ -7,23 +7,25 @@
 *******************************************************************************/
 
 /*
-**   Include Files:
+** Master Header
 */
-
 #include "ads1115.h"
 #include "ads1115_perfids.h"
 #include "ads1115_msgids.h"
 #include "ads1115_msg.h"
 #include "ads1115_events.h"
 #include "ads1115_version.h"
+#include "ads1115_child.h"
 
 /*
-** global data
+** ADS1115 global data structures
 */
-
-ads1115_hk_tlm_t    ADS1115_HkTelemetryPkt;
 CFE_SB_PipeId_t    ADS1115_CommandPipe;
-CFE_SB_MsgPtr_t    ADS1115MsgPtr;
+CFE_SB_MsgPtr_t    ADS1115_MsgPtr;
+ads1115_hk_tlm_t   ADS1115_HkTelemetryPkt;
+ADS1115_Ch_Data_t  ADS1115_ChannelData;
+uint32             ADS1115_ADC_ChildTaskID;
+uint8              ads1115_childtask_read_once;
 
 static CFE_EVS_BinFilter_t  ADS1115_EventFilters[] =
        {  /* Event ID    mask */
@@ -54,7 +56,7 @@ void ADS1115_AppMain( void )
         CFE_ES_PerfLogExit(ADS1115_PERF_ID);
 
         /* Pend on receipt of command packet -- timeout set to 500 millisecs */
-        status = CFE_SB_RcvMsg(&ADS1115MsgPtr, ADS1115_CommandPipe, 500);
+        status = CFE_SB_RcvMsg(&ADS1115_MsgPtr, ADS1115_CommandPipe, 500);
         
         CFE_ES_PerfLogEntry(ADS1115_PERF_ID);
 
@@ -98,6 +100,8 @@ void ADS1115_AppInit(void)
 
     ADS1115_ResetCounters();
 
+    ADS1115_ChildInit();
+
     CFE_SB_InitMsg(&ADS1115_HkTelemetryPkt,
                    ADS1115_HK_TLM_MID,
                    ADS1115_HK_TLM_LNGTH, TRUE);
@@ -123,7 +127,7 @@ void ADS1115_ProcessCommandPacket(void)
 {
     CFE_SB_MsgId_t  MsgId;
 
-    MsgId = CFE_SB_GetMsgId(ADS1115MsgPtr);
+    MsgId = CFE_SB_GetMsgId(ADS1115_MsgPtr);
 
     switch (MsgId)
     {
@@ -156,7 +160,7 @@ void ADS1115_ProcessGroundCommand(void)
 {
     uint16 CommandCode;
 
-    CommandCode = CFE_SB_GetCmdCode(ADS1115MsgPtr);
+    CommandCode = CFE_SB_GetCmdCode(ADS1115_MsgPtr);
 
     /* Process "known" ADS1115 app ground commands */
     switch (CommandCode)
@@ -169,6 +173,11 @@ void ADS1115_ProcessGroundCommand(void)
 
         case ADS1115_RESET_COUNTERS_CC:
             ADS1115_ResetCounters();
+            break;
+
+        case ADS1115_SET_CHILD_LP_ST_CC:
+            ADS1115_HkTelemetryPkt.ads1115_command_count++;
+            ADS1115_SetChildLoopState();
             break;
 
         /* default case already found during FC vs length test */
@@ -190,8 +199,18 @@ void ADS1115_ProcessGroundCommand(void)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 void ADS1115_ReportHousekeeping(void)
 {
+    /*
+    ** Copy Application Data Structures
+    ** to Housekeeping Data Packet
+    */
+    /*
+    memcpy((char *) &ADS1115_HkTelemetryPkt.ads1115_ch_data, 
+        (char *) &ADS1115_ChannelData, sizeof(ADS1115_Ch_Data_t));
+    */
+    
     CFE_SB_TimeStampMsg((CFE_SB_Msg_t *) &ADS1115_HkTelemetryPkt);
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_HkTelemetryPkt);
+
     return;
 
 } /* End of ADS1115_ReportHousekeeping() */
@@ -209,6 +228,26 @@ void ADS1115_ResetCounters(void)
     /* Status of commands processed by the ADS1115 App */
     ADS1115_HkTelemetryPkt.ads1115_command_count       = 0;
     ADS1115_HkTelemetryPkt.ads1115_command_error_count = 0;
+
+    /*
+    ** Should we clear scientific data, or let it sit on the buffers? 
+    ** ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_0 = {0x00, 0x00};
+    */
+    //memset(ADS1115_HkTelemetryPkt.ads1115_ch_data, 0, sizeof(ADS1115_Ch_Data_t));
+
+    /*
+    ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_0 = {0x00, 0x00};
+    ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_1 = {0x00, 0x00};
+    ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_2 = {0x00, 0x00};
+    ADS1115_HkTelemetryPkt.ads1115_ch_data.adc_ch_3 = {0x00, 0x00};
+    */
+
+    /*
+    ** Should we reset this here?
+    */
+    //ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
+    memset(ADS1115_HkTelemetryPkt.ads1115_datafilepath, '\0', sizeof(ADS1115_Ch_Data_t));
+
 
     CFE_EVS_SendEvent(ADS1115_COMMANDRST_INF_EID, CFE_EVS_INFORMATION,
 		"ADS1115: RESET command");
@@ -246,3 +285,53 @@ boolean ADS1115_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
 
 } /* End of ADS1115_VerifyCmdLength() */
 
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*  Name:  ADS1115_SetChildLoopState(void);                                            */
+/*                                                                            */
+/*  Purpose:                                                                  */
+/*         This function is triggered in response to a change loop delay      */
+/*         command.                                                           */  
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
+void ADS1115_SetChildLoopState(void)
+{
+    ADS1115_SetChildLoopStateCmd_t *new_cmd_ptr;
+    new_cmd_ptr = (ADS1115_SetChildLoopStateCmd_t*) ADS1115_MsgPtr;
+
+    /*
+    ** Copy loop delay
+    */
+    uint8 loop_state = new_cmd_ptr->childloop_state;
+
+    /*
+    ** Clear Read Once Flag (for childtask)
+    ** - ads1115_childtask_read_once set in ADS1115_ChildLoop()
+    **
+    ** clearing the flag makes sure that if we get multiple "read once" commands
+    ** we will be sure to read from the adc each time.
+    */
+    ads1115_childtask_read_once = 0;
+
+    switch(loop_state)
+    {
+        case 0x00:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
+                    break;
+        case 0x01:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 1;
+                    break;
+        case 0x02:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 2;
+                    break;
+        case 0x03:  ADS1115_HkTelemetryPkt.ads1115_childloop_state = 3;
+                    break;
+        default:    ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
+                    CFE_EVS_SendEvent(ADS1115_CMD_SET_CH_ST_ERR_EID,CFE_EVS_ERROR,
+                        "ADS1115: CMD Set Child Loop State Argument [%d] unrecognized.", loop_state);
+                    break;
+    }
+
+    CFE_EVS_SendEvent(ADS1115_CMD_SET_CH_ST_INF_EID,CFE_EVS_INFORMATION,
+            "ADS1115: ADC Loop state set to %d", ADS1115_HkTelemetryPkt.ads1115_childloop_state);
+
+    return;
+} /* End of ADS1115_ReportHousekeeping() */

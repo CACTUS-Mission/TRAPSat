@@ -21,7 +21,7 @@ ENTRY_PT = ads1115_AppMain
 #
 # Object files required to build subsystem.
 #
-OBJS = ads1115.o
+OBJS = ads1115.o ads1115_child.o ads1115_device.o
 
 #
 # Source files required to build subsystem; used to generate dependencies.
