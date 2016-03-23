@@ -161,7 +161,9 @@ void CI_TaskInit(void)
     {
        bzero((char *) &CI_SocketAddress, sizeof(CI_SocketAddress));
        CI_SocketAddress.sin_family      = AF_INET;
-       CI_SocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+       //CI_SocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+       CI_SocketAddress.sin_addr.s_addr = inet_addr("192.168.1.26");
+       //CI_SocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
        CI_SocketAddress.sin_port        = htons(cfgCI_PORT);
 
        if ( (bind(CI_SocketID, (struct sockaddr *) &CI_SocketAddress, sizeof(CI_SocketAddress)) < 0) )
