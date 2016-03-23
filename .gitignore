@@ -2,5 +2,7 @@
  *  Things we dont git to check for diffs */
 
 *.zip
+*.o
+*.so
 TRAPSat_cFS/cfs/psp/fsw/rpi-linux/* 
 TRAPSat_cFS/cfs/psp/fsw/rpi-linux/
