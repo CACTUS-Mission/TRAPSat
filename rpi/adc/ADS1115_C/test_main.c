@@ -23,9 +23,11 @@ int main()
 	float voltage0 = ads1115_read(0);
 	float voltage1 = ads1115_read(1);
 	float voltage2 = ads1115_read(2);
-	printf("Therm 1: %f C\n", volts_to_c(voltage0));
-	printf("Therm 2: %f C\n", volts_to_c(voltage1));
-	printf("Therm 3: %f C\n", volts_to_c(voltage2));
+	float voltage3 = ads1115_read(3);
+	printf("Therm 0: %f C\n", volts_to_c(voltage0));
+	printf("Therm 1: %f C\n", volts_to_c(voltage1));
+	printf("Therm 2: %f C\n", volts_to_c(voltage2));
+	printf("Therm 3: %f C\n", volts_to_c(voltage3));
 	sleep(1);
   }    
     return 0;
