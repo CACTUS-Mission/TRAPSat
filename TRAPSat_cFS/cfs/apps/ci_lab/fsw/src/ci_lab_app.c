@@ -161,9 +161,8 @@ void CI_TaskInit(void)
     {
        bzero((char *) &CI_SocketAddress, sizeof(CI_SocketAddress));
        CI_SocketAddress.sin_family      = AF_INET;
-       //CI_SocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-       CI_SocketAddress.sin_addr.s_addr = inet_addr("192.168.1.26");
-       //CI_SocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+       CI_SocketAddress.sin_addr.s_addr = htonl(INADDR_ANY);
+       //CI_SocketAddress.sin_addr.s_addr = inet_addr("192.168.1.26");
        CI_SocketAddress.sin_port        = htons(cfgCI_PORT);
 
        if ( (bind(CI_SocketID, (struct sockaddr *) &CI_SocketAddress, sizeof(CI_SocketAddress)) < 0) )
@@ -179,7 +178,7 @@ void CI_TaskInit(void)
               ** This is not available to vxWorks, so it has to be
               ** Conditionally compiled in
               */
-              fcntl(CI_SocketID, F_SETFL, O_NONBLOCK);
+           fcntl(CI_SocketID, F_SETFL, O_NONBLOCK);
            //#endif
            CFE_EVS_SendEvent(CI_STARTUP_INF_EID,CFE_EVS_INFORMATION,
              "CI: socket addr [%u] port [%u]", CI_SocketAddress.sin_addr.s_addr, CI_SocketAddress.sin_port);
