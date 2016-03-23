@@ -169,10 +169,10 @@ void ADS1115_ChildLoop(void)
                                 CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
                                    "File \'temps/%s\' Created: { 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X }",
                                     ADS1115_HkTelemetryPkt.ads1115_datafilename,
-                                    ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[0],
-                                    ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[0],
-                                    ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[0],
-                                    ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[0]);
+                                    ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[1],
+                                    ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[1],
+                                    ADS1115_ChannelData.adc_ch_2[0], ADS1115_ChannelData.adc_ch_2[1],
+                                    ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[1]);
                             }
                         }
                         break;
