@@ -97,6 +97,9 @@ int SendUdp(char *hostname, char *portNum, char *packetData, int packetSize) {
         printf("%s: cannot bind port\n", portNum);
         return -5;
     }
+    else {
+        printf("Port Bound to %u.\n", ntohs(cliAddr.sin_port));
+    }
 
     printf("Data to send:\n");
     i = 0;

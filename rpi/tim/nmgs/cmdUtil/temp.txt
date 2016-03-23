@@ -1,0 +1,1 @@
+sudo ./cmdUtil --host=192.168.1.26 --port=1235 --pktid=0x1880 --cmdcode=6 --string="17:192.168.1.6"
