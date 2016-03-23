@@ -142,21 +142,14 @@ void ADS1115_ChildLoop(void)
                             /*
                             ** Log ADC Data to cFS Event Message Output
                             */
+                            /*
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 0 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
-                                   ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[1]);
-
-                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 1 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
-                                   ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[1]);
-
-                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 2 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
-                                   ADS1115_ChannelData.adc_ch_2[0], ADS1115_ChannelData.adc_ch_2[1]);
-
-                            CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "ADC Channel 3 Data: {MSB=[%#.2X], LSB=[%#.2X]}",  
-                                   ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[1]);
+                                   "ADC Channel Data: { 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X }",
+                                    ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[0],
+                                    ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[0],
+                                    ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[0],
+                                    ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[0]);
+                            */                            
 
                             /* Store Data */
                             if( (ret_val = ADS1115_StoreADCChannels()) < 0)
@@ -169,8 +162,17 @@ void ADS1115_ChildLoop(void)
                                 /*
                                 ** Log File Data to cFS Event Message Output
                                 */
+                                /*
                                 CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "Last Data File Stored = %s.", ADS1115_HkTelemetryPkt.ads1115_datafilepath);
+                                   "Last Data File Stored = %s.", ADS1115_HkTelemetryPkt.ads1115_datafilename);
+                                */
+                                CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
+                                   "File temps/\'%s\' Created: { 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X }",
+                                    ADS1115_HkTelemetryPkt.ads1115_datafilename,
+                                    ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[0],
+                                    ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[0],
+                                    ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[0],
+                                    ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[0]);
                             }
                         }
                         break;

@@ -55,7 +55,7 @@ typedef struct
     uint8              ads1115_command_error_count;
     uint8              ads1115_command_count;
     uint8              ads1115_childloop_state;
-    char               ads1115_datafilepath[ADS1115_MAX_FILENAME_LEN];
+    char               ads1115_datafilename[ADS1115_MAX_FILENAME_LEN];
 }   OS_PACK ads1115_hk_tlm_t  ;
 
 #define ADS1115_HK_TLM_LNGTH   sizeof ( ads1115_hk_tlm_t )

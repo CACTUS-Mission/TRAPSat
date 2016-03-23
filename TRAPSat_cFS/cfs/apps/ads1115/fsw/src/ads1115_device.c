@@ -418,7 +418,7 @@ int ADS1115_StoreADCChannels(void)
     /*
     ** Copy data to HK pkt
     */
-    if((os_ret_val = snprintf(ADS1115_HkTelemetryPkt.ads1115_datafilepath, sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilepath), "%s", data_filename)) < 0)
+    if((os_ret_val = snprintf(ADS1115_HkTelemetryPkt.ads1115_datafilename, sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilename), "%s", data_filename)) < 0)
     {
         OS_printf("ADS1115: Failed moving filepath to HK Packet. snprintf ret = [%d]\n", os_ret_val);
         return(-1);
