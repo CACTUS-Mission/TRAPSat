@@ -171,14 +171,16 @@ void CI_TaskInit(void)
        else
        {
            CI_SocketConnected = TRUE;
-           #ifdef _HAVE_FCNTL_
+           //#ifdef _HAVE_FCNTL_
               /*
               ** Set the socket to non-blocking 
               ** This is not available to vxWorks, so it has to be
               ** Conditionally compiled in
               */
               fcntl(CI_SocketID, F_SETFL, O_NONBLOCK);
-           #endif
+           //#endif
+           CFE_EVS_SendEvent(CI_STARTUP_INF_EID,CFE_EVS_INFORMATION,
+             "CI: socket addr [%u] port [%u]", CI_SocketAddress.sin_addr.s_addr, CI_SocketAddress.sin_port);
        }
     }
 
