@@ -44,7 +44,7 @@ typedef struct
 
 /***************************************************************************/
 
-typedef struct
+typedef struct 
 {
     uint8              CmdHeader[CFE_SB_CMD_HDR_SIZE];
     char	           TempsName[TIM_MAX_TEMPS_NAME_LEN];
