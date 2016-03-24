@@ -54,9 +54,10 @@
  */
 typedef struct
 {
+    uint32  serial_qid;
 	uint8	on_queue;
-	uint8	cam_status;
-} PICAM_Cameraman_t;
+	uint8	serial_status;
+} TIM_SerialQueue_t;
 
 
 /****************************************************************************/

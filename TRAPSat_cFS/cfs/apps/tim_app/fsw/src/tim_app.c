@@ -32,8 +32,8 @@ CFE_SB_MsgPtr_t    TIMMsgPtr;
 ** global data for child task (cameraman) use
 */
 uint32             	TIM_ChildTaskID;
-TIM_Cameraman_t	    TIM_CameramanPkt;
-uint32			    Cameraman_QueueID;
+TIM_SerialQueue_t   TIM_SerialQueueInfo;
+//uint32			    Cameraman_QueueID;
 
 static CFE_EVS_BinFilter_t  TIM_EventFilters[] =
        {  /* Event ID    mask */
@@ -112,8 +112,8 @@ void TIM_AppInit(void)
 
 	TIM_ResetCounters();
 
-	/* Clear the Camera Queue */
-	TIM_CameramanPkt.on_queue = 0;	
+	/* Clear the Queue count */
+	TIM_SerialQueueInfo.on_queue = 0;	
 	
 	TIM_ChildInit();
 
@@ -196,8 +196,8 @@ void TIM_ProcessGroundCommand(void)
 		CFE_EVS_SendEvent(TIM_COMMAND_PIC_EID,CFE_EVS_INFORMATION, 
 					"TIM: Send Image File Command Received");
 		TIM_HkTelemetryPkt.tim_command_count++;
-		TIM_HkTelemetryPkt.tim_command_picture_count++;
-		TIM_CameramanPkt.on_queue++;
+		TIM_HkTelemetryPkt.tim_command_image_count++;
+		TIM_SerialQueueInfo.on_queue++;
 		break;
 
 	case TIM_APP_SEND_TEMPS_CC:
@@ -206,7 +206,7 @@ void TIM_ProcessGroundCommand(void)
 					 "TIM: Send Temps File Command Received");
 		TIM_HkTelemetryPkt.tim_command_count++;
 		TIM_HkTelemetryPkt.tim_command_video_count++;
-		TIM_CameramanPkt.on_queue++;
+		TIM_SerialQueueInfo.on_queue++;
 		break;
 
 	/* default case already found during FC vs length test */
@@ -231,9 +231,9 @@ void TIM_ProcessGroundCommand(void)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 void TIM_ReportHousekeeping(void)
 {
-	memcpy((char *) &TIM_HkTelemetryPkt.CameraInfo,
-		(char *) &TIM_CameramanPkt,
-		sizeof(TIM_Cameraman_t));
+	memcpy((char *) &TIM_HkTelemetryPkt.SerialQueueInfo,
+		(char *) &TIM_SerialQueueInfo,
+		sizeof(TIM_SerialQueue_t));
 
 	CFE_SB_TimeStampMsg((CFE_SB_Msg_t *) &TIM_HkTelemetryPkt);
 	CFE_SB_SendMsg((CFE_SB_Msg_t *) &TIM_HkTelemetryPkt);
@@ -254,10 +254,13 @@ void TIM_ResetCounters(void)
 	/* Status of commands processed by the TIM App */
 	TIM_HkTelemetryPkt.tim_command_count       = 0;
 	TIM_HkTelemetryPkt.tim_command_error_count = 0;
-	TIM_HkTelemetryPkt.tim_command_picture_count = 0;
-	TIM_HkTelemetryPkt.tim_command_video_count = 0;
-	TIM_HkTelemetryPkt.tim_last_pic_loc[0] = '\0';
-	TIM_HkTelemetryPkt.tim_last_vid_loc[0] = '\0';
+	TIM_HkTelemetryPkt.tim_command_image_count = 0;
+	TIM_HkTelemetryPkt.tim_command_temps_count = 0;
+
+	//TIM_HkTelemetryPkt.tim_last_pic_loc[0] = '\0';
+    memset(TIM_HkTelemetryPkt.tim_last_image_sent, '\0', sizeof(TIM_HkTelemetryPkt.tim_last_image_sent));
+	//TIM_HkTelemetryPkt.tim_last_vid_loc[0] = '\0';
+    memset(TIM_HkTelemetryPkt.tim_last_temps_sent, '\0', sizeof(TIM_HkTelemetryPkt.tim_last_temps_sent));
 
 
 	CFE_EVS_SendEvent(TIM_COMMANDRST_INF_EID, CFE_EVS_INFORMATION,
@@ -276,85 +279,85 @@ void TIM_ResetCounters(void)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 void TIM_SendImageFile(void)
 {   
-	/* Creating a pointer to handle the TIMMsgPtr as TIM_PIC_CMD_PKT  */
-	TIM_PIC_CMD_PKT_t *PicCmdPtr;
-	PicCmdPtr = (TIM_PIC_CMD_PKT_t *) TIMMsgPtr;
-	
-	/* virtual_path[] holds the location where ALL pictures will be saved */
-	char virtual_path[] = {"/ram/pictures/"};
-	char local_path[ OS_MAX_PATH_LEN ];
-	
-	/*
-	** Feedback variable from OS_Translate
-	*/
-	int32 translate_status = 0;
-	/*
-	** Feedback variable from OS_QueuePut
-	*/
-	int32 QueueResult;
-
-	/*
-	** MINIMUM_TIME is the hardware time-delay between each picture
-	** The camera module may be able to take a picture closer to
-	** 400 ms, but I used 500 just to make sure there wouldn't be as
-	** many inconsistencies. For a multi-picture sequence, 
-	** 500ms should be alotted for each picture
-	*/
-	int MINIMUM_TIME = 500;
-	int sequence_time = MINIMUM_TIME * PicCmdPtr->tim_sequence;
-	
-	/* Holds all command arguments except output location/file */
-	char raspi_call[ TIM_RASPICALL_MAX_LEN ];
-	
-	/* Holds location/filename */
-	char full_path[ OS_MAX_PATH_LEN ];
-	
-	/* Holds full command to be sent to Cameraman */
-	char full_sys_call[ TIM_SYS_CALL_MAX_LEN ];
-	
-	
-	/*
-	** Translate the path
-	*/
-	if ( OS_TranslatePath(virtual_path, (char *)local_path) != OS_FS_SUCCESS )
-	{
-		translate_status = OS_FS_ERR_PATH_INVALID;
-		OS_printf("OS_TranslatePath Status: %d \n", translate_status);
-		return;
-	}
-
-	/* Concatonate the command, path and filename */
-	sprintf(raspi_call,
-		 "raspistill -n -tl 500 -t %d -q 25 -h 400 -w 400 -o ", 
-		 sequence_time);
-	sprintf(full_path,
-		"%s%s",
-		local_path, PicCmdPtr->PicName);
-	sprintf(full_sys_call,
-		 "%s%s",
-		 raspi_call, full_path);
-	
-	OS_printf("system call for cameraman:\n%s\n", full_sys_call);
-	
-	/* Move full_sys_call onto OS_Queue */
-	/* the last parameter is currently unused */
-	QueueResult = OS_QueuePut( Cameraman_QueueID,
-					full_sys_call,
-					TIM_SYS_CALL_MAX_LEN,
-					0 );
-	if ( QueueResult != OS_SUCCESS )
-	{
-		char *QueueTaskText = "Cameraman Queue Put";
-		CFE_EVS_SendEvent(TIM_QUEUE_PUT_ERR_EID, CFE_EVS_ERROR,
-		"%s error: OS_QueuePut failed: result = %d",
-		QueueTaskText, QueueResult);
-	}
-
-	/* */
-	
-	/* Remove before flight */
-	/* system(full_sys_call); */
-
+//	/* Creating a pointer to handle the TIMMsgPtr as TIM_PIC_CMD_PKT  */
+//	TIM_PIC_CMD_PKT_t *PicCmdPtr;
+//	PicCmdPtr = (TIM_PIC_CMD_PKT_t *) TIMMsgPtr;
+//	
+//	/* virtual_path[] holds the location where ALL pictures will be saved */
+//	char virtual_path[] = {"/ram/pictures/"};
+//	char local_path[ OS_MAX_PATH_LEN ];
+//	
+//	/*
+//	** Feedback variable from OS_Translate
+//	*/
+//	int32 translate_status = 0;
+//	/*
+//	** Feedback variable from OS_QueuePut
+//	*/
+//	int32 QueueResult;
+//
+//	/*
+//	** MINIMUM_TIME is the hardware time-delay between each picture
+//	** The camera module may be able to take a picture closer to
+//	** 400 ms, but I used 500 just to make sure there wouldn't be as
+//	** many inconsistencies. For a multi-picture sequence, 
+//	** 500ms should be alotted for each picture
+//	*/
+//	int MINIMUM_TIME = 500;
+//	int sequence_time = MINIMUM_TIME * PicCmdPtr->tim_sequence;
+//	
+//	/* Holds all command arguments except output location/file */
+//	char raspi_call[ TIM_RASPICALL_MAX_LEN ];
+//	
+//	/* Holds location/filename */
+//	char full_path[ OS_MAX_PATH_LEN ];
+//	
+//	/* Holds full command to be sent to Cameraman */
+//	char full_sys_call[ TIM_SYS_CALL_MAX_LEN ];
+//	
+//	
+//	/*
+//	** Translate the path
+//	*/
+//	if ( OS_TranslatePath(virtual_path, (char *)local_path) != OS_FS_SUCCESS )
+//	{
+//		translate_status = OS_FS_ERR_PATH_INVALID;
+//		OS_printf("OS_TranslatePath Status: %d \n", translate_status);
+//		return;
+//	}
+//
+//	/* Concatonate the command, path and filename */
+//	sprintf(raspi_call,
+//		 "raspistill -n -tl 500 -t %d -q 25 -h 400 -w 400 -o ", 
+//		 sequence_time);
+//	sprintf(full_path,
+//		"%s%s",
+//		local_path, PicCmdPtr->PicName);
+//	sprintf(full_sys_call,
+//		 "%s%s",
+//		 raspi_call, full_path);
+//	
+//	OS_printf("system call for cameraman:\n%s\n", full_sys_call);
+//	
+//	/* Move full_sys_call onto OS_Queue */
+//	/* the last parameter is currently unused */
+//	QueueResult = OS_QueuePut( Cameraman_QueueID,
+//					full_sys_call,
+//					TIM_SYS_CALL_MAX_LEN,
+//					0 );
+//	if ( QueueResult != OS_SUCCESS )
+//	{
+//		char *QueueTaskText = "Cameraman Queue Put";
+//		CFE_EVS_SendEvent(TIM_QUEUE_PUT_ERR_EID, CFE_EVS_ERROR,
+//		"%s error: OS_QueuePut failed: result = %d",
+//		QueueTaskText, QueueResult);
+//	}
+//
+//	/* */
+//	
+//	/* Remove before flight */
+//	/* system(full_sys_call); */
+//
 	return;
 } /* End of TIM_TakeStill() */
 
@@ -365,75 +368,75 @@ void TIM_SendImageFile(void)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void TIM_SendTempsFile(void)
 {
-	/* Creating a pointer to handle the TIMMsgPtr as TIM_VID_CMD_PKT  */
-	TIM_VID_CMD_PKT_t *VidCmdPtr;
-	VidCmdPtr = (TIM_VID_CMD_PKT_t *) TIMMsgPtr;
-
-	/* virtual_path[] holds the location where ALL videos will be saved */
-	char virtual_path[] = {"/ram/videos/"};
-	char local_path[ OS_MAX_PATH_LEN ];
-	
-	/*
-	** Feedback variable from OS_Translate
-	*/
-	int32 translate_status = 0;
-	/*
-	** Feedback variable from OS_QueuePut
-	*/
-	int32 QueueResult;
-	
-	/* Holds all command arguments except output location/file */
-	char raspi_call[ TIM_RASPICALL_MAX_LEN ];
-	
-	/* Holds location/filename */
-	char full_path[ OS_MAX_PATH_LEN ];
-	
-	/* Holds full command to be sent to Cameraman */
-	char full_sys_call[ TIM_SYS_CALL_MAX_LEN ];
-	
-	/*
-	** Translate the path
-	*/
-	if ( OS_TranslatePath(virtual_path, (char *)local_path) != OS_FS_SUCCESS )
-	{
-		translate_status = OS_FS_ERR_PATH_INVALID;
-		OS_printf("OS_TranslatePath Status: %d \n", translate_status);
-		return;
-	}
-	
-	
-	/* Concatonate the command, path and filename */
-	sprintf(raspi_call,
-		 "raspivid -n -t %d -h 400 -w 400 -o ",
-		 VidCmdPtr->VidLength);
-	sprintf(full_path,
-		 "%s%s",
-		 local_path, VidCmdPtr->VidName);
-	sprintf(full_sys_call,
-		 "%s%s",
-		 raspi_call, full_path);
-
-	OS_printf("system call shown below:\n%s\n", full_sys_call);
-
-	/* Move full_sys_call onto OS_Queue */
-	/* the last parameter is currently unused */
-	QueueResult = OS_QueuePut( Cameraman_QueueID,
-					full_sys_call,
-					TIM_SYS_CALL_MAX_LEN,
-					0 );
-	if ( QueueResult != OS_SUCCESS )
-	{
-		char *QueueTaskText = "Cameraman Queue Put";
-		CFE_EVS_SendEvent(TIM_QUEUE_PUT_ERR_EID, CFE_EVS_ERROR,
-		"%s error: OS_QueuePut failed: result = %d",
-		QueueTaskText, QueueResult);
-	}
-
-	/* */
-	
-	/* Remove before flight */
-	/* system(full_sys_call); */
-
+//	/* Creating a pointer to handle the TIMMsgPtr as TIM_VID_CMD_PKT  */
+//	TIM_VID_CMD_PKT_t *VidCmdPtr;
+//	VidCmdPtr = (TIM_VID_CMD_PKT_t *) TIMMsgPtr;
+//
+//	/* virtual_path[] holds the location where ALL videos will be saved */
+//	char virtual_path[] = {"/ram/videos/"};
+//	char local_path[ OS_MAX_PATH_LEN ];
+//	
+//	/*
+//	** Feedback variable from OS_Translate
+//	*/
+//	int32 translate_status = 0;
+//	/*
+//	** Feedback variable from OS_QueuePut
+//	*/
+//	int32 QueueResult;
+//	
+//	/* Holds all command arguments except output location/file */
+//	char raspi_call[ TIM_RASPICALL_MAX_LEN ];
+//	
+//	/* Holds location/filename */
+//	char full_path[ OS_MAX_PATH_LEN ];
+//	
+//	/* Holds full command to be sent to Cameraman */
+//	char full_sys_call[ TIM_SYS_CALL_MAX_LEN ];
+//	
+//	/*
+//	** Translate the path
+//	*/
+//	if ( OS_TranslatePath(virtual_path, (char *)local_path) != OS_FS_SUCCESS )
+//	{
+//		translate_status = OS_FS_ERR_PATH_INVALID;
+//		OS_printf("OS_TranslatePath Status: %d \n", translate_status);
+//		return;
+//	}
+//	
+//	
+//	/* Concatonate the command, path and filename */
+//	sprintf(raspi_call,
+//		 "raspivid -n -t %d -h 400 -w 400 -o ",
+//		 VidCmdPtr->VidLength);
+//	sprintf(full_path,
+//		 "%s%s",
+//		 local_path, VidCmdPtr->VidName);
+//	sprintf(full_sys_call,
+//		 "%s%s",
+//		 raspi_call, full_path);
+//
+//	OS_printf("system call shown below:\n%s\n", full_sys_call);
+//
+//	/* Move full_sys_call onto OS_Queue */
+//	/* the last parameter is currently unused */
+//	QueueResult = OS_QueuePut( Cameraman_QueueID,
+//					full_sys_call,
+//					TIM_SYS_CALL_MAX_LEN,
+//					0 );
+//	if ( QueueResult != OS_SUCCESS )
+//	{
+//		char *QueueTaskText = "Cameraman Queue Put";
+//		CFE_EVS_SendEvent(TIM_QUEUE_PUT_ERR_EID, CFE_EVS_ERROR,
+//		"%s error: OS_QueuePut failed: result = %d",
+//		QueueTaskText, QueueResult);
+//	}
+//
+//	/* */
+//	
+//	/* Remove before flight */
+//	/* system(full_sys_call); */
+//
 	return;
 } /* End of TIM_TakeVideo() */
 
