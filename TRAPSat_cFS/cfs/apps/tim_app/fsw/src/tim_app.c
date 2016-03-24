@@ -205,7 +205,7 @@ void TIM_ProcessGroundCommand(void)
 		CFE_EVS_SendEvent(TIM_COMMAND_VID_EID,CFE_EVS_INFORMATION,
 					 "TIM: Send Temps File Command Received");
 		TIM_HkTelemetryPkt.tim_command_count++;
-		TIM_HkTelemetryPkt.tim_command_video_count++;
+		TIM_HkTelemetryPkt.tim_command_temps_count++;
 		TIM_SerialQueueInfo.on_queue++;
 		break;
 
