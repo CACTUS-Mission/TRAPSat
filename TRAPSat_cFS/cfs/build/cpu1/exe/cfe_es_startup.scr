@@ -5,6 +5,7 @@ CFE_APP, /cf/apps/to_lab.so,      TO_Lab_AppMain,  TO_LAB_APP,   70,   8192, 0x0
 CFE_APP, /cf/apps/sch_lab.so,     SCH_Lab_AppMain, SCH_LAB_APP,  80,   8192, 0x0, 0;
 CFE_APP, /cf/apps/ads1115.so,     ADS1115_AppMain, ADS1115_APP,  90,   8192, 0x0, 0;
 CFE_APP, /cf/apps/vc0706.so,      VC0706_AppMain,  VC0706_APP,   90,   8192, 0x0, 0;
+CFE_APP, /cf/apps/tim_app.so,      TIM_AppMain,  TIM_APP,   90,   8192, 0x0, 0;
 !
 ! Startup script fields:
 ! 1. Object Type      -- CFE_APP for an Application, or CFE_LIB for a library.
