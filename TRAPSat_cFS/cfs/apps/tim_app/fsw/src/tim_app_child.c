@@ -205,6 +205,7 @@ void TIM_ChildLoop(void)
 //		}
 
 		OS_printf("Inside TIM child loop\n");
+		OS_TaskDelay(5000);
 	}
 	return;
 }
