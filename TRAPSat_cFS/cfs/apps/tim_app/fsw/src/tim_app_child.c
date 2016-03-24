@@ -24,8 +24,8 @@
 /* 
  *  Variables from tim_app.c to be used in tim_app_child.c 
  */
-extern TIM_Cameraman_t  TIM_CameramanPkt;
-extern uint32		  Cameraman_QueueID;
+extern TIM_SerialQueue_t   TIM_SerialQueueInfo;
+//extern uint32		       Cameraman_QueueID;
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -55,7 +55,7 @@ int32 TIM_ChildInit(void)
 	}
 	
 	/* Create Cameraman Queue */
-	QueueResult = OS_QueueCreate( &Cameraman_QueueID,
+	QueueResult = OS_QueueCreate( &TIM_SerialQueueInfo.serial_qid,
 					"Cameraman_QueueName",
 					TIM_QUEUE_MAX_LEN,
 					TIM_SYS_CALL_MAX_LEN,
@@ -122,7 +122,7 @@ void TIM_ChildLoop(void)
 		uint32 size_copied;
 		
 		/* Pull From Queue */
-		QueueResult = OS_QueueGet( Cameraman_QueueID,
+		QueueResult = OS_QueueGet( TIM_SerialQueueInfo.serial_qid,
 						full_sys_call,
 						TIM_SYS_CALL_MAX_LEN,
 						&size_copied,
@@ -130,16 +130,16 @@ void TIM_ChildLoop(void)
 		if ( QueueResult == OS_SUCCESS )
 		{
 			/* Decrement Queue Counter */					
-			TIM_CameramanPkt.on_queue--;
+			TIM_SerialQueueInfo.on_queue--;
 				
 			/* 
 			** Process system calls from queue
 			** set cam_status true while camera is active
 			*/
-			TIM_CameramanPkt.cam_status = 1;
+			TIM_SerialQueueInfo.serial_status = 1;
 			OS_printf("System Call Shown Below:\n%s\n", full_sys_call);
 			system(full_sys_call);
-			TIM_CameramanPkt.cam_status = 0;
+			TIM_SerialQueueInfo.serial_status = 0;
 
 			/*
 			** Parse the command argument and the filepath argument
@@ -154,7 +154,7 @@ void TIM_ChildLoop(void)
 			if ( strcmp(command, "raspistill") == 0 )
 			{
 				/* Move picture path to HouseKeeping Packet */
-				memcpy(TIM_HkTelemetryPkt.tim_last_pic_loc, filepath, OS_MAX_PATH_LEN);
+				memcpy(TIM_HkTelemetryPkt.tim_last_image_name, filepath, OS_MAX_PATH_LEN);
 
 				char *TaskText = "Cameraman Proc: raspistill";
 				CFE_EVS_SendEvent(TIM_COMMAND_PIC_EID, CFE_EVS_INFORMATION,
@@ -163,7 +163,7 @@ void TIM_ChildLoop(void)
 			else if ( strcmp(command, "raspivid") == 0 )
 			{
 				/* Move video path to HouseKeeping Packet */
-				memcpy(TIM_HkTelemetryPkt.tim_last_vid_loc, filepath, OS_MAX_PATH_LEN);
+				memcpy(TIM_HkTelemetryPkt.tim_last_image_name, filepath, OS_MAX_PATH_LEN);
 
 				char *TaskText = "Cameraman Proc: raspivid";
 				CFE_EVS_SendEvent(TIM_COMMAND_VID_EID, CFE_EVS_INFORMATION,

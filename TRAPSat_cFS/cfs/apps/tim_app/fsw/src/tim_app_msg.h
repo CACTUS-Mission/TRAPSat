@@ -79,17 +79,19 @@ typedef struct
 /*
 ** Type definition (TIM App housekeeping)
 */
+/* tim_last_image_sent[OS_MAX_PATH_LEN] < 32 ? */
+/* tim_last_temps_sent[OS_MAX_PATH_LEN] == 22 chars */
 typedef struct 
 {
-    uint8              TlmHeader[CFE_SB_TLM_HDR_SIZE];
-    uint8              tim_command_count;
-    uint8              tim_command_error_count;
-    char               spare[2];
-    uint8              tim_command_picture_count;
-    uint8              tim_command_video_count;
-    char               tim_last_pic_loc[OS_MAX_PATH_LEN];
-    char               tim_last_vid_loc[OS_MAX_PATH_LEN];
-    TIM_Cameraman_t  CameraInfo;
+    uint8               TlmHeader[CFE_SB_TLM_HDR_SIZE];
+    uint8               tim_command_count;
+    uint8               tim_command_error_count;
+    char                spare[2];
+    uint8               tim_command_image_count;
+    uint8               tim_command_temps_count;
+    char                tim_last_image_sent[OS_MAX_PATH_LEN]; 
+    char                tim_last_temps_sent[OS_MAX_PATH_LEN]; 
+    TIM_SerialQueue_t   SerialQueueInfo;
 
 }   OS_PACK tim_hk_tlm_t  ;
 
