@@ -154,7 +154,7 @@ void TIM_ChildLoop(void)
 			if ( strcmp(command, "raspistill") == 0 )
 			{
 				/* Move picture path to HouseKeeping Packet */
-				memcpy(TIM_HkTelemetryPkt.tim_last_image_name, filepath, OS_MAX_PATH_LEN);
+				memcpy(TIM_HkTelemetryPkt.tim_last_image_sent, filepath, OS_MAX_PATH_LEN);
 
 				char *TaskText = "Cameraman Proc: raspistill";
 				CFE_EVS_SendEvent(TIM_COMMAND_PIC_EID, CFE_EVS_INFORMATION,
@@ -163,7 +163,7 @@ void TIM_ChildLoop(void)
 			else if ( strcmp(command, "raspivid") == 0 )
 			{
 				/* Move video path to HouseKeeping Packet */
-				memcpy(TIM_HkTelemetryPkt.tim_last_image_name, filepath, OS_MAX_PATH_LEN);
+				memcpy(TIM_HkTelemetryPkt.tim_last_image_sent, filepath, OS_MAX_PATH_LEN);
 
 				char *TaskText = "Cameraman Proc: raspivid";
 				CFE_EVS_SendEvent(TIM_COMMAND_VID_EID, CFE_EVS_INFORMATION,
