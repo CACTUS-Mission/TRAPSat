@@ -95,9 +95,9 @@ void TIM_ChildLoop(void)
 {
 	for(;;)
 	{
-		OS_printf("\n\n");
-		OS_printf("Inside TIM child loop\n");
-		OS_printf("\n\n");
+		//OS_printf("\n\n");
+		OS_printf("\n\nStill Inside TIM child loop\n\n");
+		//OS_printf("\n\n");
 		OS_TaskDelay(5000);
 	}
 	return;
