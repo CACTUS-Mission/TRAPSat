@@ -291,7 +291,7 @@ void TIM_SendImageFile(void)
     TIM_IMAGE_CMD_PKT_t *ImageCmdPtr;
     ImageCmdPtr = (TIM_IMAGE_CMD_PKT_t *) TIMMsgPtr;
 
-    OS_printf("Received TIM_SendImageFile() with %s\n", ImageCmdPtr.ImageName);
+    OS_printf("Received TIM_SendImageFile() with %s\n", ImageCmdPtr->ImageName);
 
     char file_path[OS_MAX_PATH_LEN];
 
@@ -325,7 +325,7 @@ void TIM_SendTempsFile(void)
     TIM_TEMPS_CMD_PKT_t *TempsCmdPtr;
     TempsCmdPtr = (TIM_TEMPS_CMD_PKT_t *) TIMMsgPtr;
 
-    OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr.TempsName);
+    OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
 
     char file_path[OS_MAX_PATH_LEN];
 
