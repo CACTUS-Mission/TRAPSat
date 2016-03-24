@@ -20,8 +20,10 @@
 #define TIM_COMMANDRST_INF_EID        4
 #define TIM_INVALID_MSGID_ERR_EID     5 
 #define TIM_LEN_ERR_EID               6 
-#define TIM_COMMAND_PIC_EID           7
-#define TIM_COMMAND_VID_EID           8
+
+#define TIM_COMMAND_IMAGE_EID           7
+#define TIM_COMMAND_TEMPS_EID           8
+
 #define TIM_CHILD_INIT_EID            9
 #define TIM_CHILD_INIT_ERR_EID       10 
 #define TIM_QUEUE_CREATE_ERR_EID     11

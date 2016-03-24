@@ -28,6 +28,10 @@
 /***********************************************************************/
 
 #define TIM_PIPE_DEPTH		        32
+
+#define TIM_MAX_IMAGE_NAME_LEN      15
+#define TIM_MAX_TEMPS_NAME_LEN      22
+
 #define TIM_CHILD_TASK_NAME		    "TIM_CAMERAMAN"
 #define TIM_CHILD_TASK_STACK_SIZE	8192               
 #define TIM_CHILD_TASK_PRIORITY	    98

@@ -35,45 +35,20 @@ typedef struct
 
 /***************************************************************************/
 
-/*
-** TIM_PIC_CMD_PKT_t
-** Type definition (send picture with file name)
-**
-**  uint8 CmdHeader[] standard buffer for ccsds cmd pkt
-**
-**  char Picture File Name (from '/ram/images/' ) 
-**
-**  tim_sequence can be removed 
-**
-**  uint8 spare[3] can be removed (it was a overfill buf)
-*/
 typedef struct
 {
     uint8              CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char	           PicName[32];
-    uint8              tim_sequence;
-    uint8              spare[3];
-} TIM_PIC_CMD_PKT_t;
+    char	           ImageName[TIM_MAX_IMAGE_NAME_LEN];
+} TIM_IMAGE_CMD_PKT_t;
 
 
 /***************************************************************************/
 
-/*
- Type definition (TIM_TakeVideo command pkt - take video with file name)
-
- char spare is used as a pillow for overrunning text in the filename
-	this should be handled by the python truncation, 
-	but is added as an extra precaution
-
-*/
-
 typedef struct
 {
     uint8              CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char	       VidName[32];
-    char               spare[2];
-    uint16             VidLength;
-} TIM_VID_CMD_PKT_t;
+    char	           TempsName[TIM_MAX_TEMPS_NAME_LEN];
+} TIM_TEMPS_CMD_PKT_t;
 
 /*************************************************************************/
 /*
@@ -81,6 +56,13 @@ typedef struct
 */
 /* tim_last_image_sent[OS_MAX_PATH_LEN] < 32 ? */
 /* tim_last_temps_sent[OS_MAX_PATH_LEN] == 22 chars */
+/* 
+** tim_last_sent =
+** 0 if nothing sent
+** 1 if last sent was image
+** 2 if last sent was temps
+** 3 if busy?
+*/
 typedef struct 
 {
     uint8               TlmHeader[CFE_SB_TLM_HDR_SIZE];
@@ -90,7 +72,8 @@ typedef struct
     uint8               tim_command_image_count;
     uint8               tim_command_temps_count;
     char                tim_last_image_sent[OS_MAX_PATH_LEN]; 
-    char                tim_last_temps_sent[OS_MAX_PATH_LEN]; 
+    char                tim_last_temps_sent[OS_MAX_PATH_LEN];
+    uint8               tim_last_sent;
     TIM_SerialQueue_t   SerialQueueInfo;
 
 }   OS_PACK tim_hk_tlm_t  ;
