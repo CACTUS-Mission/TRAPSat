@@ -238,7 +238,7 @@ void TIM_ReportHousekeeping(void)
 		(char *) &TIM_SerialQueueInfo,
 		sizeof(TIM_SerialQueue_t));
     */
-        
+
 	CFE_SB_TimeStampMsg((CFE_SB_Msg_t *) &TIM_HkTelemetryPkt);
 	CFE_SB_SendMsg((CFE_SB_Msg_t *) &TIM_HkTelemetryPkt);
 	return;
@@ -291,15 +291,15 @@ void TIM_SendImageFile(void)
     TIM_IMAGE_CMD_PKT_t *ImageCmdPtr;
     ImageCmdPtr = (TIM_IMAGE_CMD_PKT_t *) TIMMsgPtr;
 
-    OS_printf("Received TIM_SendImageFile() with %s\n", ImageCmdPtr.ImageName);
+    OS_printf("Received TIM_SendImageFile() with %s\n", *ImageCmdPtr.ImageName);
 
     char file_path[OS_MAX_PATH_LEN];
 
     OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
     
-    memset(filepath, '\0', sizeof(file_path));
+    memset(file_path, '\0', sizeof(file_path));
 
-    if((os_ret_val = snprintf(file_path, "/ram/images/%s", ImageCmdPtr.ImageName)) < 0)
+    if((os_ret_val = snprintf(file_path, "/ram/images/%s", *ImageCmdPtr.ImageName)) < 0)
     {
         OS_printf("TIM snprintf failure: ret = %d\n", os_ret_val);
     }
