@@ -121,88 +121,90 @@ void TIM_ChildLoop(void)
 		char full_sys_call[ TIM_SYS_CALL_MAX_LEN ];
 		uint32 size_copied;
 		
-		/* Pull From Queue */
-		QueueResult = OS_QueueGet( TIM_SerialQueueInfo.serial_qid,
-						full_sys_call,
-						TIM_SYS_CALL_MAX_LEN,
-						&size_copied,
-						OS_PEND );
-		if ( QueueResult == OS_SUCCESS )
-		{
-			/* Decrement Queue Counter */					
-			TIM_SerialQueueInfo.on_queue--;
-				
-			/* 
-			** Process system calls from queue
-			** set cam_status true while camera is active
-			*/
-			TIM_SerialQueueInfo.serial_status = 1;
-			OS_printf("System Call Shown Below:\n%s\n", full_sys_call);
-			system(full_sys_call);
-			TIM_SerialQueueInfo.serial_status = 0;
+//		/* Pull From Queue */
+//		QueueResult = OS_QueueGet( TIM_SerialQueueInfo.serial_qid,
+//						full_sys_call,
+//						TIM_SYS_CALL_MAX_LEN,
+//						&size_copied,
+//						OS_PEND );
+//		if ( QueueResult == OS_SUCCESS )
+//		{
+//			/* Decrement Queue Counter */					
+//			TIM_SerialQueueInfo.on_queue--;
+//				
+//			/* 
+//			** Process system calls from queue
+//			** set cam_status true while camera is active
+//			*/
+//			TIM_SerialQueueInfo.serial_status = 1;
+//			OS_printf("System Call Shown Below:\n%s\n", full_sys_call);
+//			system(full_sys_call);
+//			TIM_SerialQueueInfo.serial_status = 0;
+//
+//			/*
+//			** Parse the command argument and the filepath argument
+//			** "raspistill" or "raspivid" expected to be first string
+//			** sscanf skips everything after first string until it gets
+//			** to the last string, starting at '.'
+//			*/
+//			char command[ 15 ]; 
+//			char filepath[ OS_MAX_PATH_LEN ];
+//			sscanf(full_sys_call, "%s %*[^'.'] %s", command, filepath);
+//			
+//			if ( strcmp(command, "raspistill") == 0 )
+//			{
+//				/* Move picture path to HouseKeeping Packet */
+//				memcpy(TIM_HkTelemetryPkt.tim_last_image_sent, filepath, OS_MAX_PATH_LEN);
+//
+//				char *TaskText = "Cameraman Proc: raspistill";
+//				CFE_EVS_SendEvent(TIM_COMMAND_PIC_EID, CFE_EVS_INFORMATION,
+//				"%s : Complete", TaskText);
+//			}
+//			else if ( strcmp(command, "raspivid") == 0 )
+//			{
+//				/* Move video path to HouseKeeping Packet */
+//				memcpy(TIM_HkTelemetryPkt.tim_last_image_sent, filepath, OS_MAX_PATH_LEN);
+//
+//				char *TaskText = "Cameraman Proc: raspivid";
+//				CFE_EVS_SendEvent(TIM_COMMAND_VID_EID, CFE_EVS_INFORMATION,
+//				"%s : Complete", TaskText);
+//			}	
+//			else
+//			{
+//				char *TaskText = "Cameraman Proc: UNKNOWN";
+//				int32 TaskResult = 0;
+//				CFE_EVS_SendEvent(TIM_CHILD_UNKWN_ERR_EID, CFE_EVS_ERROR,
+//				"%s in TIM_ChildLoop(): Check execution success : result = %d",
+//				TaskText, TaskResult);
+//			}
+//		}
+//		else
+//		{
+//			switch (QueueResult)
+//			{
+//				case OS_ERR_INVALID_ID:
+//					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
+//					break;
+//				case OS_INVALID_POINTER:
+//					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
+//					break;
+//				case OS_QUEUE_TIMEOUT:
+//					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
+//					break;
+//				case OS_QUEUE_INVALID_SIZE:
+//					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
+//					break;
+//				case OS_QUEUE_EMPTY:
+//					OS_printf("Cameraman OS_QueueGet error: OS_QUEUE_EMPTY\n");
+//					break;
+//				default: /* All cases should be covered */
+//					OS_printf("Cameraman QueueResult not what expected!");
+//			}	
+//			/* Repeat Pend after 10 seconds */
+//			OS_TaskDelay(10000);
+//		}
 
-			/*
-			** Parse the command argument and the filepath argument
-			** "raspistill" or "raspivid" expected to be first string
-			** sscanf skips everything after first string until it gets
-			** to the last string, starting at '.'
-			*/
-			char command[ 15 ]; 
-			char filepath[ OS_MAX_PATH_LEN ];
-			sscanf(full_sys_call, "%s %*[^'.'] %s", command, filepath);
-			
-			if ( strcmp(command, "raspistill") == 0 )
-			{
-				/* Move picture path to HouseKeeping Packet */
-				memcpy(TIM_HkTelemetryPkt.tim_last_image_sent, filepath, OS_MAX_PATH_LEN);
-
-				char *TaskText = "Cameraman Proc: raspistill";
-				CFE_EVS_SendEvent(TIM_COMMAND_PIC_EID, CFE_EVS_INFORMATION,
-				"%s : Complete", TaskText);
-			}
-			else if ( strcmp(command, "raspivid") == 0 )
-			{
-				/* Move video path to HouseKeeping Packet */
-				memcpy(TIM_HkTelemetryPkt.tim_last_image_sent, filepath, OS_MAX_PATH_LEN);
-
-				char *TaskText = "Cameraman Proc: raspivid";
-				CFE_EVS_SendEvent(TIM_COMMAND_VID_EID, CFE_EVS_INFORMATION,
-				"%s : Complete", TaskText);
-			}	
-			else
-			{
-				char *TaskText = "Cameraman Proc: UNKNOWN";
-				int32 TaskResult = 0;
-				CFE_EVS_SendEvent(TIM_CHILD_UNKWN_ERR_EID, CFE_EVS_ERROR,
-				"%s in TIM_ChildLoop(): Check execution success : result = %d",
-				TaskText, TaskResult);
-			}
-		}
-		else
-		{
-			switch (QueueResult)
-			{
-				case OS_ERR_INVALID_ID:
-					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
-					break;
-				case OS_INVALID_POINTER:
-					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
-					break;
-				case OS_QUEUE_TIMEOUT:
-					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
-					break;
-				case OS_QUEUE_INVALID_SIZE:
-					OS_printf("Cameraman OS_QueueGet error: OS_ERR_INVALID_ID\n");
-					break;
-				case OS_QUEUE_EMPTY:
-					OS_printf("Cameraman OS_QueueGet error: OS_QUEUE_EMPTY\n");
-					break;
-				default: /* All cases should be covered */
-					OS_printf("Cameraman QueueResult not what expected!");
-			}	
-			/* Repeat Pend after 10 seconds */
-			OS_TaskDelay(10000);
-		}
+		OS_printf("Inside TIM child loop\n");
 	}
 	return;
 }
