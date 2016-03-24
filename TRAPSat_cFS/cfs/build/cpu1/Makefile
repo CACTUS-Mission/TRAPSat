@@ -39,7 +39,7 @@
 #===============================================================================
 
 # List of apps/libs to include in the build
-THE_APPS := sample_lib sample_app ads1115
+THE_APPS := sample_lib sample_app ads1115 vc0706
 THE_APPS += ci_lab to_lab sch_lab
 # THE_APPS += cfs_lib
 # THE_APPS += cf cs ds fm hk hs lc md mm sc sch

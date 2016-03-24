@@ -26,6 +26,7 @@
 
 #include "sample_app_msgids.h"
 #include "ads1115_msgids.h"
+#include "vc0706_msgids.h"
 
 #if 0
 #include "sc_msgids.h"
@@ -73,6 +74,7 @@ SCH_LAB_ScheduleTable_t SCH_LAB_ScheduleTable[SCH_LAB_MAX_SCHEDULE_ENTRIES] =
      { TO_LAB_SEND_HK_MID,   4, 0 },
      { SAMPLE_APP_SEND_HK_MID,   4, 0 },
      { ADS1115_SEND_HK_MID,   4, 0 },
+     { VC0706_SEND_HK_MID,   4, 0 },
 
 #if 0
      { SC_SEND_HK_MID,       4, 0 },

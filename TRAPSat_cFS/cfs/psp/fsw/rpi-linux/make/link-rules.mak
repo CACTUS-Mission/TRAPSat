@@ -23,7 +23,7 @@ LDFLAGS = -Wl,-export-dynamic
 ##
 ## Libraries to link in
 ##
-LIBS = -lm -lstdc++ -lpthread -ldl -lrt 
+LIBS = -lm -lstdc++ -lpthread -ldl -lrt -lwiringPi
 
 ##
 ## cFE Core Link Rule
