@@ -56,7 +56,7 @@ typedef struct
 {
 	uint8	on_queue;
 	uint8	cam_status;
-} tim_Cameraman_t;
+} PICAM_Cameraman_t;
 
 
 /****************************************************************************/
