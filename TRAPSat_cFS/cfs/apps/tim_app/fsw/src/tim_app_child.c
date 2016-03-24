@@ -25,6 +25,7 @@
  *  Variables from tim_app.c to be used in tim_app_child.c 
  */
 extern TIM_SerialQueue_t   TIM_SerialQueueInfo;
+extern ads1115_hk_tlm_t   ADS1115_HkTelemetryPkt;
 //extern uint32		       Cameraman_QueueID;
 
 
@@ -203,8 +204,9 @@ void TIM_ChildLoop(void)
 //			/* Repeat Pend after 10 seconds */
 //			OS_TaskDelay(10000);
 //		}
-
+		OS_printf("\n\n");
 		OS_printf("Inside TIM child loop\n");
+		OS_printf("\n\n");
 		OS_TaskDelay(5000);
 	}
 	return;
