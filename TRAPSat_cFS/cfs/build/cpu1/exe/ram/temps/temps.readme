@@ -1,0 +1,7 @@
+Directory: /home/pi/TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe/ram/temps
+
+TRAPSat cFS needs this directory for writing temperature data.
+
+temperature filename format:
+
+temperature file format:
