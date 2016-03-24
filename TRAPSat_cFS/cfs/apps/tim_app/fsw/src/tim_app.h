@@ -27,17 +27,17 @@
 
 /***********************************************************************/
 
-#define tim_PIPE_DEPTH		        32
-#define tim_CHILD_TASK_NAME		    "tim_CAMERAMAN"
-#define tim_CHILD_TASK_STACK_SIZE	8192               
-#define tim_CHILD_TASK_PRIORITY	    98
-#define tim_RASPICALL_MAX_LEN		64
-#define tim_SYS_CALL_MAX_LEN		tim_RASPICALL_MAX_LEN + OS_MAX_PATH_LEN
+#define TIM_PIPE_DEPTH		        32
+#define TIM_CHILD_TASK_NAME		    "TIM_CAMERAMAN"
+#define TIM_CHILD_TASK_STACK_SIZE	8192               
+#define TIM_CHILD_TASK_PRIORITY	    98
+#define TIM_RASPICALL_MAX_LEN		64
+#define TIM_SYS_CALL_MAX_LEN		TIM_RASPICALL_MAX_LEN + OS_MAX_PATH_LEN
 
 /*
 ** This is the max amount of 
 */
-#define tim_QUEUE_MAX_LEN		    10
+#define TIM_QUEUE_MAX_LEN		    10
 
 /************************************************************************
 ** Type Definitions
@@ -66,15 +66,15 @@ typedef struct
 ** Note: Except for the entry point (tim_AppMain), these
 **       functions are not called from any other source module.
 */
-void tim_AppMain(void);
-void tim_AppInit(void);
-void tim_ProcessCommandPacket(void);
-void tim_ProcessGroundCommand(void);
-void tim_ReportHousekeeping(void);
-void tim_ResetCounters(void);
-void tim_SendImageFile(void);
-void tim_SendTempsFile(void);
+void TIM_AppMain(void);
+void TIM_AppInit(void);
+void TIM_ProcessCommandPacket(void);
+void TIM_ProcessGroundCommand(void);
+void TIM_ReportHousekeeping(void);
+void TIM_ResetCounters(void);
+void TIM_SendImageFile(void);
+void TIM_SendTempsFile(void);
 
-boolean tim_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength);
+boolean TIM_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength);
 
 #endif /* _tim_app_h_ */
