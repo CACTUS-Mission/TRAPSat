@@ -2,15 +2,23 @@
 
 ### BEGIN INIT INFO
 # Provides:          CFS
-# Required-Start:    $local_fs $time $network $syslog
-# Required-Stop:     $local_fs $time $network $syslog
+# Required-Start:    $local_fs $time $syslog
+# Required-Stop:     $local_fs $time $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Starts the CFS
-# Description:       place file in "/etc/init.d". 
-#                    use inssver command to install
-#                    into rc?.d files 
+# Description:       this script will start the CFS 
+#                    from the /etc/init.d
 ### END INIT INFO
+
+#
+# to install this script in the /etc/init.d you must
+# move the file to that locaion and type "sudo insserv CFS.sh"
+#
+# this script use the daemon command 
+# you may need to install, upgrade, or update the command
+# get the command with "sudo apt-get $ARG daemon"
+#
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
 DIR=/home/pi/TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe
