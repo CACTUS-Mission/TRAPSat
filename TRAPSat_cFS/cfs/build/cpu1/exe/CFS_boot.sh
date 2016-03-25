@@ -58,6 +58,16 @@ do_stop () {
     #log_end_msg $?
 }
 
+set(){
+    log_daemon_msg "Seting up CFS.sh daemon"
+    sudo apt-get install daemon
+    sudo apt-get update daemon
+    sudo apt-get upgrade daemon
+    sudo insserv CFS.sh
+    log_end_msg $?
+}
+
+
 case "$1" in
 
     start|stop)
@@ -69,12 +79,16 @@ case "$1" in
         do_start
         ;;
 
+    setup)
+        set
+        ;;
+
     status)
         status_of_proc "$DAEMON_NAME" "$DAEMON" && exit 0 || exit $?
         ;;
 
     *)
-        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|restart|status}"
+        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|setup|restart|status}"
         exit 1
         ;;
 
