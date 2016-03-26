@@ -248,27 +248,30 @@ void ADS1115_ChildLoop(void)
 
 int ADS1115_SendTimFileName(char *file_name)
 {
-    //CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_HkTelemetryPkt);
-    //CFE_SB_InitMsg(void *MsgPtr, CFE_SB_MsgId_t MsgId, uint16 Length, boolean Clear );
-    //int32 CFE_SB_SetCmdCode(CFE_SB_MsgPtr_t MsgPtr, uint16 CmdCode);
-    //void CFE_SB_GenerateChecksum(CFE_SB_MsgPtr_t MsgPtr);   
-
-    OS_printf("Initializing msg for TIM.\n");
+    /*
+    ** Initialize message with TIM app info
+    ** ADS1115_TEMPS_CMD_MID = TIM_APP_CMD_MID = (0x188A)
+    ** ADS1115_TEMPS_CMD_CODE = TIM_APP_SEND_TEMPS_CC = 4
+    ** ADS1115_TEMPS_CMD_LNGTH = sizeof( ADS1115_TEMPS_CMD_PKT_t )
+    */
     CFE_SB_InitMsg((void *) &ADS1115_TempsCmdPkt, (CFE_SB_MsgId_t) ADS1115_TEMPS_CMD_MID, (uint16) ADS1115_TEMPS_CMD_LNGTH, (boolean) 1 );
-    OS_printf("Setting command code for TIM msg.\n");
+
     int32 ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt, (uint16) ADS1115_TEMPS_CMD_CODE);
-    OS_printf("Setting command code returned [%d].\n", ret);
 
+    if(ret < 0)
+    {
+        OS_printf("ADS1115: SendTimFileName() Set Cmd Code Ret [%d].\n", ret);
+    }
 
-    OS_printf("Copying filename [%s] into command packet.\n", file_name);
+    //OS_printf("Copying filename [%s] into command packet.\n", file_name);
     snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(ADS1115_TempsCmdPkt.TempsName), "%s", file_name);
-    OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
+    //OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
 
-    OS_printf("Generating checksum for TIM msg.\n");
     CFE_SB_GenerateChecksum((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt);
-    OS_printf("Sending message to TIM.\n");
+    
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_TempsCmdPkt);
-    OS_printf("Message sent.\n");    
+
+    //OS_printf("Message sent.\n");    
 
     return 0;
 }
