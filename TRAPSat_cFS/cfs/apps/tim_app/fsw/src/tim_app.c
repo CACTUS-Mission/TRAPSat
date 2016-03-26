@@ -299,7 +299,7 @@ void TIM_SendImageFile(void)
     
     memset(file_path, '\0', sizeof(file_path));
 
-    if((os_ret_val = snprintf(file_path, "/ram/images/%s", ImageCmdPtr->ImageName)) < 0)
+    if((os_ret_val = snprintf(file_path, sizeof(file_path), "/ram/images/%s", ImageCmdPtr->ImageName)) < 0)
     {
         OS_printf("TIM snprintf failure: ret = %d\n", os_ret_val);
     }
@@ -333,7 +333,7 @@ void TIM_SendTempsFile(void)
     
     memset(file_path, '\0', sizeof(file_path));
 
-    if((os_ret_val = snprintf(file_path, "/ram/temps/%s", TempsCmdPtr->TempsName)) < 0)
+    if((os_ret_val = snprintf(file_path, sizeof(file_path), "/ram/temps/%s", TempsCmdPtr->TempsName)) < 0)
     {
         OS_printf("TIM snprintf failure: ret = %d\n", os_ret_val);
     }
