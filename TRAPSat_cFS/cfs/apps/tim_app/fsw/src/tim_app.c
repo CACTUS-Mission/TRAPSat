@@ -406,7 +406,7 @@ void TIM_SendTempsFile(void)
 
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1); /* check endianess */
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1)); /* check endianess */
     for(index = 0; index < sizeof(TempsCmdPtr->TempsName); index++)
     {
         serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) TempsCmdPtr->TempsName) + index)));
