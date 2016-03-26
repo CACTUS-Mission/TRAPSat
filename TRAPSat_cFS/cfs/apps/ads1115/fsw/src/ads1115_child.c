@@ -257,11 +257,11 @@ int ADS1115_SendTimFileName(char *file_name)
     CFE_SB_InitMsg((void *) &ADS1115_TempsCmdPkt, (CFE_SB_MsgId_t) ADS1115_TEMPS_CMD_MID, (uint16) ADS1115_TEMPS_CMD_LNGTH, (boolean) 1 );
     OS_printf("Setting command code for TIM msg.\n");
     int32 ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt, (uint16) ADS1115_TEMPS_CMD_CODE);
-    OS_printf("Setting command code returned [%d].\n");
+    OS_printf("Setting command code returned [%d].\n", ret);
 
 
     OS_printf("Copying filename [%s] into command packet.\n", file_name);
-    snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(TempsName), "%s", file_name)
+    snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(ADS1115_TempsCmdPkt.TempsName), "%s", file_name)
     OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
 
     OS_printf("Generating checksum for TIM msg.\n");
