@@ -24,6 +24,9 @@ CFE_SB_PipeId_t    ADS1115_CommandPipe;
 CFE_SB_MsgPtr_t    ADS1115_MsgPtr;
 ads1115_hk_tlm_t   ADS1115_HkTelemetryPkt;
 ADS1115_Ch_Data_t  ADS1115_ChannelData;
+
+ADS1115_TEMPS_CMD_PKT_t ADS1115_TempsCmdPkt;
+
 uint32             ADS1115_ADC_ChildTaskID;
 uint8              ads1115_childtask_read_once;
 

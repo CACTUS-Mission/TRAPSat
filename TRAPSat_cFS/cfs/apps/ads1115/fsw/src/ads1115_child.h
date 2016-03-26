@@ -116,6 +116,14 @@ int ADS1115_ReadADCChannels(void);
 int ADS1115_StoreADCChannels(void);
 
 
+/*
+** int ADS1115_SendTimFileName(char *file_name);
+** Returns 0 on success
+** Returns -1 on error
+*/
+int ADS1115_SendTimFileName(char *file_name);
+
+
 #endif /* _ads1115_child_h_ */
 
 /************************/

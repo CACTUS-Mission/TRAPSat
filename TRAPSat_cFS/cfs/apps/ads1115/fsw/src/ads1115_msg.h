@@ -60,6 +60,25 @@ typedef struct
 
 #define ADS1115_HK_TLM_LNGTH   sizeof ( ads1115_hk_tlm_t )
 
+/*************************************************************************/
+
+/*
+** Definitions redundantly copied from TIM
+** quick and dirty method of sharing this info
+*/
+#define ADS1115_TEMPS_CMD_MID           0x188A /* This should be == TIM_APP_CMD_MID */
+#define ADS1115_TEMPS_CMD_CODE          4      /* This should be == TIM_APP_SEND_TEMPS_CC */
+#define ADS1115_MAX_TEMPS_NAME_LEN      22     /* This should be == TIM_MAX_TEMPS_NAME_LEN */
+
+typedef struct 
+{
+    uint8              CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char               TempsName[ADS1115_MAX_TEMPS_NAME_LEN];
+} ADS1115_TEMPS_CMD_PKT_t;
+
+#define ADS1115_TEMPS_CMD_LNGTH   sizeof ( ADS1115_TEMPS_CMD_PKT_t )
+
+
 #endif /* _ads1115_msg_h_ */
 
 /************************/

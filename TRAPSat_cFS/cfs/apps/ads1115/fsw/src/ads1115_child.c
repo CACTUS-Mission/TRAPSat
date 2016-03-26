@@ -13,6 +13,7 @@ extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
 extern ADS1115_Ch_Data_t ADS1115_ChannelData;
 extern uint8 ads1115_childtask_read_once;
 extern uint8 ads1115_adc_read_count;
+extern ADS1115_TEMPS_CMD_PKT_t ADS1115_TempsCmdPkt;
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
@@ -173,6 +174,12 @@ void ADS1115_ChildLoop(void)
                                     ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[1],
                                     ADS1115_ChannelData.adc_ch_2[0], ADS1115_ChannelData.adc_ch_2[1],
                                     ADS1115_ChannelData.adc_ch_3[0], ADS1115_ChannelData.adc_ch_3[1]);
+
+                                /*
+                                ** Send file name to TIM
+                                */
+                                ADS1115_SendTimFileName(ADS1115_HkTelemetryPkt.ads1115_datafilename);
+                                
                             }
                         }
                         break;
@@ -199,12 +206,16 @@ void ADS1115_ChildLoop(void)
                                 else
                                 {
                                     CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "One File \'temps/%s\' Created: { 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X }",
-                                    ADS1115_HkTelemetryPkt.ads1115_datafilename,
-                                    ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[0],
-                                    ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[0],
-                                    ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[0],
-                                    ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[0]);
+                                       "One File \'temps/%s\' Created: { 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X }",
+                                        ADS1115_HkTelemetryPkt.ads1115_datafilename,
+                                        ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[0],
+                                        ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[0],
+                                        ADS1115_ChannelData.adc_ch_2[1], ADS1115_ChannelData.adc_ch_2[0],
+                                        ADS1115_ChannelData.adc_ch_3[1], ADS1115_ChannelData.adc_ch_3[0]);
+                                    /*
+                                    ** Send file name to TIM
+                                    */
+                                    ADS1115_SendTimFileName(ADS1115_HkTelemetryPkt.ads1115_datafilename);
                                 }
                             }
                             
@@ -234,3 +245,30 @@ void ADS1115_ChildLoop(void)
 
     return;
 } /* End of: int ADS1115_ChildLoop(void) */
+
+int ADS1115_SendTimFileName(char *file_name)
+{
+    //CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_HkTelemetryPkt);
+    //CFE_SB_InitMsg(void *MsgPtr, CFE_SB_MsgId_t MsgId, uint16 Length, boolean Clear );
+    //int32 CFE_SB_SetCmdCode(CFE_SB_MsgPtr_t MsgPtr, uint16 CmdCode);
+    //void CFE_SB_GenerateChecksum(CFE_SB_MsgPtr_t MsgPtr);   
+
+    OS_printf("Initializing msg for TIM.\n");
+    CFE_SB_InitMsg((void *) &ADS1115_TempsCmdPkt, (CFE_SB_MsgId_t) ADS1115_TEMPS_CMD_MID, (uint16) ADS1115_TEMPS_CMD_LNGTH, (boolean) 1 );
+    OS_printf("Setting command code for TIM msg.\n");
+    int32 ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt, (uint16) ADS1115_TEMPS_CMD_CODE);
+    OS_printf("Setting command code returned [%d].\n");
+
+
+    OS_printf("Copying filename [%s] into command packet.\n", file_name);
+    snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(TempsName), "%s", file_name)
+    OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
+
+    OS_printf("Generating checksum for TIM msg.\n");
+    CFE_SB_GenerateChecksum((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt);
+    OS_printf("Sending message to TIM.\n");
+    CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_TempsCmdPkt);
+    OS_printf("Message sent.\n");    
+
+    return 0;
+}
