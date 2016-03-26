@@ -754,7 +754,7 @@ uint32 *fileSizePtr;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CI_ReadUpLink(void)
 {
-    uint32 addr_len;
+    socklen_t addr_len;
     int i;
     int status;
 
@@ -765,7 +765,7 @@ void CI_ReadUpLink(void)
     for (i = 0; i <= 10; i++)
     {
         status = recvfrom(CI_SocketID, (char *)&CI_IngestBuffer[0], sizeof(CI_IngestBuffer), MSG_DONTWAIT,
-                         (struct sockaddr *) &CI_SocketAddress, (struct socklen_t *) &addr_len);
+                         (struct sockaddr *) &CI_SocketAddress, &addr_len);
 
         if ( (status < 0) && (errno == EWOULDBLOCK) )
             break; /* no (more) messages */
