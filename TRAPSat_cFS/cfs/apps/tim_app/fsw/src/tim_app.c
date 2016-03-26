@@ -320,6 +320,14 @@ void TIM_SendImageFile(void)
 void TIM_SendTempsFile(void)
 {
     int os_ret_val = 0;
+    int32 os_fd;
+    uint32 bytes_per_read = 1; /* const */
+    uint32 total_bytes_read = 0;
+    uint8 data_buf[2];
+    data_buf[0] = 0;
+    data_buf[1] = 0;
+
+    mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
 
     /* Creating a pointer to handle the TIMMsgPtr as TIM_IMAGE_CMD_PKT  */
     TIM_TEMPS_CMD_PKT_t *TempsCmdPtr;
@@ -341,6 +349,26 @@ void TIM_SendTempsFile(void)
     {
         OS_printf("Extended Path: %s\n", file_path);
     }
+
+
+    if ((os_fd = OS_open((const char * ) file_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
+    {
+        OS_printf("TIM: OS_open Returned [%d] (expected non-negative value).\n", os_fd);
+        return(-1);
+    }
+
+    /*
+    ** Read 1 byte at a time
+    */
+    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_to_read))
+    {
+        OS_printf("From Tim: File '%s' Byte %d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
+        total_bytes_read++;
+        data_buf[0] = 0;
+        data_buf[1] = 0;
+    }
+
+    OS_close(os_fd);
 
 	return;
 } /* End of TIM_TakeVideo() */
