@@ -354,13 +354,13 @@ void TIM_SendTempsFile(void)
     if ((os_fd = OS_open((const char * ) file_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
     {
         OS_printf("TIM: OS_open Returned [%d] (expected non-negative value).\n", os_fd);
-        return(-1);
+        return;
     }
 
     /*
     ** Read 1 byte at a time
     */
-    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_to_read))
+    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
     {
         OS_printf("From Tim: File '%s' Byte %d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
