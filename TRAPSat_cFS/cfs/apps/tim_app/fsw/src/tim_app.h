@@ -23,13 +23,7 @@
 #include "cfe_sb.h"
 #include "cfe_es.h"
 
-#include "tim_app_perfids.h"
-#include "tim_app_msgids.h"
-#include "tim_app_msg.h"
-#include "tim_app_events.h"
-#include "tim_app_child.h"
-#include "tim_app_version.h"
-#include "tim_serial_out.h"
+
 
 /***********************************************************************/
 
