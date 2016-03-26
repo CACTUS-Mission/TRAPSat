@@ -21,7 +21,7 @@ ENTRY_PT = TIM_AppMain
 #
 # Object files required to build subsystem.
 #
-OBJS = tim_app.o tim_app_child.o
+OBJS = tim_app.o tim_app_child.o tim_serial_out.o
 
 #
 # Source files required to build subsystem; used to generate dependencies.

@@ -11,14 +11,6 @@
 */
 
 #include "tim_app.h"
-#include "tim_app_perfids.h"
-#include "tim_app_msgids.h"
-#include "tim_app_msg.h"
-#include "tim_app_events.h"
-#include "tim_app_child.h"
-#include "tim_app_version.h"
-
-
 
 /*
 ** global data
@@ -27,6 +19,8 @@
 tim_hk_tlm_t       TIM_HkTelemetryPkt;
 CFE_SB_PipeId_t    TIM_CommandPipe;
 CFE_SB_MsgPtr_t    TIMMsgPtr;
+
+serial_out_t TIM_SerialUSB;
 
 /*
 ** global data for child task (cameraman) use
@@ -113,7 +107,13 @@ void TIM_AppInit(void)
 	TIM_ResetCounters();
 
 	/* Clear the Queue count */
-	TIM_SerialQueueInfo.on_queue = 0;	
+	TIM_SerialQueueInfo.on_queue = 0;
+
+    if(serial_out_init(&TIM_SerialUSB, (char *) SERIAL_OUT_PORT) < 0)
+    {
+        OS_printf("TIM: error, serial out init failed.\n");
+    } 
+
 	
 	TIM_ChildInit();
 
@@ -314,15 +314,16 @@ void TIM_SendImageFile(void)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 /*                                                                            */
-/* TIM_TakeVideo() -- Take a video for a specified amount of time  */
+/* TIM_SendTempsFile()  */
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void TIM_SendTempsFile(void)
 {
     int os_ret_val = 0;
-    int32 os_fd;
+    int32 os_fd = 0;
+    int index = 0;
     uint32 bytes_per_read = 1; /* const */
-    uint32 total_bytes_read = 0;
+    uint16 total_bytes_read = 0;
     uint8 data_buf[2];
     data_buf[0] = 0;
     data_buf[1] = 0;
@@ -350,7 +351,6 @@ void TIM_SendTempsFile(void)
         OS_printf("Extended Path: %s\n", file_path);
     }
 
-
     if ((os_fd = OS_open((const char * ) file_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
     {
         OS_printf("TIM: OS_open Returned [%d] (expected non-negative value).\n", os_fd);
@@ -362,16 +362,53 @@ void TIM_SendTempsFile(void)
     */
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
     {
-        OS_printf("From Tim: File '%s' Byte %d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
+        OS_printf("From Tim: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
+        serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
         data_buf[0] = 0;
         data_buf[1] = 0;
     }
 
+    if(total_bytes_read != 16)
+    {
+        OS_printf("Temperature File shorter [%d] than expected [16].\n", total_bytes_read);
+    }
+
     OS_close(os_fd);
 
+    /*
+    ** Data prepped for serial:
+    ** total_bytes_read : file size
+    ** TempsCmdPtr->TempsName : file name
+    ** sizeof(TempsCmdPtr->TempsName) : 
+    */
+
+    /*
+    uint8 start byte and pkt id  {0xF} {0:?, 1:image, 2:temps, 3:log, 4:unknown}
+    uint16 pkt size in bytes
+    uint8 filename length
+    char filename[22]
+    blank (0x00)
+    ...
+    DATA
+    ...
+    uint16 data_stop_flag 0xFF [filename length]
+    char filename[22]
+    uint8 stop byte
+    */
+
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1); /* check endianess */
+    for(index = 0; index < sizeof(TempsCmdPtr->TempsName); index++)
+    {
+        serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) TempsCmdPtr->TempsName) + index)));
+    }
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
+    serial_write_file(&TIM_SerialUSB, (char *) TempsCmdPtr->TempsName);
+
 	return;
-} /* End of TIM_TakeVideo() */
+} /* End of TIM_SendTempsFile() */
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/

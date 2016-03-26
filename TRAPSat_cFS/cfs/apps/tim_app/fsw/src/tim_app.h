@@ -10,6 +10,10 @@
 #ifndef _tim_app_h_
 #define _tim_app_h_
 
+#include <string.h>
+#include <errno.h>
+#include <unistd.h>
+
 /*
 ** Required header files.
 */
@@ -19,11 +23,13 @@
 #include "cfe_sb.h"
 #include "cfe_es.h"
 
-
-
-#include <string.h>
-#include <errno.h>
-#include <unistd.h>
+#include "tim_app_perfids.h"
+#include "tim_app_msgids.h"
+#include "tim_app_msg.h"
+#include "tim_app_events.h"
+#include "tim_app_child.h"
+#include "tim_app_version.h"
+#include "tim_serial_out.h"
 
 /***********************************************************************/
 
