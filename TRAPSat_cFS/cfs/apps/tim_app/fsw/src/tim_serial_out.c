@@ -2,7 +2,7 @@
 
 int serial_out_init(serial_out_t *serial, char * port) // opens the serial port and sets it to serial->fd
 {
-    serial->fd = serialOpen(port, BAUD);
+    serial->fd = serialOpen(port, SERIAL_OUT_BAUD);
     serial->data = 0x00;
     if(serial->fd == -1)
     {
