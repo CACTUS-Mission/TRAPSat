@@ -55,7 +55,7 @@ do_stop () {
 }
 
 set(){
-    log_daemon_msg "Seting up CFS.sh daemon"
+    log_daemon_msg "Seting up $DAEMON_NAME"
     sudo cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
     cd /etc/init.d/
     sudo apt-get install daemon
