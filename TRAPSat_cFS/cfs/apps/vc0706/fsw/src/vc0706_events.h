@@ -36,7 +36,6 @@
 */
 #define VC0706_CHILD_INIT_ERR_EID	7
 #define VC0706_CHILD_INIT_EID		8
-#define VC0706_CHILD_INIT_INF_EID	10
 
 #endif /* _vc0706_events_h_ */
 
