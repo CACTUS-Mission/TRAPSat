@@ -403,7 +403,7 @@ void TIM_SendTempsFile(void)
     char filename[22]
     uint8 stop byte
     */
-    
+
     serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
@@ -413,7 +413,7 @@ void TIM_SendTempsFile(void)
         serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) TempsCmdPtr->TempsName) + index)));
     }
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
-    tim_serial_write_file(&TIM_SerialUSB, (char *) TempsCmdPtr->TempsName);
+    tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
     OS_printf("Reached end of TIM_SendTempsFile().\n");
