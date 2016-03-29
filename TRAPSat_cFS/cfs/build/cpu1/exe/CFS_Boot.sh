@@ -15,7 +15,7 @@
 # Change the next 3 lines to suit where you install your script and what you want to call it
 DIR=/home/pi/TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe
 DAEMON=$DIR/core-linux.bin
-DAEMON_NAME=CFS
+DAEMON_NAME=CFS_Boot
 
 # Change the next 3 lines to suit log location  
 LOG=/home/pi/logs
@@ -56,7 +56,7 @@ do_stop () {
 
 set(){
     log_daemon_msg "Seting up CFS.sh daemon"
-    cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
+    sudo cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
     cd /etc/init.d/
     sudo apt-get install daemon
     sudo apt-get update daemon
