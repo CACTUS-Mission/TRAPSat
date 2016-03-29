@@ -263,9 +263,9 @@ int ADS1115_SendTimFileName(char *file_name)
         OS_printf("ADS1115: SendTimFileName() Set Cmd Code Ret [%d].\n", ret);
     }
 
-    //OS_printf("Copying filename [%s] into command packet.\n", file_name);
+    OS_printf("Copying filename [%s] into command packet.\n", file_name);
     snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(ADS1115_TempsCmdPkt.TempsName), "%s", file_name);
-    //OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
+    OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
 
     CFE_SB_GenerateChecksum((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt);
     

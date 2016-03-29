@@ -249,7 +249,7 @@ void ADS1115_ResetCounters(void)
     ** Should we reset this here?
     */
     //ADS1115_HkTelemetryPkt.ads1115_childloop_state = 0;
-    memset(ADS1115_HkTelemetryPkt.ads1115_datafilename, '\0', sizeof(ADS1115_Ch_Data_t));
+    memset(ADS1115_HkTelemetryPkt.ads1115_datafilename, '\0', sizeof(ADS1115_HkTelemetryPkt.ads1115_datafilename));
 
 
     CFE_EVS_SendEvent(ADS1115_COMMANDRST_INF_EID, CFE_EVS_INFORMATION,

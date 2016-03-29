@@ -68,7 +68,7 @@ typedef struct
 */
 #define ADS1115_TEMPS_CMD_MID           0x188A /* This should be == TIM_APP_CMD_MID */
 #define ADS1115_TEMPS_CMD_CODE          4      /* This should be == TIM_APP_SEND_TEMPS_CC */
-#define ADS1115_MAX_TEMPS_NAME_LEN      ADS1115_MAX_FILENAME_LEN  /* This should be == TIM_MAX_TEMPS_NAME_LEN */
+#define ADS1115_MAX_TEMPS_NAME_LEN      16  /* This should be == TIM_MAX_TEMPS_NAME_LEN */
 
 typedef struct 
 {
