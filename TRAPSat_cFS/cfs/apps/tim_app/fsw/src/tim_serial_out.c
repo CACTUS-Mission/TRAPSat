@@ -1,12 +1,14 @@
 #include "tim_serial_out.h"
 
+extern serial_out_t TIM_SerialUSB;
+
 int serial_out_init(serial_out_t *serial, char * port) // opens the serial port and sets it to serial->fd
 {
     serial->fd = serialOpen(port, SERIAL_OUT_BAUD);
     serial->data = 0x00;
     if(serial->fd == -1)
     {
-        printf("serial_out: ERROR: %s", strerror(errno));
+        printf("serial_out_init(): ERROR: %s", strerror(errno));
         return -1;
     }
     else
@@ -43,4 +45,48 @@ int serial_write_file(serial_out_t *serial, char* file_path)
     }
     fclose(file_to_write);
     return 0;
+}
+
+int tim_serial_write_file(serial_out_t *serial, char* file_path)
+{
+    int os_fd;
+    mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+
+    const uint32 bytes_per_read = 1; /* const */
+    uint16 total_bytes_read = 0;
+    
+    uint8 data_buf[bytes_per_read];
+    int i;
+
+    for(i = 0; i < bytes_per_read; i++) 
+    {
+        data_buf[i] = 0;
+    }
+
+    /*
+    ** Open File with Read Only permissions
+    */
+    if ((os_fd = OS_open((const char * ) file_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
+    {
+        OS_printf("TIM: OS_open Returned [%d] (expected non-negative value).\n", os_fd);
+        return -1;
+    }
+
+    /*
+    ** Read 1 byte at a time from file, write to serial.
+    */
+    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
+    {
+        OS_printf("From Tim: File '%s' Byte %.4d = %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0]);
+        total_bytes_read++;
+        serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
+        data_buf[0] = 0;
+    }
+
+    /*
+    ** Close the file when finished reading data
+    */
+    OS_close(os_fd);
+
+    return total_bytes_read;
 }

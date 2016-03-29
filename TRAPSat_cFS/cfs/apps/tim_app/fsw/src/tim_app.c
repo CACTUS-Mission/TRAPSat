@@ -371,7 +371,7 @@ void TIM_SendTempsFile(void)
     {
         OS_printf("From Tim: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
-        serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
+        //serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
         data_buf[0] = 0;
         data_buf[1] = 0;
     }
@@ -387,7 +387,7 @@ void TIM_SendTempsFile(void)
     ** Data prepped for serial:
     ** total_bytes_read : file size
     ** TempsCmdPtr->TempsName : file name
-    ** sizeof(TempsCmdPtr->TempsName) : 
+    ** sizeof(TempsCmdPtr->TempsName) : 22
     */
 
     /*
@@ -403,7 +403,7 @@ void TIM_SendTempsFile(void)
     char filename[22]
     uint8 stop byte
     */
-
+    serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
     serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1)); /* check endianess */
@@ -413,6 +413,9 @@ void TIM_SendTempsFile(void)
     }
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
     serial_write_file(&TIM_SerialUSB, (char *) TempsCmdPtr->TempsName);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
+    OS_printf("Reached end of TIM_SendTempsFile().\n");
 
 	return;
 } /* End of TIM_SendTempsFile() */
