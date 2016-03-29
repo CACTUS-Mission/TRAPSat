@@ -368,13 +368,13 @@ void TIM_SendImageFile(void)
     }
     else
     {
-        OS_printf("Extended Path: %s\n", file_path);
+        OS_printf("Extended Path for TIM: \'%s\'\n", file_path);
     }
 
     /*
     ** Read 1 byte at a time
     */
-    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
+    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read) &&  (total_bytes_read < 35000) )
     {
         OS_printf("From Tim Image: File '%s' Byte %.2d = %#.2X %#.2X\n", ImageCmdPtr->ImageName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
