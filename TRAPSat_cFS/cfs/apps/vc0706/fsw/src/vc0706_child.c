@@ -2,6 +2,7 @@
 ** Required Headers
 */
 #include "vc0706_child.h"
+
 /*
 #include "vc0706_perfids.h"
 #include "vc0706_msgids.h"
@@ -10,6 +11,11 @@
 #include "vc0706_version.h"
 #include "vc0706_child.h"
 */
+
+
+extern VC0706_IMAGE_CMD_PKT_t VC0706_ImageCmdPkt;
+
+
 int VC0706_takePics(void);
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
