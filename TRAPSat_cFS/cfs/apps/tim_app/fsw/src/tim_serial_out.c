@@ -29,7 +29,7 @@ int serial_write_file(serial_out_t *serial, char* file_path)
     unsigned char data_buff;
     file_to_write = fopen(file_path, "r");
 
-    if(file_to_write = NULL)
+    if(file_to_write == NULL)
     {
         printf("Error Opening file: %s\n", file_path);
         return -1;
