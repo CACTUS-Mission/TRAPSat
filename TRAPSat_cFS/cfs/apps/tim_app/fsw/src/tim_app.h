@@ -56,12 +56,6 @@
  *                        1 - if serial is in use
  *                        0 - if serial is not in use
  */
-typedef struct
-{
-    uint32  serial_qid;
-	uint8	on_queue;
-	uint8	serial_status;
-} TIM_SerialQueue_t;
 
 
 /****************************************************************************/

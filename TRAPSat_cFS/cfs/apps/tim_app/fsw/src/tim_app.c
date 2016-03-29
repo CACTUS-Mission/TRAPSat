@@ -15,7 +15,6 @@
 #include "tim_app_msgids.h"
 #include "tim_app_msg.h"
 #include "tim_app_events.h"
-#include "tim_app_child.h"
 #include "tim_app_version.h"
 #include "tim_serial_out.h"
 
@@ -36,7 +35,6 @@ int serial_last_sent;
 ** global data for child task (cameraman) use
 */
 //uint32             	TIM_ChildTaskID;
-TIM_SerialQueue_t   TIM_SerialQueueInfo;
 //uint32			    Cameraman_QueueID;
 
 static CFE_EVS_BinFilter_t  TIM_EventFilters[] =
