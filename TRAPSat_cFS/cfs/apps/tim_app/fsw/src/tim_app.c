@@ -383,7 +383,7 @@ void TIM_SendImageFile(void)
     */
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read) &&  (total_bytes_read < 20000) )
     {
-        OS_printf("From Tim Image: File '%s' Byte %.2d = %#.2X %#.2X\n", ImageCmdPtr->ImageName, total_bytes_read, data_buf[0], data_buf[1]);
+        //OS_printf("From Tim Image: File '%s' Byte %.2d = %#.2X %#.2X\n", ImageCmdPtr->ImageName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
         //serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
         data_buf[0] = 0;
@@ -425,13 +425,13 @@ void TIM_SendImageFile(void)
     {
         serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) ImageCmdPtr->ImageName) + index)));
     }
-    /*
+    
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
     tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
-    */
+    
 
     OS_printf("Reached end of TIM_SendImageFile().\n");
 
