@@ -35,7 +35,7 @@ int VC0706_takePics(void)
     ** NOTE: if path is greater than 16 chars, imageName[] in vc0706_core.h will need to be enlarged accordingly.
     */
     char path[OS_MAX_PATH_LEN];
-    memset(file_name, '\0', sizeof(path));
+    memset(path, '\0', sizeof(path));
 
     char file_name[15];
     memset(file_name, '\0', sizeof(file_name));
