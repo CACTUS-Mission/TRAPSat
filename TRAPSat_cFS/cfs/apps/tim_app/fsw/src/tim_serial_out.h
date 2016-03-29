@@ -18,6 +18,7 @@
 #define SERIAL_OUT_PORT "/dev/ttyUSB0"
 
 #include <stdio.h>
+#include <wiringSerial.h>
 #include <wiringPi.h>
 #include <errno.h>
 

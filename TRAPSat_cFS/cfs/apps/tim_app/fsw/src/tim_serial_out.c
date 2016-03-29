@@ -4,11 +4,18 @@ extern serial_out_t TIM_SerialUSB;
 
 int serial_out_init(serial_out_t *serial, char * port) // opens the serial port and sets it to serial->fd
 {
+    if(wiringPiSetup() == -1)
+    {
+        OS_printf("Failing Wiring Pi Setup\n");
+        return -1;
+    }
+
     serial->fd = serialOpen(port, SERIAL_OUT_BAUD);
     serial->data = 0x00;
+
     if(serial->fd == -1)
     {
-        printf("serial_out_init(): ERROR: %s", strerror(errno));
+        OS_printf("serial_out_init(): ERROR: %s", strerror(errno));
         return -1;
     }
     else
