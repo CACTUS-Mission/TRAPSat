@@ -415,7 +415,8 @@ void TIM_SendTempsFile(void)
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
     tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
     OS_printf("Reached end of TIM_SendTempsFile().\n");
 
 	return;
