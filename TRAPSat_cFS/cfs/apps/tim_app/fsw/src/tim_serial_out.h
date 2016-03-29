@@ -31,5 +31,6 @@ typedef struct serial_out_t {
 int serial_out_init(serial_out_t *serial, char * port); // opens the serial port and sets it to serial->fd
 void serial_write_byte(serial_out_t *serial, unsigned char byte); // writes byte to serial port
 int serial_write_file(serial_out_t *serial, char* file_path);
+int tim_serial_write_file(serial_out_t *serial, char* file_path);
 
 #endif /*_serial_out_h_*/
