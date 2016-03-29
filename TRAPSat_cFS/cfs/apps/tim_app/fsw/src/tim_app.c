@@ -418,11 +418,14 @@ void TIM_SendImageFile(void)
     {
         serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) ImageCmdPtr->ImageName) + index)));
     }
+    /*
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
     tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
+    */
+
     OS_printf("Reached end of TIM_SendImageFile().\n");
 
 	return;

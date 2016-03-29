@@ -80,7 +80,7 @@ int tim_serial_write_file(serial_out_t *serial, char* file_path)
     */
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
     {
-        OS_printf("From serial: File '%s' Byte %.4d = %#.2X\n", file_path, total_bytes_read, data_buf[0]);
+        //OS_printf("From serial: File '%s' Byte %.4d = %#.2X\n", file_path, total_bytes_read, data_buf[0]);
         total_bytes_read++;
         serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
         data_buf[0] = 0;
