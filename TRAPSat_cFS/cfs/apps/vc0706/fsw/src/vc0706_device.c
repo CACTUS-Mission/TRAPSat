@@ -34,7 +34,11 @@ int VC0706_takePics(void)
     **
     ** NOTE: if path is greater than 16 chars, imageName[] in vc0706_core.h will need to be enlarged accordingly.
     */
-    char * path = malloc(OS_MAX_PATH_LEN);
+    char path[OS_MAX_PATH_LEN];
+    memset(file_name, '\0', sizeof(path));
+
+    char file_name[15];
+    memset(file_name, '\0', sizeof(file_name));
 
     /*
     ** Attempt to initialize LED
@@ -80,14 +84,24 @@ int VC0706_takePics(void)
 
         /*
         ** Set Path for the new image
-	**
-	** Format:
-	** /ram/images/<num_reboots>_<camera 0 or 1>_<num_pics_stored>.jpg
+	   **
+	   ** Format:
+	   ** /ram/images/<num_reboots>_<camera 0 or 1>_<num_pics_stored>.jpg
         */
 		//OS_printf("VC0706: Calling sprintf()...\n");
 		unsigned int num_reboots = 0; // initialized to undefined
         //num_reboots = getNumReboots(); // not writen yet -- ask Keegan.
-        int ret = sprintf(path, "/ram/images/%.3u_%d_%.4u.jpg", num_reboots, mux.mux_state, num_pics_stored); // cFS /exe relative path
+
+        int ret = 0;
+        ret = snprintf(file_name, sizeof(file_name), "%.3u_%d_%.4u.jpg", num_reboots, mux.mux_state, num_pics_stored); // cFS /exe relative path
+        if(ret < 0)
+        {
+            OS_printf("sprintf err: %s\n", strerror(ret));
+            continue;
+        }
+
+
+        ret = snprintf(path, sizeof(path), "/ram/images/%s", file_name); // cFS /exe relative path
     	if(ret < 0)
     	{
     	    OS_printf("sprintf err: %s\n", strerror(ret));
@@ -124,6 +138,8 @@ int VC0706_takePics(void)
 			OS_printf("VC0706: Wrote Picture Filename to HK Packet. Sent: '%.*s'\n", 15, (char * )&pic_file_name[12], hk_packet_succes);
 		    }
 		    OS_printf("VC0706: VC0706_HkTelemetryPkt.vc0706_filename: '%s'\n", VC0706_HkTelemetryPkt.vc0706_filename);
+
+            VC0706_SendTimFileName(file_name);
 
 		    /*
 		    ** incriment num pics for filename

@@ -29,6 +29,9 @@ CFE_SB_MsgPtr_t    TIMMsgPtr;
 
 serial_out_t TIM_SerialUSB;
 
+int serial_busy;
+int serial_last_sent;
+
 /*
 ** global data for child task (cameraman) use
 */
@@ -115,6 +118,8 @@ void TIM_AppInit(void)
 
 	/* Clear the Queue count */
 	TIM_SerialQueueInfo.on_queue = 0;
+    serial_busy = 0;
+    serial_last_sent = 0;
 
     if(serial_out_init(&TIM_SerialUSB, (char *) SERIAL_OUT_PORT) < 0)
     {
@@ -184,6 +189,8 @@ void TIM_ProcessGroundCommand(void)
 	uint16 CommandCode;
 
 	CommandCode = CFE_SB_GetCmdCode(TIMMsgPtr);
+
+
 	
 
 	/* Process "known" TIM app ground commands */
@@ -200,23 +207,63 @@ void TIM_ProcessGroundCommand(void)
 		break;
 	
 	case TIM_APP_SEND_IMAGE_CC:
-		TIM_SendImageFile();
-		CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
-					"TIM: Send Image File Command Received");
-		TIM_HkTelemetryPkt.tim_command_count++;
-		TIM_HkTelemetryPkt.tim_command_image_count++;
+		if (serial_busy == 0)
+        {
+            serial_busy = 1;
 
-		TIM_SerialQueueInfo.on_queue++;
+            if(serial_last_sent != 1)
+            {
+                serial_last_sent = 1;
+                TIM_SendImageFile();
+                CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                    "TIM: Send Image File Command Received");
+                TIM_HkTelemetryPkt.tim_command_count++;
+                TIM_HkTelemetryPkt.tim_command_image_count++;
+                TIM_SerialQueueInfo.on_queue++;
+            }
+            else
+            {
+                CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                    "TIM: Send Image File yeilding until temps sent");
+            }
 
+            serial_busy = 0;
+        }
+        else
+        {
+            CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                "TIM: Send Image File Command Received but Serial Busy");
+        }
 		break;
 
 	case TIM_APP_SEND_TEMPS_CC:
-        TIM_SendTempsFile();
-		CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION,
-					 "TIM: Send Temps File Command Received");
-		TIM_HkTelemetryPkt.tim_command_count++;
-		TIM_HkTelemetryPkt.tim_command_temps_count++;
-		TIM_SerialQueueInfo.on_queue++;
+        if (serial_busy == 0)
+        {
+            serial_busy = 1;
+
+            if(serial_last_sent != 2)
+            {
+                serial_last_sent = 2;
+                TIM_SendTempsFile();
+                CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION,
+                    "TIM: Send Temps File Command Received");
+                TIM_HkTelemetryPkt.tim_command_count++;
+                TIM_HkTelemetryPkt.tim_command_temps_count++;
+                TIM_SerialQueueInfo.on_queue++;
+            }
+            else
+            {
+                CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION,
+                    "TIM: Send Temps File yeilding until image sent");
+            }
+
+            serial_busy = 0;
+        }
+        else
+        {
+            CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION,
+                "TIM: Send Temps File Command Received but Serial Busy");
+        }
 		break;
 
 	/* default case already found during FC vs length test */
@@ -376,10 +423,7 @@ void TIM_SendImageFile(void)
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
-    OS_printf("Reached end of TIM_SendTempsFile().\n");
-
-    return;
-
+    OS_printf("Reached end of TIM_SendImageFile().\n");
 
 	return;
 } /* End of TIM_TakeStill() */

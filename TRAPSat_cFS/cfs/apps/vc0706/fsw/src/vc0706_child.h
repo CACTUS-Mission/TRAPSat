@@ -95,6 +95,13 @@ void VC0706_ChildTask(void);
 void VC0706_ChildLoop(void);
 
 
+
+/*
+** Sending file name info to TIM app
+*/
+int VC0706_SendTimFileName(char *file_name);
+
+
 #endif /* _vc0706_child_h_ */
 
 /************************/
