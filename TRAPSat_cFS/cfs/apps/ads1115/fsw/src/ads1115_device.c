@@ -303,7 +303,7 @@ int ADS1115_StoreADCChannels(void)
     }
 
     /*
-    ** Longest filename: 000_tempset_00000.csv (21 chars)
+    ** Longest filename: 000_t_00000.csv (21 chars)
     **  - data_filename[0:2] == num of resets
     **  - data_filename[12:16] == adc read count
     */
@@ -320,7 +320,7 @@ int ADS1115_StoreADCChannels(void)
     ** Concatonate filename with ADC read count
     ** This will be where number of resets may be added to the front of the file name. 
     */
-    if((os_ret_val = snprintf(data_filename, sizeof(data_filename), "%.3u%s%.5u%s", 0, "_t_", ads1115_adc_read_count, ".csv")) < 0)
+    if((os_ret_val = snprintf(data_filename, sizeof(data_filename), "000_t_%.5u.csv", ads1115_adc_read_count)) < 0)
     {
         OS_printf("ADS1115: snprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target data_filename: \'%s\'\n", data_filename);
@@ -407,7 +407,7 @@ int ADS1115_StoreADCChannels(void)
         */
         if ((os_ret_val = OS_write(os_fd, (void *) file_data_buff, 4)) < 0)
         {
-            OS_printf("ADS1115: ADC Data OS_Write Failed, Retuned [%d] \n", os_ret_val);
+            OS_printf("ADS1115: ADC Data OS_Write Failed, Returned [%d] \n", os_ret_val);
             OS_close(os_fd);
             return(-1);
         }

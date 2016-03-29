@@ -467,11 +467,11 @@ void TIM_SendTempsFile(void)
     TIM_TEMPS_CMD_PKT_t *TempsCmdPtr;
     TempsCmdPtr = (TIM_TEMPS_CMD_PKT_t *) TIMMsgPtr;
 
-    //OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
+    OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
 
     char file_path[OS_MAX_PATH_LEN];
 
-    //OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
+    OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
     
     memset(file_path, '\0', sizeof(file_path));
 
