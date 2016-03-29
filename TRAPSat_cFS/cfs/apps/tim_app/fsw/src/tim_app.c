@@ -354,21 +354,17 @@ void TIM_SendImageFile(void)
     TIM_IMAGE_CMD_PKT_t *ImageCmdPtr;
     ImageCmdPtr = (TIM_IMAGE_CMD_PKT_t *) TIMMsgPtr;
 
-    OS_printf("Received TIM_SendImageFile() with %s\n", ImageCmdPtr->ImageName);
+    //OS_printf("Received TIM_SendImageFile() with %s\n", ImageCmdPtr->ImageName);
 
     char file_path[OS_MAX_PATH_LEN];
 
-    OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
+    //OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
     
     memset(file_path, '\0', sizeof(file_path));
 
     if((os_ret_val = snprintf(file_path, sizeof(file_path), "/ram/images/%s", ImageCmdPtr->ImageName)) < 0)
     {
         OS_printf("TIM snprintf failure: ret = %d\n", os_ret_val);
-    }
-    else
-    {
-        OS_printf("Extended Path for TIM: \'%s\'\n", file_path);
     }
 
 
@@ -391,7 +387,7 @@ void TIM_SendImageFile(void)
     }
 
     
-    OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
+    //OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
     
 
     OS_close(os_fd);
@@ -431,9 +427,12 @@ void TIM_SendImageFile(void)
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
+
+    CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+            "Image File \'%s\' Sent Successfully\n", file_path);
     
 
-    OS_printf("Reached end of TIM_SendImageFile().\n");
+    //OS_printf("Reached end of TIM_SendImageFile().\n");
 
 	return;
 } /* End of TIM_TakeStill() */
@@ -460,21 +459,17 @@ void TIM_SendTempsFile(void)
     TIM_TEMPS_CMD_PKT_t *TempsCmdPtr;
     TempsCmdPtr = (TIM_TEMPS_CMD_PKT_t *) TIMMsgPtr;
 
-    OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
+    //OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
 
     char file_path[OS_MAX_PATH_LEN];
 
-    OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
+    //OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
     
     memset(file_path, '\0', sizeof(file_path));
 
     if((os_ret_val = snprintf(file_path, sizeof(file_path), "/ram/temps/%s", TempsCmdPtr->TempsName)) < 0)
     {
         OS_printf("TIM snprintf failure: ret = %d\n", os_ret_val);
-    }
-    else
-    {
-        OS_printf("Extended Path: %s\n", file_path);
     }
 
     if ((os_fd = OS_open((const char * ) file_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
@@ -488,7 +483,7 @@ void TIM_SendTempsFile(void)
     */
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
     {
-        OS_printf("From Tim Temps: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
+        //OS_printf("From Tim Temps: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
         //serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
         data_buf[0] = 0;
@@ -536,7 +531,10 @@ void TIM_SendTempsFile(void)
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
-    OS_printf("Reached end of TIM_SendTempsFile().\n");
+    
+
+    CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION, 
+            "Temps File \'%s\' Sent Successfully\n", file_path);
 
 	return;
 } /* End of TIM_SendTempsFile() */

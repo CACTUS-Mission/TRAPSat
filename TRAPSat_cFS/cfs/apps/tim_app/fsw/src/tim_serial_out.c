@@ -63,7 +63,7 @@ int tim_serial_write_file(serial_out_t *serial, char* file_path)
         data_buf[i] = 0;
     }
 
-    OS_printf("Size of file_path: [%d]\n", sizeof(file_path));
+    //OS_printf("Size of file_path: [%d]\n", sizeof(file_path));
     OS_printf("Calling OS_open(\'%s\', OS_READ_ONLY, mode);\n", file_path);
 
     /*
