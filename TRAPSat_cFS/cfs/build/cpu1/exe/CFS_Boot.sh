@@ -7,9 +7,10 @@
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Starts the CFS
-# Description:       place file in "/etc/init.d". 
-#                    use insserv command to install
-#                    into rc?.d files 
+# Description:       script to start the CFS on boot with the 
+#                    daemon command. To setup the script type 
+#                    "sudo ./CFS_Boot.sh setup" 
+#                   
 ### END INIT INFO
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
