@@ -35,7 +35,7 @@ int serial_last_sent;
 /*
 ** global data for child task (cameraman) use
 */
-uint32             	TIM_ChildTaskID;
+//uint32             	TIM_ChildTaskID;
 TIM_SerialQueue_t   TIM_SerialQueueInfo;
 //uint32			    Cameraman_QueueID;
 
@@ -117,7 +117,7 @@ void TIM_AppInit(void)
 	TIM_ResetCounters();
 
 	/* Clear the Queue count */
-	TIM_SerialQueueInfo.on_queue = 0;
+	//TIM_SerialQueueInfo.on_queue = 0;
     serial_busy = 0;
     serial_last_sent = 0;
 
@@ -128,7 +128,7 @@ void TIM_AppInit(void)
 
     serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
 	
-    TIM_ChildInit();
+    //TIM_ChildInit();
 
 	CFE_SB_InitMsg(&TIM_HkTelemetryPkt,
 			TIM_APP_HK_TLM_MID,
@@ -219,7 +219,7 @@ void TIM_ProcessGroundCommand(void)
                     "TIM: Send Image File Command Received");
                 TIM_HkTelemetryPkt.tim_command_count++;
                 TIM_HkTelemetryPkt.tim_command_image_count++;
-                TIM_SerialQueueInfo.on_queue++;
+                //TIM_SerialQueueInfo.on_queue++;
             }
             else
             {
@@ -249,7 +249,7 @@ void TIM_ProcessGroundCommand(void)
                     "TIM: Send Temps File Command Received");
                 TIM_HkTelemetryPkt.tim_command_count++;
                 TIM_HkTelemetryPkt.tim_command_temps_count++;
-                TIM_SerialQueueInfo.on_queue++;
+                //TIM_SerialQueueInfo.on_queue++;
             }
             else
             {
@@ -387,7 +387,13 @@ void TIM_SendImageFile(void)
     }
 
     
-    //OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
+    OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
+
+    uint8 file_len[2];
+    file_len[0] = *((uint8 *) &total_bytes_read);
+    file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
+    OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
+    OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
     
 
     OS_close(os_fd);
@@ -415,15 +421,19 @@ void TIM_SendImageFile(void)
 
     
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1)); /* check endianess */
+
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]); /* check endianess */
+
     for(index = 0; index < sizeof(ImageCmdPtr->ImageName); index++)
     {
         serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) ImageCmdPtr->ImageName) + index)));
     }
     
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
+
     tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
+
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
@@ -495,6 +505,12 @@ void TIM_SendTempsFile(void)
         OS_printf("Temperature File shorter [%d] than expected [16].\n", total_bytes_read);
     }
 
+    uint8 file_len[2];
+    file_len[0] = *((uint8 *) &total_bytes_read);
+    file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
+    OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
+    OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
+
     OS_close(os_fd);
 
     /*
@@ -520,14 +536,18 @@ void TIM_SendTempsFile(void)
 
     
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1)); /* check endianess */
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
+
     for(index = 0; index < sizeof(TempsCmdPtr->TempsName); index++)
     {
         serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) TempsCmdPtr->TempsName) + index)));
     }
+
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
+
     tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
+
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
