@@ -41,16 +41,15 @@
 #include <wiringSerial.h>
 #include <wiringPi.h>
 
-#include "vc0706_led.h"
-#include "vc0706_mux.h"
-
-#include "vc0706_core.h"
-
 #include "vc0706_perfids.h"
 #include "vc0706_msgids.h"
 #include "vc0706_msg.h"
 #include "vc0706_events.h"
 #include "vc0706_version.h"
+
+#include "vc0706_led.h"
+#include "vc0706_mux.h"
+#include "vc0706_core.h"
 
 /***********************************************************************/
 

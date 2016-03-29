@@ -29,6 +29,7 @@ typedef struct
 } VC0706_NoArgsCmd_t;
 
 /*************************************************************************/
+
 /*
 ** Type definition (VC0706 App housekeeping)
 */
