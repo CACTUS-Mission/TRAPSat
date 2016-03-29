@@ -371,10 +371,17 @@ void TIM_SendImageFile(void)
         OS_printf("Extended Path for TIM: \'%s\'\n", file_path);
     }
 
+
+    if ((os_fd = OS_open((const char * ) file_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
+    {
+        OS_printf("TIM: OS_open Returned [%d] (expected non-negative value).\n", os_fd);
+        return;
+    }
+
     /*
     ** Read 1 byte at a time
     */
-    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read) &&  (total_bytes_read < 35000) )
+    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read) &&  (total_bytes_read < 20000) )
     {
         OS_printf("From Tim Image: File '%s' Byte %.2d = %#.2X %#.2X\n", ImageCmdPtr->ImageName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
