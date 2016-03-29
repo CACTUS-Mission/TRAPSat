@@ -22,7 +22,7 @@ void serial_write_byte(serial_out_t *serial, unsigned char byte) // writes byte 
     serialPutchar(serial->fd, byte);
     serial->data = byte;
 }
-
+/*
 int serial_write_file(serial_out_t *serial, char* file_path)
 {
     FILE *file_to_write;
@@ -46,7 +46,7 @@ int serial_write_file(serial_out_t *serial, char* file_path)
     fclose(file_to_write);
     return 0;
 }
-
+*/
 int tim_serial_write_file(serial_out_t *serial, char* file_path)
 {
     int os_fd;
@@ -80,7 +80,7 @@ int tim_serial_write_file(serial_out_t *serial, char* file_path)
     */
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
     {
-        OS_printf("From Tim: File '%s' Byte %.4d = %#.2X\n", file_path, total_bytes_read, data_buf[0]);
+        OS_printf("From serial: File '%s' Byte %.4d = %#.2X\n", file_path, total_bytes_read, data_buf[0]);
         total_bytes_read++;
         serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
         data_buf[0] = 0;
@@ -92,4 +92,10 @@ int tim_serial_write_file(serial_out_t *serial, char* file_path)
     OS_close(os_fd);
 
     return total_bytes_read;
+}
+
+int serial_out_close(serial_out_t *serial) // opens the serial port and sets it to serial->fd
+{
+    serialClose(serial->fd);
+    return 0;
 }

@@ -121,8 +121,9 @@ void TIM_AppInit(void)
         OS_printf("TIM: error, serial out init failed.\n");
     } 
 
+    serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
 	
-	TIM_ChildInit();
+    TIM_ChildInit();
 
 	CFE_SB_InitMsg(&TIM_HkTelemetryPkt,
 			TIM_APP_HK_TLM_MID,
@@ -290,9 +291,17 @@ void TIM_ResetCounters(void)
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 void TIM_SendImageFile(void)
 {   
-
     int os_ret_val = 0;
+    int32 os_fd = 0;
+    int index = 0;
+    uint32 bytes_per_read = 1; /* const */
+    uint16 total_bytes_read = 0;
+    uint8 data_buf[2];
+    data_buf[0] = 0;
+    data_buf[1] = 0;
 
+    mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+    
     /* Creating a pointer to handle the TIMMsgPtr as TIM_IMAGE_CMD_PKT  */
 
     TIM_IMAGE_CMD_PKT_t *ImageCmdPtr;
@@ -314,6 +323,62 @@ void TIM_SendImageFile(void)
     {
         OS_printf("Extended Path: %s\n", file_path);
     }
+
+    /*
+    ** Read 1 byte at a time
+    */
+    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
+    {
+        OS_printf("From Tim Image: File '%s' Byte %.2d = %#.2X %#.2X\n", ImageCmdPtr->ImageName, total_bytes_read, data_buf[0], data_buf[1]);
+        total_bytes_read++;
+        //serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
+        data_buf[0] = 0;
+        data_buf[1] = 0;
+    }
+
+    
+    OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
+    
+
+    OS_close(os_fd);
+
+    /*
+    ** Data prepped for serial:
+    ** total_bytes_read : file size
+    ** TempsCmdPtr->TempsName : file name
+    ** sizeof(TempsCmdPtr->TempsName) : 22
+    */
+
+    /*
+    uint8 start byte and pkt id  {0xF} {0:?, 1:image, 2:temps, 3:log, 4:unknown}
+    uint16 pkt size in bytes
+    uint8 filename length
+    char filename[22]
+    blank (0x00)
+    ...
+    DATA
+    ...
+    uint16 data_stop_flag 0xFF [filename length]
+    char filename[22]
+    uint8 stop byte
+    */
+
+    
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1)); /* check endianess */
+    for(index = 0; index < sizeof(ImageCmdPtr->ImageName); index++)
+    {
+        serial_write_byte(&TIM_SerialUSB, (unsigned char) (*(((char *) ImageCmdPtr->ImageName) + index)));
+    }
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
+    tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
+    OS_printf("Reached end of TIM_SendTempsFile().\n");
+
+    return;
 
 
 	return;
@@ -369,7 +434,7 @@ void TIM_SendTempsFile(void)
     */
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
     {
-        OS_printf("From Tim: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
+        OS_printf("From Tim Temps: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
         total_bytes_read++;
         //serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
         data_buf[0] = 0;
@@ -404,7 +469,7 @@ void TIM_SendTempsFile(void)
     uint8 stop byte
     */
 
-    serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
+    
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) *((uint8 *) &total_bytes_read));
     serial_write_byte(&TIM_SerialUSB, (unsigned char) *(((uint8 *) &total_bytes_read) + 1)); /* check endianess */
