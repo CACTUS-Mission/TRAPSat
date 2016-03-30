@@ -754,7 +754,7 @@ uint32 *fileSizePtr;
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void CI_ReadUpLink(void)
 {
-    int addr_len;
+    socklen_t addr_len;
     int i;
     int status;
 

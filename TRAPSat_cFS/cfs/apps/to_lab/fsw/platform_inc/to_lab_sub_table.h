@@ -27,6 +27,7 @@
 #include "sample_app_msgids.h"
 #include "ads1115_msgids.h"
 #include "vc0706_msgids.h"
+#include "tim_app_msgids.h"
 
 #if 0
 #include "hs_msgids.h"
@@ -45,6 +46,7 @@ static TO_subsciption_t  TO_SubTable[] =
             {SAMPLE_APP_HK_TLM_MID, {0,0},  4},
             {ADS1115_HK_TLM_MID, {0,0},  4},
             {VC0706_HK_TLM_MID, {0,0},  4},
+            {TIM_APP_HK_TLM_MID, {0,0},  4},
 
 
 #if 0
