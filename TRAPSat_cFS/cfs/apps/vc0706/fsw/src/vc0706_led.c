@@ -13,6 +13,11 @@
 #include "vc0706_led.h"
 
 void led_init(led_t *led, int pin) { 
+	if(wiringPiSetup() == -1)
+	{
+		OS_printf("LED: wiringPiSetup() Failed!\n");
+		return -1;
+	}
 	led->led_pin=pin; 
 	pinMode(pin, OUTPUT); 
 	led_off(led);

@@ -29,7 +29,6 @@ typedef struct
 } VC0706_NoArgsCmd_t;
 
 /*************************************************************************/
-
 /*
 ** Type definition (VC0706 App housekeeping)
 */
@@ -43,26 +42,6 @@ typedef struct
 }   OS_PACK vc0706_hk_tlm_t  ;
 
 #define VC0706_HK_TLM_LNGTH   sizeof ( vc0706_hk_tlm_t )
-
-/*************************************************************************/
-/*
-** Definitions redundantly copied from TIM
-** quick and dirty method of sharing this info
-*/
-#define VC0706_IMAGE_CMD_MID           0x188A /* This should be == TIM_APP_CMD_MID */
-#define VC0706_IMAGE_CMD_CODE          3      /* This should be == TIM_APP_SEND_IMAGE_CC */
-#define VC0706_MAX_IMAGE_NAME_LEN      15     /* This should be == TIM_MAX_IMAGE_NAME_LEN */
-
-typedef struct 
-{
-    uint8              CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char               ImageName[VC0706_MAX_IMAGE_NAME_LEN];
-} VC0706_IMAGE_CMD_PKT_t;
-
-#define VC0706_IMAGE_CMD_LNGTH   sizeof ( VC0706_IMAGE_CMD_PKT_t )
-
-/*************************************************************************/
-
 
 #endif /* _vc0706_msg_h_ */
 

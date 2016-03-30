@@ -10,13 +10,18 @@
 #include "vc0706_mux.h"
 
 int mux_init(mux_t *mux, int select_pin) {
+	if(wiringPiSetup() == -1)
+	{
+		OS_printf("MUX: wiringPiSetup() Failed!\n");
+		return -1;
+	}
 	mux->mux_select_pin = select_pin;
 	pinMode(select_pin, OUTPUT);
 	int ret = mux_select(mux, 0); // initialize low
 	return ret;
 }
 
-int mux_select(mux_t *mux, int select) { 
+int mux_select(mux_t *mux, int select) {
 	if(select == 1)
 	{
 		digitalWrite(mux->mux_select_pin, HIGH);

@@ -7,7 +7,6 @@
 #define _vc0706_core_h_
 
 #include "vc0706.h"
-#include "vc0706_child.h"
 /*
 #include <time.h>
 #include <errno.h>

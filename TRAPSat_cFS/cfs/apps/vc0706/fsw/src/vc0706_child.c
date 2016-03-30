@@ -2,7 +2,6 @@
 ** Required Headers
 */
 #include "vc0706_child.h"
-
 /*
 #include "vc0706_perfids.h"
 #include "vc0706_msgids.h"
@@ -11,11 +10,6 @@
 #include "vc0706_version.h"
 #include "vc0706_child.h"
 */
-
-
-extern VC0706_IMAGE_CMD_PKT_t VC0706_ImageCmdPkt;
-
-
 int VC0706_takePics(void);
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
@@ -100,26 +94,3 @@ void VC0706_ChildTask(void)
 
 } /* End of VC0706_ChildTask() */
 
-int VC0706_SendTimFileName(char *file_name)
-{
-    CFE_SB_InitMsg((void *) &VC0706_ImageCmdPkt, (CFE_SB_MsgId_t) VC0706_IMAGE_CMD_MID, (uint16) VC0706_IMAGE_CMD_LNGTH, (boolean) 1 );
-
-    int32 ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &VC0706_ImageCmdPkt, (uint16) VC0706_IMAGE_CMD_CODE);
-
-    if(ret < 0)
-    {
-        OS_printf("VC0706: SendTimFileName() Set Cmd Code Ret [%d].\n", ret);
-    }
-
-    //OS_printf("Copying filename [%s] into command packet.\n", file_name);
-    snprintf(VC0706_ImageCmdPkt.ImageName, sizeof(VC0706_ImageCmdPkt.ImageName), "%s", file_name);
-    //OS_printf("Command packet holds: [%s].\n", VC0706_ImageCmdPkt.ImageName);
-
-    CFE_SB_GenerateChecksum((CFE_SB_MsgPtr_t) &VC0706_ImageCmdPkt);
-    
-    CFE_SB_SendMsg((CFE_SB_Msg_t *) &VC0706_ImageCmdPkt);
-
-    OS_printf("Message sent to TIM from VC0706.\n");    
-
-    return 0;
-}

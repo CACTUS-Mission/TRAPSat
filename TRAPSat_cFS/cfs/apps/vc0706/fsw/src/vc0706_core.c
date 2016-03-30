@@ -11,6 +11,12 @@
 */
 extern struct led_t led;
 
+/*
+** External mux structure -- for error data
+*/
+extern struct mux_t mux;
+
+
 
 int init(Camera_t *cam) {
     cam->frameptr = 0;
@@ -63,7 +69,8 @@ bool checkReply(Camera_t *cam, int cmd, int size) {
     //Check the reply
     if (reply[0] != 0x76 || reply[1] != 0x00 || reply[2] != cmd)
     {
-        CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"vc0706_core::reply() Error: Camera unresponsive.\n\treply[0]: %x, expected: %x\n \treply[1]: %x, expected: %x\n\treply[2]: %x, expected: %x\n\tSTRERROR: %s\n", reply[0], 0x76, reply[1], 0x00, reply[2], cmd, strerror(errno));
+        CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"vc0706_core::reply() Error: Camera %d unresponsive.\treply[0]: %x, expected: %x\treply[1]: %x, expected: %x\n", mux.mux_state, reply[0], 0x76, reply[1], 0x00);
+        CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"vc0706_core::reply() Error: Camera %d unresponsive.\treply[2]: %x, expected: %x\tSTRERROR: %s\n", mux.mux_state, reply[2], cmd, strerror(errno));
         return false;
     }
     else
@@ -118,7 +125,7 @@ void resumeVideo(Camera_t *cam)
 
 int getVersion(Camera_t *cam)
 {
-    OS_printf("getVersion() called.\n");
+    //OS_printf("getVersion() called.\n");
     serialPutchar(cam->fd, (char)0x56);
     serialPutchar(cam->fd, (char)cam->serialNum);
     serialPutchar(cam->fd, (char)GEN_VERSION);
@@ -127,10 +134,10 @@ int getVersion(Camera_t *cam)
     bool reply;
     if ((reply = checkReply(cam, GEN_VERSION, 5)) == false)
     {
-        OS_printf("CAMERA NOT FOUND!!!\n");
+        //OS_printf("CAMERA NOT FOUND!!!\n");
 	return -1;
     }
-	OS_printf("VC0706: check Reply returned: %d\n", reply);
+	//OS_printf("VC0706: check Reply returned: %d\n", reply);
     int counter = 0;
     cam->bufferLen = 0;
     int avail = 0;
@@ -152,8 +159,8 @@ int getVersion(Camera_t *cam)
     }
 
     cam->camerabuff[cam->bufferLen] = 0;
-    OS_printf("VC0706: camera Version: '%s'\n", (char *)cam->camerabuff);
-    OS_printf("getVersion() returning.\n");
+    //OS_printf("VC0706: camera Version: '%s'\n", (char *)cam->camerabuff);
+    //OS_printf("getVersion() returning.\n");
     return 0;
 }
 
@@ -181,10 +188,12 @@ char * takePicture(Camera_t *cam, char * file_path)
 {
     cam->frameptr = 0;
 
-    OS_printf("takePicture() called.\n");
+    //OS_printf("takePicture() called.\n");
 
     // Enable LED
+    //OS_printf("LED ON\n");
     led_on(&led); // initialized in vc0706_device.c
+    OS_TaskDelay(50); // wait one 1ms to allow the LED to heat up
 
     //Clear Buffer
     clearBuffer(cam);
@@ -197,6 +206,7 @@ char * takePicture(Camera_t *cam, char * file_path)
 
     // Disable LED
     led_off(&led);
+    //OS_printf("LED OFF\n");
 
     if (checkReply(cam, FBUF_CTRL, 5) == false)
     {
@@ -204,7 +214,7 @@ char * takePicture(Camera_t *cam, char * file_path)
         return cam->empty;
     }
 
-    OS_printf("VC0706_core::takePicture() retrieving FBUFF_LEN...\n");
+    //OS_printf("VC0706_core::takePicture() retrieving FBUFF_LEN...\n");
 
     serialPutchar(cam->fd, (char)0x56);
     serialPutchar(cam->fd, (char)cam->serialNum);
@@ -220,7 +230,7 @@ char * takePicture(Camera_t *cam, char * file_path)
 
     while(serialDataAvail(cam->fd) <= 0){;}
 
-    OS_printf("Serial Data Avail %d \n", serialDataAvail(cam->fd));
+    //OS_printf("Serial Data Avail %d \n", serialDataAvail(cam->fd));
 
     unsigned int len;
     len = serialGetchar(cam->fd);
@@ -231,11 +241,11 @@ char * takePicture(Camera_t *cam, char * file_path)
     len <<= 8;
     len |= serialGetchar(cam->fd);
 
-    OS_printf("Length %u \n", len);
+    //OS_printf("Length %u \n", len);
 
     if(len > 20000){
         OS_printf("vc0706::takePicture() len:%u to Large. Should be <= 20000 \n", len);
-        CFE_EVS_SendEvent(VC0706_LEN_ERR_EID, CFE_EVS_ERROR, "vc0706_core::takePicture() Error: Image length reported from camera too large. len reported: %u, expected value <= 20000\n\tAttempting to take another image with same name.\n", len);
+        CFE_EVS_SendEvent(VC0706_LEN_ERR_EID, CFE_EVS_ERROR, "vc0706_core::takePicture() Error: Image length reported from Camera %d too large. len reported: %u, expected value <= 20000\n\tAttempting to take another image with same name.\n", mux.mux_state, len);
         resumeVideo(cam);
         clearBuffer(cam);
         return takePicture(cam, file_path);
@@ -305,7 +315,7 @@ char * takePicture(Camera_t *cam, char * file_path)
         }
     }
 
-    OS_printf("VC0706_CORE: Attempting to open file...\n");
+    //OS_printf("VC0706_CORE: Attempting to open file...\n");
     // FILE *jpg = fopen(file_path, "w");
     int32 pic_fd = OS_creat(file_path, (int32)OS_READ_WRITE);
     //if (jpg != NULL)
@@ -329,11 +339,11 @@ char * takePicture(Camera_t *cam, char * file_path)
     }
     else
     {
-        OS_printf("IMAGE COULD NOT BE OPENED/MADE!\n");
+        OS_printf("IMAGE COULD NOT BE OPENED/MADE!\n"); // Should get EVS
 	return (char *)NULL;
     }
 
-    OS_printf("VC0706: copying file_path <%s> of size %d to imageName\n", file_path, strlen(file_path));
+    //OS_printf("VC0706: copying file_path <%s> of size %d to imageName\n", file_path, strlen(file_path));
     //strcpy(cam->imageName, file_path);
     strncpy(cam->imageName, file_path, strlen(file_path));
     resumeVideo(cam);
@@ -341,6 +351,7 @@ char * takePicture(Camera_t *cam, char * file_path)
     //Clear Buffer
     clearBuffer(cam);
 
+    CFE_EVS_SendEvent(VC0706_CHILD_INIT_INF_EID, CFE_EVS_ERROR, "VC0706_core::takePicture() Camera %d stored picture successfully as <%s>\n", mux.mux_state, cam->imageName);
     return cam->imageName;
 }
 
