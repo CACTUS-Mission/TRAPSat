@@ -31,6 +31,10 @@ CFE_SB_MsgPtr_t    VC0706MsgPtr;
 
 uint32             VC0706_ChildTaskID;
 
+/*
+** Global command struct for VC0706_SendTimFileName()
+*/
+VC0706_IMAGE_CMD_PKT_t VC0706_ImageCmdPkt;
 
 /*
 ** Mux struct - used to switch between the internal and external camera in vc0706_device.c
