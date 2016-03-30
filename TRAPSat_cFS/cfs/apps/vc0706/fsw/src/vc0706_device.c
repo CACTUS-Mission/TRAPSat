@@ -12,6 +12,7 @@
 ** VC0706 Master Header
 */
 #include "vc0706.h"
+#include "vc0706_child.h"
 
 
 /*
