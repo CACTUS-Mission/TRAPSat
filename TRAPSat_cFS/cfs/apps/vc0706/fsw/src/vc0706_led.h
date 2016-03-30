@@ -22,7 +22,7 @@ typedef struct led_t {
 } led_t;
 
 
-void led_init(led_t *led, int pin);
+int led_init(led_t *led, int pin);
 
 void led_on(led_t *led);
 
