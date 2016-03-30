@@ -1,37 +1,31 @@
 #!/bin/bash
 
 ### BEGIN INIT INFO
-# Provides:          CFS
-# Required-Start:    $local_fs $time $syslog
-# Required-Stop:     $local_fs $time $syslog
+# Provides:          CFS_Boot
+# Required-Start:    $local_fs $time $network $syslog
+# Required-Stop:     $local_fs $time $network $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Starts the CFS
-# Description:       this script will start the CFS 
-#                    from the /etc/init.d
+# Description:       script to start the CFS on boot with the 
+#                    daemon command. To setup the script type 
+#                    "sudo ./CFS_Boot.sh setup" 
+#                   
 ### END INIT INFO
-
-#
-# to install this script in the /etc/init.d you must
-# move the file to that locaion and type "sudo insserv CFS.sh"
-#
-# this script use the daemon command 
-# you may need to install, upgrade, or update the command
-# get the command with "sudo apt-get $ARG daemon"
-#
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
 DIR=/home/pi/TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe
 DAEMON=$DIR/core-linux.bin
-DAEMON_NAME=CFS
+DAEMON_NAME=CFS_Boot
 
 # Change the next 3 lines to suit log location  
 LOG=/home/pi/logs
-OUT=$LOG/cfs.out
-ERR=$LOG/cfs.err
+OUT=$LOG/$DAEMON_NAME.out
+ERR=$LOG/$DAEMON_NAME.err
+DBG=$LOG/$DAEMON_NAME.dbg
 
 #checks for log dir
-if [ ! -d "$LOG"  ]; then
+if [ ! -d "$LOG" ]; then
    mkdir -p "$LOG"
 fi
 
@@ -40,33 +34,37 @@ fi
 DAEMON_USER=root
 
 # The process ID and priority of the script when it runs is stored here:
-PIDFILE=/var/run/$DAEMON_NAME.pid
-NI=10
+  PIDFILE=/var/run/$DAEMON_NAME.pid
 
 . /lib/lsb/init-functions
 
 do_start () {
+    read index < $LOG/reboot.txt
+    declare -i tmp=index+1
+    printf "%03d" $tmp > $LOG/reboot.txt
+
     log_daemon_msg "Starting system $DAEMON_NAME daemon"
     echo
-    nice -n$NI daemon --pidfile=$PIDFILE --user $DAEMON_USER --foreground --stdout=$OUT --stderr=$ERR -- $DAEMON 
+    daemon --pidfile=$PIDFILE --user $DAEMON_USER --foreground --stdout=$OUT --stderr=$ERR -- $DAEMON  
     #log_end_msg $?
 }
 
 do_stop () {
     log_daemon_msg "Stopping system $DAEMON_NAME daemon"
     start-stop-daemon --stop --pidfile $PIDFILE --retry 10
-    #log_end_msg $?
-}
-
-set(){
-    log_daemon_msg "Seting up CFS.sh daemon"
-    sudo apt-get install daemon
-    sudo apt-get update daemon
-    sudo apt-get upgrade daemon
-    sudo insserv CFS.sh
     log_end_msg $?
 }
 
+set(){
+    log_daemon_msg "Seting up $DAEMON_NAME"
+    sudo cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
+    cd /etc/init.d/
+    sudo apt-get install daemon
+    sudo apt-get update daemon
+    sudo apt-get upgrade daemon
+    sudo insserv $DAEMON_NAME.sh
+    log_end_msg $?
+}
 
 case "$1" in
 
@@ -78,7 +76,7 @@ case "$1" in
         do_stop
         do_start
         ;;
-
+    
     setup)
         set
         ;;
