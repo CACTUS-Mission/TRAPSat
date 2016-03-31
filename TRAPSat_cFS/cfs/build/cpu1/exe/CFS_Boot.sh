@@ -45,6 +45,7 @@ do_start () {
 
     log_daemon_msg "Starting system $DAEMON_NAME daemon"
     echo
+    cd $DIR
     daemon --pidfile=$PIDFILE --user $DAEMON_USER --foreground --stdout=$OUT --stderr=$ERR -- $DAEMON  
     #log_end_msg $?
 }
@@ -60,9 +61,11 @@ set(){
     sudo cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
     cd /etc/init.d/
     sudo apt-get install daemon
-    sudo apt-get update daemon
-    sudo apt-get upgrade daemon
+    #sudo apt-get update daemon -- causes errors
+    #sudo apt-get upgrade daemon -- install will always install the latest version
     sudo insserv $DAEMON_NAME.sh
+    # fix daemon group write error -- maybe this should be in start? not sure
+    sudo chmod g-w $DAEMON
     log_end_msg $?
 }
 
