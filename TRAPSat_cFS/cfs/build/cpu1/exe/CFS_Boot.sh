@@ -2,8 +2,8 @@
 
 ### BEGIN INIT INFO
 # Provides:          CFS_Boot
-# Required-Start:    $local_fs $time $network $syslog
-# Required-Stop:     $local_fs $time $network $syslog
+# Required-Start:    $all
+# Required-Stop:     $all
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Starts the CFS
@@ -39,20 +39,28 @@ DAEMON_USER=root
 . /lib/lsb/init-functions
 
 do_start () {
-    read index < $LOG/reboot.txt
-    declare -i tmp=index+1
-    printf "%03d" $tmp > $LOG/reboot.txt
+    # fix daemon group write error -- maybe this should be in start? not sure
+    sudo chmod g-w $DAEMON
+    #typeset -i index=$(cat $LOG/reboot.txt)
+    #read index < $LOG/reboot.txt
+    printf "%03d" $(expr $(cat $LOG/reboot.txt) + 1) > $LOG/reboot.txt
+    #declare -i tmp=index+1
+    #printf "%03d" $tmp > $LOG/reboot.txt
 
     log_daemon_msg "Starting system $DAEMON_NAME daemon"
     echo
     cd $DIR
-    daemon --pidfile=$PIDFILE --user $DAEMON_USER --foreground --stdout=$OUT --stderr=$ERR -- $DAEMON  
+    #daemon --pidfile=$PIDFILE --user $DAEMON_USER --foreground --stdout=$OUT --stderr=$ERR -- $DAEMON
+    (sudo ./core-linux.bin 1>>$OUT 2>>$ERR)&
+    sudo echo $! > $PIDFILE
     #log_end_msg $?
+    echo "cFS Starting with PID $(cat $PIDFILE)"
 }
 
 do_stop () {
     log_daemon_msg "Stopping system $DAEMON_NAME daemon"
-    start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+    #start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+    sudo kill $(cat $PIDFILE)
     log_end_msg $?
 }
 
@@ -60,12 +68,7 @@ set(){
     log_daemon_msg "Seting up $DAEMON_NAME"
     sudo cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
     cd /etc/init.d/
-    sudo apt-get install daemon
-    #sudo apt-get update daemon -- causes errors
-    #sudo apt-get upgrade daemon -- install will always install the latest version
     sudo insserv $DAEMON_NAME.sh
-    # fix daemon group write error -- maybe this should be in start? not sure
-    sudo chmod g-w $DAEMON
     log_end_msg $?
 }
 
@@ -95,3 +98,6 @@ case "$1" in
 
 esac
 exit 0
+
+## Old Required-Start:    $local_fs $time $network $syslog
+## Old Required-Stop:     $local_fs $time $network $syslog
