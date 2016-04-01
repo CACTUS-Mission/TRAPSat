@@ -15,6 +15,8 @@ extern uint8 ads1115_childtask_read_once;
 extern uint8 ads1115_adc_read_count;
 extern ADS1115_TEMPS_CMD_PKT_t ADS1115_TempsCmdPkt;
 
+char num_reboots[3];
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 /*                                                                 */
 /* ADS1115 child task -- startup initialization                        */
@@ -25,6 +27,12 @@ int32 ADS1115_ChildInit(void)
 {
     char *TaskText = "ADC Child Task";
     int32 Result;
+    
+    /*
+    ** Read number of reboots
+    */
+    //snprintf(num_reboots, sizeof(num_reboots),  "%.3s", getNumReboots());    
+    setNumReboots();
 
     /* Create child task - ADS1115 monitor task */
     Result = CFE_ES_CreateChildTask(&ADS1115_ADC_ChildTaskID,
@@ -168,7 +176,7 @@ void ADS1115_ChildLoop(void)
                                    "Last Data File Stored = %s.", ADS1115_HkTelemetryPkt.ads1115_datafilename);
                                 */
                                 CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                   "File \'temps/%s\' Created: { 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X }",
+                                   "Temp File \'%s\':{%.2X%.2X, %.2X%.2X, %.2X%.2X, %.2X%.2X, }",
                                     ADS1115_HkTelemetryPkt.ads1115_datafilename,
                                     ADS1115_ChannelData.adc_ch_0[0], ADS1115_ChannelData.adc_ch_0[1],
                                     ADS1115_ChannelData.adc_ch_1[0], ADS1115_ChannelData.adc_ch_1[1],
@@ -206,7 +214,7 @@ void ADS1115_ChildLoop(void)
                                 else
                                 {
                                     CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION,
-                                       "One File \'temps/%s\' Created: { 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X, 0x%.2X%.2X }",
+                                       "One Temp File \'%s\':{%.2X%.2X, %.2X%.2X, %.2X%.2X, %.2X%.2X, }",
                                         ADS1115_HkTelemetryPkt.ads1115_datafilename,
                                         ADS1115_ChannelData.adc_ch_0[1], ADS1115_ChannelData.adc_ch_0[0],
                                         ADS1115_ChannelData.adc_ch_1[1], ADS1115_ChannelData.adc_ch_1[0],
@@ -264,14 +272,47 @@ int ADS1115_SendTimFileName(char *file_name)
     }
 
     OS_printf("Copying filename [%s] into command packet.\n", file_name);
+
     snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(ADS1115_TempsCmdPkt.TempsName), "%s", file_name);
+
     OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
 
     CFE_SB_GenerateChecksum((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt);
-    
+
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_TempsCmdPkt);
 
-    //OS_printf("Message sent.\n");    
+    OS_printf("ADS1115 Message sent to TIM.\n");
 
     return 0;
 }
+
+void setNumReboots(void)
+{
+    //char buff[3];
+    OS_printf("Inside ADS get reboot\n");
+
+    memset(num_reboots, '0', sizeof(num_reboots));
+
+    mode_t mode = S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IROTH;
+
+    int32 fd = OS_open((const char *) "/ram/logs/reboot.txt", (int32) OS_READ_ONLY, (uint32) mode);
+
+    if(fd < OS_FS_SUCCESS)
+    {
+        OS_printf("\tCould not open reboot file in ADS1115, ret = %d!\n", fd);
+    }
+
+    int os_ret = OS_read((int32) fd, (void *) num_reboots, (uint32) 3);
+
+    if( os_ret < OS_FS_SUCCESS)
+    {
+        memset(num_reboots, '9', sizeof(num_reboots));
+        OS_printf("\tCould not read from reboot file in ADS1115, ret = %d!\n", os_ret);
+    }
+
+    OS_close(fd);
+
+
+    //return num_reboots;
+}
+

@@ -19,7 +19,7 @@ DAEMON=$DIR/core-linux.bin
 DAEMON_NAME=CFS_Boot
 
 # Change the next 3 lines to suit log location  
-LOG=/home/pi/logs
+LOG=$DIR/ram/logs
 OUT=$LOG/$DAEMON_NAME.out
 ERR=$LOG/$DAEMON_NAME.err
 DBG=$LOG/$DAEMON_NAME.dbg

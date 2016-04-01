@@ -11,6 +11,8 @@
 #include "vc0706_child.h"
 */
 
+char num_reboots[3];
+
 extern VC0706_IMAGE_CMD_PKT_t VC0706_ImageCmdPkt;
 
 int VC0706_takePics(void);
@@ -25,6 +27,12 @@ int32 VC0706_ChildInit(void)
 {
     char *TaskText = "VC0706 Child Task";
     int32 Result;
+    
+    
+    /*
+    ** Read number of reboots
+    */
+    setNumReboots();
 
     /* Create child task - VC0706 monitor task */
     Result = CFE_ES_CreateChildTask(&VC0706_ChildTaskID,
@@ -120,3 +128,30 @@ int VC0706_SendTimFileName(char *file_name)
 
     return 0;
 }
+
+void setNumReboots(void)
+{
+    OS_printf("Inside VC get reboot\n");
+
+    memset(num_reboots, '0', sizeof(num_reboots));
+
+    mode_t mode = S_IWUSR | S_IRUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IROTH;
+
+    int32 fd = OS_open((const char *) "/ram/logs/reboot.txt", (int32) OS_READ_ONLY, (uint32) mode);
+
+    if(fd < OS_FS_SUCCESS)
+    {
+        OS_printf("\tCould not open reboot file in VC, ret = %d!\n", fd);
+    }
+
+    int os_ret = OS_read((int32) fd, (void *) num_reboots, (uint32) 3);
+
+    if( os_ret < OS_FS_SUCCESS)
+    {
+        memset(num_reboots, '9', sizeof(num_reboots));
+        OS_printf("\tCould not read from reboot file in VC, ret = %d!\n", os_ret);
+    }
+
+    OS_close(fd);
+}
+

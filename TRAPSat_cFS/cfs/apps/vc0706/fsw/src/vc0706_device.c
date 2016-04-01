@@ -23,6 +23,8 @@ extern struct led_t led;
 extern struct mux_t mux;
 extern struct Camera_t cam;
 
+extern char num_reboots[3];
+
 /*
 ** VC0706 take Pictures Loop
 */
@@ -40,6 +42,13 @@ int VC0706_takePics(void)
 
     char file_name[15];
     memset(file_name, '\0', sizeof(file_name));
+
+
+    /*
+    ** get Num reboots
+    */
+    //OS_printf("VC0706: Attempting to setNumReboots()...\n");
+    //setNumReboots();
 
     /*
     ** Attempt to initialize LED
@@ -101,11 +110,9 @@ int VC0706_takePics(void)
 	    ** /ram/images/<num_reboots>_<camera 0 or 1>_<num_pics_stored>.jpg
         */
 		//OS_printf("VC0706: Calling sprintf()...\n");
-		unsigned int num_reboots = 0; // initialized to undefined
-        //num_reboots = getNumReboots(); // not writen yet -- ask Keegan.
         
         int ret = 0;
-        ret = snprintf(file_name, sizeof(file_name), "%.3u_%d_%.4u.jpg", num_reboots, mux.mux_state, num_pics_stored); // cFS /exe relative path
+        ret = snprintf(file_name, sizeof(file_name), "%.3s_%d_%.4u.jpg", num_reboots, mux.mux_state, num_pics_stored); // cFS /exe relative path
         if(ret < 0)
         {
             OS_printf("sprintf err: %s\n", strerror(ret));
@@ -155,3 +162,4 @@ int VC0706_takePics(void)
 
     return(0);
 }
+

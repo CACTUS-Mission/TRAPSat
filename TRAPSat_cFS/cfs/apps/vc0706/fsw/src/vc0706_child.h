@@ -100,6 +100,12 @@ void VC0706_ChildLoop(void);
 */
 int VC0706_SendTimFileName(char *file_name);
 
+
+/*
+** Get the number of reboots in the system
+*/
+void setNumReboots(void);
+
 #endif /* _vc0706_child_h_ */
 
 /************************/

@@ -30,6 +30,8 @@ uint16 ads1115_adc_read_count;
 extern ads1115_hk_tlm_t ADS1115_HkTelemetryPkt;
 extern ADS1115_Ch_Data_t ADS1115_ChannelData;
 
+extern char num_reboots[3];
+
 /*
 ** int ADS1115_ReadADCChannels(void)
 **
@@ -320,7 +322,7 @@ int ADS1115_StoreADCChannels(void)
     ** Concatonate filename with ADC read count
     ** This will be where number of resets may be added to the front of the file name. 
     */
-    if((os_ret_val = snprintf(data_filename, sizeof(data_filename), "000_t_%.5u.csv", ads1115_adc_read_count)) < 0)
+    if((os_ret_val = snprintf(data_filename, sizeof(data_filename), "%.3s_t_%.5u.csv", num_reboots, ads1115_adc_read_count)) < 0)
     {
         OS_printf("ADS1115: snprintf returned [%d] expected non-negative\n", os_ret_val);
         OS_printf("ADS1115: target data_filename: \'%s\'\n", data_filename);

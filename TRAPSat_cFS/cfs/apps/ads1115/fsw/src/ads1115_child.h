@@ -123,6 +123,10 @@ int ADS1115_StoreADCChannels(void);
 */
 int ADS1115_SendTimFileName(char *file_name);
 
+/*
+** Get the number of reboots in the system
+*/
+void setNumReboots(void);
 
 #endif /* _ads1115_child_h_ */
 
