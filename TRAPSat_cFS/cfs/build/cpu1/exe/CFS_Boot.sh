@@ -10,7 +10,7 @@
 # Description:       script to start the CFS on boot with the 
 #                    daemon command. To setup the script type 
 #                    "sudo ./CFS_Boot.sh setup" 
-#                   
+#
 ### END INIT INFO
 
 # Change the next 3 lines to suit where you install your script and what you want to call it
@@ -41,40 +41,60 @@ DAEMON_USER=root
 do_start () {
     # fix daemon group write error -- maybe this should be in start? not sure
     sudo chmod g-w $DAEMON
-    #typeset -i index=$(cat $LOG/reboot.txt)
-    #read index < $LOG/reboot.txt
+
+    # Increment exe/ram/logs/reboot.txt count
     printf "%03d" $(expr $(cat $LOG/reboot.txt) + 1) > $LOG/reboot.txt
-    #declare -i tmp=index+1
-    #printf "%03d" $tmp > $LOG/reboot.txt
 
     log_daemon_msg "Starting system $DAEMON_NAME daemon"
-    echo
     cd $DIR
-    #daemon --pidfile=$PIDFILE --user $DAEMON_USER --foreground --stdout=$OUT --stderr=$ERR -- $DAEMON
     (sudo ./core-linux.bin 1>>$OUT 2>>$ERR)&
+
+    # Send Process ID to PID File
     sudo echo $! > $PIDFILE
-    #log_end_msg $?
     echo "cFS Starting with PID $(cat $PIDFILE)"
 }
 
 do_stop () {
     log_daemon_msg "Stopping system $DAEMON_NAME daemon"
-    #start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+    echo
     sudo kill $(cat $PIDFILE)
     log_end_msg $?
 }
 
+do_reset_boot_count () {
+    log_daemon_msg "Clearing reboot file"
+    printf "000" > $LOG/reboot.txt
+    echo " Set to 000"
+}
+
+do_del_logs () {
+    log_daemon_msg "Deleting logs files"
+    sudo rm -f $DIR/ram/logs/CFS_Boot.*
+    echo " log files removed."
+}
+
+do_del_data () {
+    log_daemon_msg "Deleting Images"
+    sudo rm -f $DIR/ram/images/*.jpg
+    echo " Data Wiped!"
+    log_daemon_msg "Deleting Temperature Files"
+    sudo rm -f $DIR/ram/temps/*.csv
+    echo " Data Wiped!"
+}
+
 set(){
-    log_daemon_msg "Seting up $DAEMON_NAME"
+    log_daemon_msg "Setting up $DAEMON_NAME"
+    echo
     sudo cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
     cd /etc/init.d/
     sudo insserv $DAEMON_NAME.sh
     log_end_msg $?
+    echo
 }
 
 case "$1" in
 
-    start|stop)
+    start|stop|del_data|reset_boot_count|del_logs)
         do_${1}  
         ;;
 
@@ -82,7 +102,7 @@ case "$1" in
         do_stop
         do_start
         ;;
-    
+
     setup)
         set
         ;;
@@ -101,3 +121,11 @@ exit 0
 
 ## Old Required-Start:    $local_fs $time $network $syslog
 ## Old Required-Stop:     $local_fs $time $network $syslog
+
+#do_start
+    #typeset -i index=$(cat $LOG/reboot.txt)
+    #read index < $LOG/reboot.txt
+    #start-stop-daemon --stop --pidfile $PIDFILE --retry 10
+    #daemon --pidfile=$PIDFILE --user $DAEMON_USER --foreground --stdout=$OUT --stderr=$ERR -- $DAEMON
+    #declare -i tmp=index+1
+    #printf "%03d" $tmp > $LOG/reboot.txt
