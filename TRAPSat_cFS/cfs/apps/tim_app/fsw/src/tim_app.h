@@ -75,6 +75,7 @@ void TIM_ReportHousekeeping(void);
 void TIM_ResetCounters(void);
 void TIM_SendImageFile(void);
 void TIM_SendTempsFile(void);
+void TIM_SendLogFile(void);
 
 /*
 ** OS_Timer callback funtion for poweroff 

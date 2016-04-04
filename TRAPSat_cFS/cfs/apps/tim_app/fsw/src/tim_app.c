@@ -357,11 +357,11 @@ void TIM_ResetCounters(void)
 
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
-/*  Name:  TIM_TakeStill (Generic)                                          */
+/*  Name:  TIM_SendImageFile (Generic)                                        */
 /*                                                                            */
 /*  Purpose:                                                                  */
-/*         This function takes a picture using raspistill, based on info      */
-/*         from the global (CFE_SB_MsgPtr_t *) TIMMsgPtr                    */
+/*         This function sends a picture using a JPG file, based on info      */
+/*         from the global (CFE_SB_MsgPtr_t *) TIMMsgPtr                      */
 /* * * * * * * * * * * * * * * * * * * * * * * *  * * * * * * *  * *  * * * * */
 void TIM_SendImageFile(void)
 {   
@@ -472,7 +472,7 @@ void TIM_SendImageFile(void)
     //OS_printf("Reached end of TIM_SendImageFile().\n");
 
 	return;
-} /* End of TIM_TakeStill() */
+} /* End of TIM_SendImageFile() */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 /*                                                                            */
@@ -535,8 +535,8 @@ void TIM_SendTempsFile(void)
     uint8 file_len[2];
     file_len[0] = *((uint8 *) &total_bytes_read);
     file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
-    OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
-    OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
+    OS_printf("Temp Length MSB = [%#.2X]\n", file_len[1]);
+    OS_printf("Temp Length LSB = [%#.2X]\n", file_len[0]);
 
     OS_close(os_fd);
 
@@ -589,7 +589,107 @@ void TIM_SendTempsFile(void)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 /*                                                                            */
-/* TIM_VerifyCmdLength() -- Verify command packet length                   */
+/* TIM_SendLogFile()                                                          */
+/*                                                                            */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+void TIM_SendLogFile(void)
+{
+    int os_ret_val = 0;
+    int32 os_fd = 0;
+    int index = 0;
+    uint32 bytes_per_read = 1; /* const */
+    uint16 total_bytes_read = 0;
+    uint8 data_buf[2];
+    data_buf[0] = 0;
+    data_buf[1] = 0;
+
+    char log_path[] = "/ram/logs/CFS_Boot.out";
+
+    mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+
+    OS_printf("TIM_APP: Sending Log file.\n");
+
+    if ((os_fd = OS_open((const char * ) log_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
+    {
+        OS_printf("TIM::SendLogFile(): OS_open Returned [%d] (expected non-negative value).\n", os_fd);
+        return;
+    }
+
+    /*
+    ** Read 1 byte at a time
+    */
+    while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
+    {
+        //OS_printf("From Tim Temps: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
+        total_bytes_read++;
+        //serial_write_byte(&TIM_SerialUSB, (unsigned char) data_buf[0]);
+        data_buf[0] = 0;
+        data_buf[1] = 0;
+    }
+
+	OS_printf("TIM: Log File size: [%d] bytes.\n", total_bytes_read);
+
+
+    uint8 file_len[2];
+    file_len[0] = *((uint8 *) &total_bytes_read);
+    file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
+    OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
+    OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
+
+    OS_close(os_fd);
+
+    /*
+    ** Data prepped for serial:
+    ** total_bytes_read : file size
+    ** TempsCmdPtr->TempsName : file name
+    ** sizeof(TempsCmdPtr->TempsName) : 22
+    */
+
+    /*
+    uint8 start byte and pkt id  {0xF} {0:?, 1:image, 2:temps, 3:log, 4:unknown}
+    uint16 pkt size in bytes
+    uint8 filename length
+    char filename[22]
+    blank (0x00)
+    ...
+    DATA
+    ...
+    uint16 data_stop_flag 0xFF [filename length]
+    char filename[22]
+    uint8 stop byte
+    */
+
+
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
+
+    for(index = 0; index < sizeof(log_path); index++)
+    {
+        serial_write_byte(&TIM_SerialUSB, (unsigned char) log_path[index]);
+    }
+
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
+
+    tim_serial_write_file(&TIM_SerialUSB, (char *) log_path);
+
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
+
+
+    CFE_EVS_SendEvent(TIM_COMMAND_LOGS_EID, CFE_EVS_INFORMATION, 
+            "Log File \'%s\' Sent Successfully\n", log_path);
+
+	return;
+} /* End of TIM_SendLogFile() */
+
+
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*                                                                            */
+/* TIM_VerifyCmdLength() -- Verify command packet length                      */
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 boolean TIM_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
@@ -620,18 +720,29 @@ boolean TIM_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 /*                                                                                                          */
-/* timer_callback_poweroff_system(uint32 poweroff_timer_id) -- Poweroff the system, called by OSAL Timer.   */
+/* timer_callback_poweroff_system(uint32 poweroff_timer_id) -- Poweroff the system, called by 				*/
+/*															   OSAL Timer at time defined in tim_app.h 	    */
 /*                                                                                                          */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void timer_callback_poweroff_system(uint32 poweroff_timer_id)
 {
+	// announce timer to everone logged into the system -- purely for debugging.
+	system("wall -n TRAPSat_CFS: timer_callback_poweroff_system called!");
 
-    // Send Logs?
+    /*
+    ** Send Log files before poweroff from Wallops
+    */
+    while(serial_busy)
+    {
+    	// wait until serial not busy
+    }
+    serial_busy = 1; // Occupy Serial for sending of logs file
+    TIM_SendLogFile();
 
     // poweroff the system
-    system("shutdown -P now");
-    OS_printf("TIM_APP: leaving cFS\n");
-    // End cFS -- Obviously, this will only happen when Pi is on.
-    CFE_PSP_SigintHandler();
+    //system("shutdown -P now");
+    
+    //OS_printf("TIM_APP: leaving cFS\n");
+    //CFE_PSP_SigintHandler(); // End cFS -- Obviously, this will only happen when Pi is on.
 }
 

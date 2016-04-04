@@ -23,6 +23,7 @@
 
 #define TIM_COMMAND_IMAGE_EID           7
 #define TIM_COMMAND_TEMPS_EID           8
+#define TIM_COMMAND_LOGS_EID			16
 
 #define TIM_CHILD_INIT_EID            9
 #define TIM_CHILD_INIT_ERR_EID       10 
@@ -30,7 +31,7 @@
 #define TIM_QUEUE_DELETE_ERR_EID     12
 #define TIM_QUEUE_PUT_ERR_EID        13
 #define TIM_QUEUE_GET_ERR_EID        14
-#define TIM_CHILD_UNKWN_ERR_EID	15
+#define TIM_CHILD_UNKWN_ERR_EID		 15
 
 #endif /* _tim_app_events_h_ */
 
