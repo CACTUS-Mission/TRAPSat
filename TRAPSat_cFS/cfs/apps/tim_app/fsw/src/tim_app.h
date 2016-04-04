@@ -38,6 +38,8 @@
 #define TIM_RASPICALL_MAX_LEN		64
 #define TIM_SYS_CALL_MAX_LEN		TIM_RASPICALL_MAX_LEN + OS_MAX_PATH_LEN
 
+#define POWEROFF_TIME 				390000000 /* time before poweroff in microseconds */
+
 /*
 ** This is the max amount of 
 */
@@ -73,6 +75,11 @@ void TIM_ReportHousekeeping(void);
 void TIM_ResetCounters(void);
 void TIM_SendImageFile(void);
 void TIM_SendTempsFile(void);
+
+/*
+** OS_Timer callback funtion for poweroff 
+*/
+void timer_callback_poweroff_system(uint32 poweroff_timer_id);
 
 boolean TIM_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength);
 

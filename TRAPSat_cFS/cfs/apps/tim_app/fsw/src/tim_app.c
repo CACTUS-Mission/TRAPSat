@@ -32,6 +32,13 @@ int serial_busy;
 int serial_last_sent;
 
 /*
+** globals for poweroff timer
+*/ 
+uint32 poweroff_timer_id;
+uint32 poweroff_timer_clock_accuracy = 100000; /* 100,000 microseconds resolution -- should use very little clock time with low resolution */
+
+
+/*
 ** global data for child task (cameraman) use
 */
 //uint32             	TIM_ChildTaskID;
@@ -51,7 +58,7 @@ static CFE_EVS_BinFilter_t  TIM_EventFilters[] =
 
 
 /** * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-/* TIM_AppMain() -- Application entry point and main process loop          */
+/* TIM_AppMain() -- Application entry point and main process loop             */
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  * *  * * * * **/
 void TIM_AppMain( void )
@@ -92,6 +99,11 @@ void TIM_AppMain( void )
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void TIM_AppInit(void)
 {
+    /*
+    ** Disable debugging prints
+    */
+    //OS_printf_disable();
+
 	/*
 	** Register the app with Executive services
 	*/
@@ -127,6 +139,21 @@ void TIM_AppInit(void)
     serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
 	
     //TIM_ChildInit();
+
+    /*
+    ** Initialize Timer for poweroff -- attaches to timer_callback_poweroff_system()
+    */ 
+    int32 timer_ret = OS_TimerCreate( (uint32)&poweroff_timer_id, (const char *)"poweroff_timer", (uint32 *)poweroff_timer_clock_accuracy, (OS_TimerCallback_t) timer_callback_poweroff_system );
+    if(timer_ret != OS_SUCCESS)
+    {
+        OS_printf("OS_TimerCreate() failed to attach timer to timer_callback_poweroff_system() function! returned: %d\n", timer_ret);
+    }
+    uint32 poweroff_interval = 10000000 ;   // 10 seconds in microseconds -- function should never be called twice, but this is a failsafe of sorts.
+    timer_ret = OS_TimerSet( (uint32)poweroff_timer_id, (uint32) POWEROFF_TIME, (uint32)poweroff_interval );
+    if(timer_ret != OS_SUCCESS)
+    {
+        OS_printf("OS_TimerSet() failed to set start time for timer_callback_poweroff_system() function! returned: %d\n", timer_ret);
+    }
 
 	CFE_SB_InitMsg(&TIM_HkTelemetryPkt,
 			TIM_APP_HK_TLM_MID,
@@ -587,4 +614,23 @@ boolean TIM_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
     return(result);
 
 } /* End of TIM_VerifyCmdLength() */
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+/*                                                                                                          */
+/* timer_callback_poweroff_system(uint32 poweroff_timer_id) -- Poweroff the system, called by OSAL Timer.   */
+/*                                                                                                          */
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
+void timer_callback_poweroff_system(uint32 poweroff_timer_id)
+{
+
+    // Send Logs?
+
+    // poweroff the system 
+    // below line disbabled for testing purposes.
+    // system("shutdown -P now");
+ 
+    // End cFS -- Obviously, this will only happen when Pi is on.
+    CFE_PSP_SigintHandler();
+}      
 
