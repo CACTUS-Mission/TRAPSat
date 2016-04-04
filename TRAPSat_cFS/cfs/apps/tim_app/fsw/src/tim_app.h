@@ -23,7 +23,7 @@
 #include "cfe_sb.h"
 #include "cfe_es.h"
 
-
+#include "osapi-os-timer.h"
 
 /***********************************************************************/
 

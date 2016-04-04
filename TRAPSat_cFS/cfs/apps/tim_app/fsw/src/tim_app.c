@@ -137,18 +137,20 @@ void TIM_AppInit(void)
     } 
 
     serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
-	
+
     //TIM_ChildInit();
 
     /*
     ** Initialize Timer for poweroff -- attaches to timer_callback_poweroff_system()
-    */ 
-    int32 timer_ret = OS_TimerCreate( (uint32)&poweroff_timer_id, (const char *)"poweroff_timer", (uint32 *)poweroff_timer_clock_accuracy, (OS_TimerCallback_t) timer_callback_poweroff_system );
+    */
+    OS_printf("TIM_APP: Attempting to initialize reboot timer.\n");
+    int32 timer_ret = OS_TimerCreate( (uint32 *)&poweroff_timer_id, (const char *)"poweroff_timer", (uint32 *)&poweroff_timer_clock_accuracy, (OS_TimerCallback_t) &timer_callback_poweroff_system );
     if(timer_ret != OS_SUCCESS)
     {
         OS_printf("OS_TimerCreate() failed to attach timer to timer_callback_poweroff_system() function! returned: %d\n", timer_ret);
     }
     uint32 poweroff_interval = 10000000 ;   // 10 seconds in microseconds -- function should never be called twice, but this is a failsafe of sorts.
+    OS_printf("TIM_APP: Attempting to set reboot timer to %d microseconds.\n", POWEROFF_TIME);
     timer_ret = OS_TimerSet( (uint32)poweroff_timer_id, (uint32) POWEROFF_TIME, (uint32)poweroff_interval );
     if(timer_ret != OS_SUCCESS)
     {
@@ -499,7 +501,7 @@ void TIM_SendTempsFile(void)
     char file_path[OS_MAX_PATH_LEN];
 
     OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
-    
+
     memset(file_path, '\0', sizeof(file_path));
 
     if((os_ret_val = snprintf(file_path, sizeof(file_path), "/ram/temps/%s", TempsCmdPtr->TempsName)) < 0)
@@ -559,7 +561,7 @@ void TIM_SendTempsFile(void)
     uint8 stop byte
     */
 
-    
+
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
@@ -576,7 +578,7 @@ void TIM_SendTempsFile(void)
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
-    
+
 
     CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION, 
             "Temps File \'%s\' Sent Successfully\n", file_path);
@@ -591,7 +593,7 @@ void TIM_SendTempsFile(void)
 /*                                                                            */
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 boolean TIM_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
-{     
+{
     boolean result = TRUE;
 
     uint16 ActualLength = CFE_SB_GetTotalMsgLength(msg);
@@ -626,11 +628,10 @@ void timer_callback_poweroff_system(uint32 poweroff_timer_id)
 
     // Send Logs?
 
-    // poweroff the system 
-    // below line disbabled for testing purposes.
-    // system("shutdown -P now");
- 
+    // poweroff the system
+    system("shutdown -P now");
+    OS_printf("TIM_APP: leaving cFS\n");
     // End cFS -- Obviously, this will only happen when Pi is on.
     CFE_PSP_SigintHandler();
-}      
+}
 
