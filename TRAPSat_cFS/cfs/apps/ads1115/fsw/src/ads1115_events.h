@@ -33,6 +33,8 @@
 #define ADS1115_CHILD_ADC_INF_EID        11
 #define ADS1115_CHILD_ADC_ERR_EID        12
 
+#define ADS1115_TIM_MSG_EID              13
+
 #endif /* _ads1115_events_h_ */
 
 /************************/

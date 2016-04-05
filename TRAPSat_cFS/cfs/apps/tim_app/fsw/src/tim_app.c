@@ -99,7 +99,7 @@ void TIM_AppInit(void)
 
 	/*
 	** Register the events
-	*/ 
+	*/
 	CFE_EVS_Register(TIM_EventFilters,
 			sizeof(TIM_EventFilters)/sizeof(CFE_EVS_BinFilter_t),
 			CFE_EVS_BINARY_FILTER);
@@ -122,10 +122,9 @@ void TIM_AppInit(void)
     if(serial_out_init(&TIM_SerialUSB, (char *) SERIAL_OUT_PORT) < 0)
     {
         OS_printf("TIM: error, serial out init failed.\n");
-    } 
+    }
 
-    serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
-	
+    //serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
     //TIM_ChildInit();
 
 	CFE_SB_InitMsg(&TIM_HkTelemetryPkt,
@@ -138,7 +137,7 @@ void TIM_AppInit(void)
 			TIM_APP_MINOR_VERSION, 
 			TIM_APP_REVISION, 
 			TIM_APP_MISSION_REV);
-				
+
 } /* End of TIM_AppInit() */
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
@@ -384,15 +383,15 @@ void TIM_SendImageFile(void)
         data_buf[1] = 0;
     }
 
-    
-    OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
+
+    //OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
 
     uint8 file_len[2];
     file_len[0] = *((uint8 *) &total_bytes_read);
     file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
-    OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
-    OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
-    
+    //OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
+    //OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
+
 
     OS_close(os_fd);
 
@@ -467,12 +466,12 @@ void TIM_SendTempsFile(void)
     TIM_TEMPS_CMD_PKT_t *TempsCmdPtr;
     TempsCmdPtr = (TIM_TEMPS_CMD_PKT_t *) TIMMsgPtr;
 
-    OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
+    //OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
 
     char file_path[OS_MAX_PATH_LEN];
 
-    OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
-    
+    //OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
+
     memset(file_path, '\0', sizeof(file_path));
 
     if((os_ret_val = snprintf(file_path, sizeof(file_path), "/ram/temps/%s", TempsCmdPtr->TempsName)) < 0)
@@ -506,8 +505,8 @@ void TIM_SendTempsFile(void)
     uint8 file_len[2];
     file_len[0] = *((uint8 *) &total_bytes_read);
     file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
-    OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
-    OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
+    //OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
+    //OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
 
     OS_close(os_fd);
 

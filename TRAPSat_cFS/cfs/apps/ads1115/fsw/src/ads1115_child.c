@@ -247,7 +247,7 @@ void ADS1115_ChildLoop(void)
         /*
         OS_printf("ADS1115: ADC Loop current state [%d]. Delay 5s.\n", ADS1115_HkTelemetryPkt.ads1115_childloop_state);
         */
-        OS_TaskDelay(5000);
+        OS_TaskDelay(1000);
         
     } /* Infinite ADC Read Loop End Here */
 
@@ -271,17 +271,20 @@ int ADS1115_SendTimFileName(char *file_name)
         OS_printf("ADS1115: SendTimFileName() Set Cmd Code Ret [%d].\n", ret);
     }
 
-    OS_printf("Copying filename [%s] into command packet.\n", file_name);
+    //OS_printf("Copying filename [%s] into command packet.\n", file_name);
 
     snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(ADS1115_TempsCmdPkt.TempsName), "%s", file_name);
 
-    OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
+    //OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
 
     CFE_SB_GenerateChecksum((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt);
 
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_TempsCmdPkt);
 
-    OS_printf("ADS1115 Message sent to TIM.\n");
+    //OS_printf("ADS1115 Message sent to TIM.\n");
+
+    CFE_EVS_SendEvent(ADS1115_TIM_MSG_EID,CFE_EVS_INFORMATION, "ADS1115 Message sent to TIM");
+
 
     return 0;
 }
@@ -289,7 +292,7 @@ int ADS1115_SendTimFileName(char *file_name)
 void setNumReboots(void)
 {
     //char buff[3];
-    OS_printf("Inside ADS get reboot\n");
+    //OS_printf("Inside ADS get reboot\n");
 
     memset(num_reboots, '0', sizeof(num_reboots));
 
