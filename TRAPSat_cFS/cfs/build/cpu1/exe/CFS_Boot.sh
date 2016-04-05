@@ -112,7 +112,8 @@ case "$1" in
         ;;
 
     *)
-        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|setup|restart|status}"
+        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|setup|restart|status|del_data|reset_boot_count|del_logs}"
+
         exit 1
         ;;
 
