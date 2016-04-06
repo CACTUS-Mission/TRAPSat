@@ -38,7 +38,7 @@
 #define TIM_RASPICALL_MAX_LEN		64
 #define TIM_SYS_CALL_MAX_LEN		TIM_RASPICALL_MAX_LEN + OS_MAX_PATH_LEN
 
-#define POWEROFF_TIME 				390000000 /* time before poweroff in microseconds */
+#define POWEROFF_TIME 				345000000 /* time before poweroff in microseconds */
 
 /*
 ** This is the max amount of 

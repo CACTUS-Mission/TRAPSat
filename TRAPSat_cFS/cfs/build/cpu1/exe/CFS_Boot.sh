@@ -43,53 +43,56 @@ do_start () {
     sudo chmod g-w $DAEMON
 
     # Increment exe/ram/logs/reboot.txt count
+    log_daemon_msg "Incrementing reboot file"
     printf "%03d" $(expr $(cat $LOG/reboot.txt) + 1) > $LOG/reboot.txt
+    log_end_msg $?
 
+    # Go to execution dir and start
     log_daemon_msg "Starting system $DAEMON_NAME daemon"
     cd $DIR
     (sudo ./core-linux.bin 1>>$OUT 2>>$ERR)&
 
     # Send Process ID to PID File
     sudo echo $! > $PIDFILE
+    log_end_msg $?
+
     echo "cFS Starting with PID $(cat $PIDFILE)"
 }
 
 do_stop () {
     log_daemon_msg "Stopping system $DAEMON_NAME daemon"
-    echo
     sudo kill $(cat $PIDFILE)
     log_end_msg $?
 }
 
 do_reset_boot_count () {
-    log_daemon_msg "Clearing reboot file"
+    log_daemon_msg "Clearing reboot file to 000"
     printf "000" > $LOG/reboot.txt
-    echo " Set to 000"
+    log_end_msg $?
 }
 
 do_del_logs () {
     log_daemon_msg "Deleting logs files"
     sudo rm -f $DIR/ram/logs/CFS_Boot.*
-    echo " log files removed."
+    log_end_msg $?
 }
 
 do_del_data () {
     log_daemon_msg "Deleting Images"
     sudo rm -f $DIR/ram/images/*.jpg
-    echo " Data Wiped!"
+    log_end_msg $?
+
     log_daemon_msg "Deleting Temperature Files"
     sudo rm -f $DIR/ram/temps/*.csv
-    echo " Data Wiped!"
+    log_end_msg $?
 }
 
 set(){
     log_daemon_msg "Setting up $DAEMON_NAME"
-    echo
     sudo cp CFS_Boot.sh /etc/init.d/CFS_Boot.sh
     cd /etc/init.d/
     sudo insserv $DAEMON_NAME.sh
     log_end_msg $?
-    echo
 }
 
 case "$1" in
@@ -112,7 +115,7 @@ case "$1" in
         ;;
 
     *)
-        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|setup|restart|status}"
+        echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|setup|restart|status|del_data|reset_boot_count|del_logs}"
         exit 1
         ;;
 

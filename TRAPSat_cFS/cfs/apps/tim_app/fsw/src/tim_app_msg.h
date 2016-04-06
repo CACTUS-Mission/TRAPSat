@@ -18,8 +18,9 @@
 #define TIM_APP_NOOP_CC                 0
 #define TIM_APP_RESET_COUNTERS_CC       1
 #define TIM_APP_ERROR_CC                2 /* get rid of this one? */
-#define TIM_APP_SEND_IMAGE_CC           3 /* send picture file */
+#define TIM_APP_SEND_IMAGE0_CC           3 /* send picture file */
 #define TIM_APP_SEND_TEMPS_CC           4 /* send temperature file */
+#define TIM_APP_SEND_IMAGE1_CC           5 /* send temperature file */
 
 
 /*************************************************************************/

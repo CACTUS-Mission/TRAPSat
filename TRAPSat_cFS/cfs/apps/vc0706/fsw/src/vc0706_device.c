@@ -146,8 +146,8 @@ int VC0706_takePics(void)
 		    else
 		    {
 			  //OS_printf("VC0706: Wrote Picture Filename to HK Packet. Sent: '%.*s'\n", 15, (char * )&pic_file_name[12], hk_packet_succes);
-		      VC0706_SendTimFileName(file_name);
-            }
+			    VC0706_SendTimFileName(file_name); 
+			}
 		    //OS_printf("VC0706: VC0706_HkTelemetryPkt.vc0706_filename: '%s'\n", VC0706_HkTelemetryPkt.vc0706_filename);
 
             

@@ -109,8 +109,25 @@ int VC0706_SendTimFileName(char *file_name)
 {
     CFE_SB_InitMsg((void *) &VC0706_ImageCmdPkt, (CFE_SB_MsgId_t) VC0706_IMAGE_CMD_MID, (uint16) VC0706_IMAGE_CMD_LNGTH, (boolean) 1 );
 
-    int32 ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &VC0706_ImageCmdPkt, (uint16) VC0706_IMAGE_CMD_CODE);
-
+    int32 ret = 0;
+    
+    /*
+    ** Determine which camera is sending data, for Command Code determintation
+    */
+    if(file_name[4] == '0')
+    {
+        ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &VC0706_ImageCmdPkt, (uint16) VC0706_IMAGE0_CMD_CODE);
+    }
+    else if (file_name[4] == '1')
+    {
+        ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &VC0706_ImageCmdPkt, (uint16) VC0706_IMAGE1_CMD_CODE);
+    }
+    else
+    {
+        OS_printf("\tDid not recognize camera identifier in filename. Defaulting to Cam 0\n");
+        ret = CFE_SB_SetCmdCode((CFE_SB_MsgPtr_t) &VC0706_ImageCmdPkt, (uint16) VC0706_IMAGE0_CMD_CODE);
+    }
+    
     if(ret < 0)
     {
         OS_printf("VC0706: SendTimFileName() Set Cmd Code Ret [%d].\n", ret);

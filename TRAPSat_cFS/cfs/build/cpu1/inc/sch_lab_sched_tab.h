@@ -21,10 +21,11 @@
 /*
 ** Include headers for message IDs here
 */
+/*
 #include "ci_lab_msgids.h"
 #include "to_lab_msgids.h"
-
 #include "sample_app_msgids.h"
+*/
 #include "ads1115_msgids.h"
 #include "vc0706_msgids.h"
 #include "tim_app_msgids.h"
@@ -70,10 +71,13 @@ SCH_LAB_ScheduleTable_t SCH_LAB_ScheduleTable[SCH_LAB_MAX_SCHEDULE_ENTRIES] =
      { CFE_TIME_SEND_HK_MID, 4, 0 },
      { CFE_SB_SEND_HK_MID,   4, 0 },
      { CFE_TBL_SEND_HK_MID,  4, 0 },
-     
+
+#if 0     
      { CI_LAB_SEND_HK_MID,   4, 0 },
      { TO_LAB_SEND_HK_MID,   4, 0 },
      { SAMPLE_APP_SEND_HK_MID,   4, 0 },
+#endif
+     
      { ADS1115_SEND_HK_MID,   4, 0 },
      { VC0706_SEND_HK_MID,   4, 0 },
      { TIM_APP_SEND_HK_MID,   4, 0 },

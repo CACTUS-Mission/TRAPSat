@@ -49,7 +49,8 @@ typedef struct
 ** quick and dirty method of sharing this info
 */
 #define VC0706_IMAGE_CMD_MID           0x188A /* This should be == TIM_APP_CMD_MID */
-#define VC0706_IMAGE_CMD_CODE          3      /* This should be == TIM_APP_SEND_IMAGE_CC */
+#define VC0706_IMAGE0_CMD_CODE          3      /* This should be == TIM_APP_SEND_IMAGE0_CC */
+#define VC0706_IMAGE1_CMD_CODE          5      /* This should be == TIM_APP_SEND_IMAGE1_CC */
 #define VC0706_MAX_IMAGE_NAME_LEN      15     /* This should be == TIM_MAX_IMAGE_NAME_LEN */
 
 typedef struct 
