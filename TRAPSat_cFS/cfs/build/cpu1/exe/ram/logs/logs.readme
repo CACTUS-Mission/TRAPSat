@@ -1,0 +1,11 @@
+Filename: logs.readme
+Directory: /home/pi/TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe/ram/logs
+
+This file was created to maintain this directory with the git.
+
+This directory is needed for logging.
+
+Inside this directory should be the following files:
+   exe/ram/logs/CFS_boot.out
+   exe/ram/logs/CFS_boot.err
+   exe/ram/logs/reboot.txt
