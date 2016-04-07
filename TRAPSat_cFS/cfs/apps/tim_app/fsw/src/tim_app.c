@@ -249,7 +249,7 @@ void TIM_ProcessGroundCommand(void)
             /*
             ** Recieved Send Image File Command from Camera 0
             */
-            if(serial_last_sent != TIM_APP_SEND_IMAGE0_CC)
+            if(serial_last_sent == TIM_APP_SEND_TEMPS_CC)
             {
                 if (serial_busy == 0)
                 {
@@ -279,7 +279,7 @@ void TIM_ProcessGroundCommand(void)
             /*
             ** Recieved Send Image File Command from Camera 1
             */
-            if(serial_last_sent != TIM_APP_SEND_IMAGE1_CC)
+            if(serial_last_sent == TIM_APP_SEND_TEMPS_CC )
             {
                 if (serial_busy == 0)
                 {
