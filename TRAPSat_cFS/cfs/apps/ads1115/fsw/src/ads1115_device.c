@@ -45,6 +45,7 @@ extern char num_reboots[3];
 */
 int ADS1115_ReadADCChannels(void)
 {
+   
     int i2c_fd;
     char *dev_i2c_f = "/dev/i2c-1";
     int io_res;
@@ -57,6 +58,8 @@ int ADS1115_ReadADCChannels(void)
     /*
     ** Open file from linux /dev/i2c-1
     */
+    //OS_printf("trying open(dev_i2c_f, O_RDWR)\n");
+    
     if ((i2c_fd = open(dev_i2c_f, O_RDWR)) < 0)
     {
         OS_printf( "ADS1115: Failed opening \'%s\' with return value %d\n", dev_i2c_f, i2c_fd);
@@ -69,6 +72,7 @@ int ADS1115_ReadADCChannels(void)
     }
     */
     
+    
     /*
     ** Address the I2C device
     */
@@ -77,13 +81,14 @@ int ADS1115_ReadADCChannels(void)
         OS_printf("ADS1115: IO Control Failed: Returned %d\n", io_res);
         return -1;
     }
-
+    
     /*
     ** Clear previous data in the struct (for debugging)
     **
     ** we should remove this during flight?!
     */
     memset(&ADS1115_ChannelData.adc_ch_0[0], 0, 8);
+    
 
     /*
     ** For each ADC channel
@@ -91,6 +96,7 @@ int ADS1115_ReadADCChannels(void)
     */
     for( adc_ch_sel = 0; adc_ch_sel < 4; adc_ch_sel++)
     {
+        
         /*
         ** Reset ADC data/config registers
         */
@@ -146,14 +152,25 @@ int ADS1115_ReadADCChannels(void)
         ** (bit 15 of config register) 
         ** (0=Busy/1=Not Busy)
         */
-        while ( !(i2c_data[0] & 0x80) )
+        //while ( !(i2c_data[0] & 0x80) )
+        int i;
+        for(i=0;  !(i2c_data[0] & 0x80); i++)
         {
+            //OS_printf("Still in while loop at line 154\n");
             if ((io_res = read(i2c_fd, i2c_data, 2)) < 0)
             {
                 OS_printf( "ADS1115: I2C Read Failure: Returned [%d]\n", io_res);
                 //return(-1);
             }
+            /*
+            if(i>10)
+            {
+                OS_printf("ADS1115 Unresponsive!\n");
+                break;
+            }
+            */
         }
+        //OS_printf("Got response from ADS, response delay count = [%d]\n", i);
         
         /*
         ** Set Pointer Register to 0 (To read from conversion register)
@@ -196,20 +213,17 @@ int ADS1115_ReadADCChannels(void)
         ** This Section COULD be removed before launch to save processor time,
         ** OR we can keep it to have the voltage printout in our logs.
         */
+        
         /*
         uint16 i2c_data_word;
-        
         //OS_printf("Before pack:\n");
         //OS_printf("i2c_data_word: [%u], [%#.4X]\n", &i2c_data_word, i2c_data_word);
-        
-
         i2c_data_word = i2c_data[0] << 8 | i2c_data[1];
-        
         //OS_printf("After pack:\n");
         //OS_printf("i2c_data_word: *[%u] = [%#.4X]\n", &i2c_data_word, i2c_data_word);
-
         OS_printf("ADS1115: ADC Channel [%d] Voltage: %f V \n", adc_ch_sel, (float) i2c_data_word*4.096/32767.0);
         */
+        
         /*
         ** End of Section 1
         */

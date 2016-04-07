@@ -141,14 +141,14 @@ int VC0706_SendTimFileName(char *file_name)
     
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &VC0706_ImageCmdPkt);
 
-    OS_printf("Message sent to TIM from VC0706.\n");    
+     CFE_EVS_SendEvent(VC0706_CHILD_INIT_INF_EID, CFE_EVS_INFORMATION, "Message sent to TIM from VC0706.");
 
     return 0;
 }
 
 void setNumReboots(void)
 {
-    OS_printf("Inside VC get reboot\n");
+    //OS_printf("Inside VC get reboot\n");
 
     memset(num_reboots, '0', sizeof(num_reboots));
 

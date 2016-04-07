@@ -130,6 +130,7 @@ void ADS1115_ChildLoop(void)
     */
     for ( ; ; )
     {
+        //OS_printf("\nInside ADS Child Loop!\n");
         /* 
         ** Clear ret before every ADC Read call 
         */
@@ -141,6 +142,7 @@ void ADS1115_ChildLoop(void)
         switch(ADS1115_HkTelemetryPkt.ads1115_childloop_state)
         {
             case 0:     /* Infinite Read && Store Loop */
+                        
                         if ((ret_val = ADS1115_ReadADCChannels()) < 0)
                         {
                             CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
@@ -163,8 +165,7 @@ void ADS1115_ChildLoop(void)
                             /* Store Data */
                             if( (ret_val = ADS1115_StoreADCChannels()) < 0)
                             {
-                                CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR,
-                                    "ADS1115_StoreADCChannels() = [%d]. Expected non-negative val.", ret_val);
+                                CFE_EVS_SendEvent(ADS1115_CHILD_ADC_ERR_EID,CFE_EVS_ERROR, "ADS1115_StoreADCChannels() = [%d]. Expected non-negative val.", ret_val);
                             }
                             else
                             {
@@ -271,17 +272,17 @@ int ADS1115_SendTimFileName(char *file_name)
         OS_printf("ADS1115: SendTimFileName() Set Cmd Code Ret [%d].\n", ret);
     }
 
-    OS_printf("Copying filename [%s] into command packet.\n", file_name);
+    //OS_printf("Copying filename [%s] into command packet.\n", file_name);
 
     snprintf(ADS1115_TempsCmdPkt.TempsName, sizeof(ADS1115_TempsCmdPkt.TempsName), "%s", file_name);
 
-    OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
+    //OS_printf("Command packet holds: [%s].\n", ADS1115_TempsCmdPkt.TempsName);
 
     CFE_SB_GenerateChecksum((CFE_SB_MsgPtr_t) &ADS1115_TempsCmdPkt);
 
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_TempsCmdPkt);
 
-    OS_printf("ADS1115 Message sent to TIM.\n");
+    CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION, "ADS1115 Message sent to TIM.");
 
     return 0;
 }
@@ -289,7 +290,7 @@ int ADS1115_SendTimFileName(char *file_name)
 void setNumReboots(void)
 {
     //char buff[3];
-    OS_printf("Inside ADS get reboot\n");
+    //OS_printf("Inside ADS get reboot\n");
 
     memset(num_reboots, '0', sizeof(num_reboots));
 
@@ -313,6 +314,6 @@ void setNumReboots(void)
     OS_close(fd);
 
 
-    //return num_reboots;
+    return;
 }
 

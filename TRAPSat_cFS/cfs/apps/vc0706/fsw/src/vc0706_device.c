@@ -140,7 +140,7 @@ int VC0706_takePics(void)
 		    */
 		    if( (hk_packet_succes = snprintf(VC0706_HkTelemetryPkt.vc0706_filename, 15, "%.*s", 15, (char *)pic_file_name+12)) < 0 ) // only use the filename, not path.
 		    {
-		    	OS_printf("VC0706: ERROR: Failed to write Picture Filename to HK Packet. Attempted to send: '%.*s'\n\tstrncpy returned: '%d'\n", 15, (char * )&pic_file_name[12], hk_packet_succes);
+		    	OS_printf("VC0706: ERROR: HK sprintf ret [%d] filename [%.*s]\n", hk_packet_succes, 15, (char * )&pic_file_name[12]);
 		    	// continue
 		    }
 		    else

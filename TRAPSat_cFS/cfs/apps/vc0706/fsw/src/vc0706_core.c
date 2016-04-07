@@ -28,15 +28,15 @@ int init(Camera_t *cam) {
     if ((cam->fd = serialOpen("/dev/ttyAMA0", BAUD)) < 0)
     {
         //fprintf(stderr, "SPI Setup Failed: %s\n", strerror(errno));
-    	CFE_EVS_SendEvent(VC0706_CHILD_INIT_ERR_EID, CFE_EVS_ERROR, "vc0706_core::init Error: Failed to open specified port at %s. STDERR: %s\n", "/dev/ttyAMA0", strerror(errno));
+    	CFE_EVS_SendEvent(VC0706_CHILD_INIT_ERR_EID, CFE_EVS_ERROR, "init Error: Failed to open specified port at %s. STDERR: %s", "/dev/ttyAMA0", strerror(errno));
     	return -1;
     }
 
     if (wiringPiSetup() == -1)
     {
-        OS_printf("wiringPiSetup(0 failed.\n");
-        CFE_EVS_SendEvent(VC0706_CHILD_INIT_ERR_EID, CFE_EVS_ERROR, 
-            "vc0706_core::init Error: wiringPiSetup() failed.\n");
+        //OS_printf("wiringPiSetup(0 failed.\n");
+        CFE_EVS_SendEvent(VC0706_CHILD_INIT_ERR_EID, CFE_EVS_ERROR,
+            "init Error: wiringPiSetup() failed.");
 	    return -1;
     }
 
@@ -69,8 +69,10 @@ bool checkReply(Camera_t *cam, int cmd, int size) {
     //Check the reply
     if (reply[0] != 0x76 || reply[1] != 0x00 || reply[2] != cmd)
     {
-        CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"vc0706_core::reply() Error: Camera %d unresponsive.\treply[0]: %x, expected: %x\treply[1]: %x, expected: %x\n", mux.mux_state, reply[0], 0x76, reply[1], 0x00);
-        CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"vc0706_core::reply() Error: Camera %d unresponsive.\treply[2]: %x, expected: %x\tSTRERROR: %s\n", mux.mux_state, reply[2], cmd, strerror(errno));
+        //CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"Camera %d unresponsive. reply[0]: %x, expected: %x reply[1]: %x, expected: %x", mux.mux_state, reply[0], 0x76, reply[1], 0x00);
+        //CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"\treply[2]: %x, expected: %x STRERROR: %s", reply[2], cmd, strerror(errno));
+        //CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"Camera %d unresponsive!", mux.mux_state);
+        CFE_EVS_SendEvent(VC0706_REPLY_ERR_EID, CFE_EVS_ERROR,"Camera %d unresponsive! R[0] = [%x] R[1] = [%x] R[2] = [%x]", mux.mux_state, reply[0], reply[1], reply[2]);
         return false;
     }
     else
@@ -106,7 +108,7 @@ void reset(Camera_t *cam) {
 
     if (checkReply(cam, RESET, 5) != true)
     {
-        OS_printf("vc0706::reset() Check Reply Status: %s\n", strerror(errno));
+        OS_printf("reset() Check Reply Status: %s\n", strerror(errno));
     }
     clearBuffer(cam);
 }
@@ -244,8 +246,11 @@ char * takePicture(Camera_t *cam, char * file_path)
     //OS_printf("Length %u \n", len);
 
     if(len > 20000){
-        OS_printf("vc0706::takePicture() len:%u to Large. Should be <= 20000 \n", len);
-        CFE_EVS_SendEvent(VC0706_LEN_ERR_EID, CFE_EVS_ERROR, "vc0706_core::takePicture() Error: Image length reported from Camera %d too large. len reported: %u, expected value <= 20000\n\tAttempting to take another image with same name.\n", mux.mux_state, len);
+        //OS_printf("Camera returned en:%u too Large for camera buffer size. Should be <= 20000 \n", len);
+        /*
+        CFE_EVS_SendEvent(VC0706_LEN_ERR_EID, CFE_EVS_ERROR, "Image length reported from Camera %d too large for camera buffer. len reported: %u, expected value <= 20000. Attempting to take another image with same name.", mux.mux_state, len);
+        */
+        CFE_EVS_SendEvent(VC0706_LEN_ERR_EID, CFE_EVS_ERROR, "Camera %d  image too large. Length [%u] Expected <= 20000", mux.mux_state, len);
         resumeVideo(cam);
         clearBuffer(cam);
         return takePicture(cam, file_path);
@@ -339,7 +344,8 @@ char * takePicture(Camera_t *cam, char * file_path)
     }
     else
     {
-        OS_printf("IMAGE COULD NOT BE OPENED/MADE!\n"); // Should get EVS
+        CFE_EVS_SendEvent(VC0706_CHILD_INIT_INF_EID, CFE_EVS_ERROR, "IMAGE FILE COULD NOT BE OPENED/MADE!");
+        //OS_printf("IMAGE COULD NOT BE OPENED/MADE!\n"); // Should get EVS
 	return (char *)NULL;
     }
 
@@ -351,7 +357,7 @@ char * takePicture(Camera_t *cam, char * file_path)
     //Clear Buffer
     clearBuffer(cam);
 
-    CFE_EVS_SendEvent(VC0706_CHILD_INIT_INF_EID, CFE_EVS_ERROR, "VC0706_core::takePicture() Camera %d stored picture successfully as <%s>\n", mux.mux_state, cam->imageName);
+    CFE_EVS_SendEvent(VC0706_CHILD_INIT_INF_EID, CFE_EVS_ERROR, "Camera %d stored as <%s>", mux.mux_state, cam->imageName);
     return cam->imageName;
 }
 

@@ -35,12 +35,7 @@ int serial_busy;
 int serial_last_sent;
 #define TIM_TEMP_MAX_COUNT             5
 int temp_wait_count;
-
-#define TIM_IMAGE0_MAX_COUNT             2
-int image0_wait_count;
-
-#define TIM_IMAGE1_MAX_COUNT             2
-int image1_wait_count;
+int timer_event_last;
 
 
 /*
@@ -94,6 +89,8 @@ void TIM_AppMain( void )
         
         CFE_ES_PerfLogEntry(TIM_APP_PERF_ID);
 
+        //TIM_UpdateTimerEvent();
+
         if (status == CFE_SUCCESS)
         {
             TIM_ProcessCommandPacket();
@@ -143,22 +140,21 @@ void TIM_AppInit(void)
     serial_busy = 0;
     serial_last_sent = 0;
     temp_wait_count = 0;
-    image0_wait_count = 0;
-    image1_wait_count = 0;
+    timer_event_last = 0;
 
     if(serial_out_init(&TIM_SerialUSB, (char *) SERIAL_OUT_PORT) < 0)
     {
         OS_printf("TIM: error, serial out init failed.\n");
     } 
 
-    serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
-
-    //TIM_ChildInit();
+    //serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
+    
+    TIM_Parallel_Init();
 
     /*
     ** Initialize Timer for poweroff -- attaches to timer_callback_poweroff_system()
     */
-    OS_printf("TIM_APP: Attempting to initialize reboot timer.\n");
+    //OS_printf("TIM_APP: Attempting to initialize reboot timer.\n");
     int32 timer_ret = OS_TimerCreate( (uint32 *)&poweroff_timer_id, (const char *)"poweroff_timer", (uint32 *)&poweroff_timer_clock_accuracy, (OS_TimerCallback_t) &timer_callback_poweroff_system );
     if(timer_ret != OS_SUCCESS)
     {
@@ -522,7 +518,7 @@ void TIM_SendImageFile(void)
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
 
-    CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, "Image File \'%s\' Sent Successfully\n", file_path);
+    CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, "Image File \'%s\' Sent Successfully", file_path);
     
     //OS_printf("Reached end of TIM_SendImageFile().\n");
 
@@ -626,7 +622,7 @@ void TIM_SendTempsFile(void)
 
 
     CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION, 
-            "Temps File \'%s\' Sent Successfully\n", file_path);
+            "Temps File \'%s\' Sent Successfully", file_path);
 
 	return;
 } /* End of TIM_SendTempsFile() */
@@ -708,7 +704,7 @@ void TIM_SendLogFile(void)
 
 
     CFE_EVS_SendEvent(TIM_COMMAND_LOGS_EID, CFE_EVS_INFORMATION, 
-            "Log File \'%s\' Sent Successfully\n", log_path);
+            "Log File \'%s\' Sent Successfully", log_path);
 
 	return;
 } /* End of TIM_SendLogFile() */
@@ -747,6 +743,61 @@ boolean TIM_VerifyCmdLength(CFE_SB_MsgPtr_t msg, uint16 ExpectedLength)
 } /* End of TIM_VerifyCmdLength() */
 
 
+void TIM_Parallel_Init(void)
+{
+    wiringPiSetup();
+    pinMode(TIM_PAR_GPIO_PIN_PWR, OUTPUT);
+    digitalWrite(TIM_PAR_GPIO_PIN_PWR, HIGH);
+    CFE_EVS_SendEvent(TIM_PARALLEL_PWR_EID, CFE_EVS_INFORMATION, "Parallel Power Flag Set");
+    
+    pinMode(TIM_PAR_GPIO_PIN_TE, OUTPUT);
+    digitalWrite(TIM_PAR_GPIO_PIN_TE, LOW);
+    CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "Parallel TE-1 Flag Initialized Low");
+    
+    pinMode(TIM_MAIN_GPIO_PIN_TE, INPUT);
+    
+    if ( digitalRead(TIM_MAIN_GPIO_PIN_TE) == HIGH )
+    {
+        digitalWrite(TIM_PAR_GPIO_PIN_TE, HIGH);
+        CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "Parallel TE-1 Flag Set");
+    }
+    else
+    {
+        digitalWrite(TIM_PAR_GPIO_PIN_TE, LOW);
+        CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "Parallel TE-1 Flag Cleared");
+    }
+        
+    return;
+}
+
+void TIM_UpdateTimerEvent(void)
+{
+    if ( digitalRead(TIM_MAIN_GPIO_PIN_TE) == HIGH )
+    {
+        if( digitalRead(TIM_MAIN_GPIO_PIN_TE) != timer_event_last )
+        {
+            CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "TE-1 UPDATE: New Value");
+            digitalWrite(TIM_PAR_GPIO_PIN_TE, HIGH);
+            CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "TE-1 UPDATE: TE-1 Set");
+        }
+        timer_event_last = 1;
+        
+    }
+    else
+    {
+        if( digitalRead(TIM_MAIN_GPIO_PIN_TE) != timer_event_last )
+        {
+            CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "TE-1 UPDATE: New Value");
+            digitalWrite(TIM_PAR_GPIO_PIN_TE, LOW);
+            CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "TE-1 UPDATE: TE-1 Cleared");
+        }
+        timer_event_last = 0;
+        
+    }
+    return;
+}
+
+
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 /*                                                                                                          */
 /* timer_callback_poweroff_system(uint32 poweroff_timer_id) -- Poweroff the system, called by 				*/
@@ -774,4 +825,7 @@ void timer_callback_poweroff_system(uint32 poweroff_timer_id)
     OS_printf("TIM_APP: leaving cFS\n");
     CFE_PSP_SigintHandler(); // End cFS -- Obviously, this will only happen when Pi is on.
 }
+
+
+
 
