@@ -1,3 +1,4 @@
+Filename: images.readme
 Directory: /home/pi/TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe/ram/images
 
 TRAPSat cFS needs this directory for writing JPEG image data.

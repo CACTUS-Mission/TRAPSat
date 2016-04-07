@@ -1273,3 +1273,205 @@ CFE_PSP: Deleted all Queues in system
 CFE_PSP: Deleted all Timers in system
 CFE_PSP: NOTE: After quitting the cFE with a Control-C signal, it MUST be started next time
      with a Poweron Reset ( --reset PO ). 
+CFE_PSP: Default Reset Type = PO
+CFE_PSP: Default Reset SubType = 1
+CFE_PSP: Default CPU ID = 1
+CFE_PSP: Default Spacecraft ID = 66
+CFE_PSP: Default CPU Name: CPU1
+CFE_PSP: Starting the cFE with a POWER ON reset.
+CFE_PSP: Clearing out CFE CDS Shared memory segment.
+CFE_PSP: Clearing out CFE Reset Shared memory segment.
+CFE_PSP: Clearing out CFE User Reserved Shared memory segment.
+2026-096-02:30:17.69563 POWER ON RESET due to Power Cycle (Power Cycle).
+2026-096-02:30:17.69582 ES Startup: CFE_ES_Main in EARLY_INIT state
+CFE_PSP: CFE_PSP_AttachExceptions Called
+2026-096-02:30:17.69612 ES Startup: CFE_ES_Main entering CORE_STARTUP state
+2026-096-02:30:17.69617 ES Startup: Starting Object Creation calls.
+2026-096-02:30:17.69620 ES Startup: Calling CFE_ES_CDSEarlyInit
+2026-096-02:30:17.69697 ES Startup: Calling CFE_EVS_EarlyInit
+2026-096-02:30:17.69721 Event Log cleared following power-on reset
+2026-096-02:30:17.69726 ES Startup: Calling CFE_SB_EarlyInit
+2026-096-02:30:17.69769 ES Startup: Calling CFE_TIME_EarlyInit
+1980-012-14:03:20.00001 ES Startup: Calling CFE_TBL_EarlyInit
+1980-012-14:03:20.00146 ES Startup: Calling CFE_FS_EarlyInit
+1980-012-14:03:20.00269 ES Startup: Core App: CFE_EVS created. App ID: 0
+EVS Port1 66/1/CFE_EVS 14: No subscribers for MsgId 0x808,sender CFE_EVS
+EVS Port1 66/1/CFE_EVS 1: cFE EVS Initialized. cFE Version 6.4.2.0
+1980-012-14:03:20.05328 ES Startup: Core App: CFE_SB created. App ID: 1
+1980-012-14:03:20.05350 SB:Registered 4 events for filtering
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_SB
+EVS Port1 66/1/CFE_SB 1: cFE SB Initialized
+1980-012-14:03:20.10391 ES Startup: Core App: CFE_ES created. App ID: 2
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_ES
+EVS Port1 66/1/CFE_ES 1: cFE ES Initialized
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_ES
+EVS Port1 66/1/CFE_ES 2: Versions:cFE 6.4.2.0, OSAL 4.1.1.0, PSP 0.0.0.0, chksm 44360
+1980-012-14:03:20.15453 ES Startup: Core App: CFE_TIME created. App ID: 3
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_TIME
+EVS Port1 66/1/CFE_TIME 1: cFE TIME Initialized
+1980-012-14:03:20.20510 ES Startup: Core App: CFE_TBL created. App ID: 4
+EVS Port1 66/1/CFE_TBL 1: cFE TBL Initialized.  cFE Version 6.4.2.0
+1980-012-14:03:20.25525 ES Startup: Finished ES CreateObject table entries.
+1980-012-14:03:20.25532 ES Startup: CFE_ES_Main entering CORE_READY state
+1980-012-14:03:20.25753 ES Startup: Opened ES App Startup file: /cf/apps/cfe_es_startup.scr
+1980-012-14:03:20.25897 ES Startup: Loading file: /cf/apps/sch_lab.so, APP: SCH_LAB_APP
+1980-012-14:03:20.27031 ES Startup: SCH_LAB_APP loaded and created
+1980-012-14:03:20.27091 ES Startup: Loading file: /cf/apps/ads1115.so, APP: ADS1115_APP
+SCH Lab Initialized.  Version 2.1.0.0
+1980-012-14:03:20.28340 ES Startup: ADS1115_APP loaded and created
+1980-012-14:03:20.28390 ES Startup: Loading file: /cf/apps/vc0706.so, APP: VC0706_APP
+EVS Port1 66/1/ADS1115_APP 4: ADS1115: RESET command
+Inside ADS get reboot
+EVS Port1 66/1/ADS1115_APP 8: ADC Child Task initialization info: create task complete: result = 0
+EVS Port1 66/1/ADS1115_APP 1: ADS1115 App Initialized. Version 0.0.0.0
+EVS Port1 66/1/ADS1115_APP 8: ADS1115 Child Task initialization complete
+1980-012-14:03:20.29123 ES Startup: VC0706_APP loaded and created
+1980-012-14:03:20.29170 ES Startup: Loading file: /cf/apps/tim_app.so, APP: TIM_APP
+EVS Port1 66/1/VC0706_APP 4: VC0706: RESET command
+Inside ADS get reboot
+EVS Port1 66/1/VC0706_APP 8: VC0706 Child Task initialization info: create task complete: result = 0
+EVS Port1 66/1/VC0706_APP 1: VC0706 App Initialized. Version 0.0.0.0
+EVS Port1 66/1/VC0706_APP 8: VC0706 Child Task initialization complete
+1980-012-14:03:20.30180 ES Startup: TIM_APP loaded and created
+EVS Port1 66/1/TIM_APP 4: TIM: RESET command
+TIM_APP: Attempting to initialize reboot timer.
+TIM_APP: Attempting to set reboot timer to 345000000 microseconds.
+EVS Port1 66/1/TIM_APP 1: TIM App Initialized. Version 1.0.0.0
+1980-012-14:03:20.35201 ES Startup: CFE_ES_Main entering OPERATIONAL state
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[0]: 0, expected: 76	reply[1]: 0, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[2]: 0, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: 11, expected: 76	reply[1]: 0, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: b, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[0]: 30, expected: 76	reply[1]: 37, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[2]: 30, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: 31, expected: 76	reply[1]: 2e, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: 30, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00001.csv':{04E4, 7FFF, 7FFF, 7FFF, }
+Copying filename [002_t_00001.csv] into command packet.
+Command packet holds: [002_t_00001.csv].
+Received TIM_SendTempsFile() with 002_t_00001.csv
+sizeof(file_path[OS_MAX_PATH_LEN]) = 64
+Calling OS_open('/ram/temps/002_t_00001.csv', OS_READ_ONLY, mode);
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00001.csv' Sent Successfully
+
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[0]: 0, expected: 76	reply[1]: 76, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[2]: 0, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: b, expected: 76	reply[1]: 56, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: 43, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[0]: 30, expected: 76	reply[1]: 33, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 1 unresponsive.	reply[2]: 20, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: 30, expected: 76	reply[1]: 30, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: 0, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+vc0706::takePicture() len:26188 to Large. Should be <= 20000 
+EVS Port1 66/1/VC0706_APP 6: vc0706_core::takePicture() Error: Image length reported from Camera 1 too large. len reported: 26188, expected value <= $
+EVS Port1 66/1/CFE_TIME 20: Start FLYWHEEL
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00002.csv':{04DF, 7FFF, 7FFF, 7FFF, }
+Copying filename [002_t_00002.csv] into command packet.
+Command packet holds: [002_t_00002.csv].
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+ADS1115 Message sent to TIM.
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+EVS Port1 66/1/VC0706_APP 10: VC0706_core::takePicture() Camera 1 stored picture successfully as </ram/images/002_1_0000.jpg>
+
+Calling OS_open('/ram/images/002_1_0000.jpg', OS_READ_ONLY, mode);
+Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: 0, expected: 76	reply[1]: 37304356, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: 415f3630, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/CFE_TIME 20: Start FLYWHEEL
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00003.csv':{04DD, 7FFF, 7FFF, 7FFF, }
+Copying filename [002_t_00003.csv] into command packet.
+Command packet holds: [002_t_00003.csv].
+ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: VC0706_core::takePicture() Camera 1 stored picture successfully as </ram/images/002_1_0001.jpg>
+
+Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: 0, expected: 76	reply[1]: 37304356, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: 415f3630, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0000.jpg' Sent Successfully
+
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+Received TIM_SendTempsFile() with 002_t_00003.csv
+sizeof(file_path[OS_MAX_PATH_LEN]) = 64
+Calling OS_open('/ram/temps/002_t_00003.csv', OS_READ_ONLY, mode);
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00003.csv' Sent Successfully
+
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+Calling OS_open('/ram/images/002_1_0001.jpg', OS_READ_ONLY, mode);
+vc0706::takePicture() len:26692 to Large. Should be <= 20000 
+EVS Port1 66/1/VC0706_APP 6: vc0706_core::takePicture() Error: Image length reported from Camera 1 too large. len reported: 26692, expected value <= $
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00004.csv':{04DA, 7FFF, 7FFF, 7FFF, }
+Copying filename [002_t_00004.csv] into command packet.
+Command packet holds: [002_t_00004.csv].
+ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: VC0706_core::takePicture() Camera 1 stored picture successfully as </ram/images/002_1_0002.jpg>
+
+Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0001.jpg' Sent Successfully
+
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+Received TIM_SendTempsFile() with 002_t_00004.csv
+sizeof(file_path[OS_MAX_PATH_LEN]) = 64
+Calling OS_open('/ram/temps/002_t_00004.csv', OS_READ_ONLY, mode);
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: 0, expected: 76	reply[1]: 37304356, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: 415f3630, expected: 11	STRERROR: Success
+
+Failed communication to Camera.
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00004.csv' Sent Successfully
+
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+Calling OS_open('/ram/images/002_1_0002.jpg', OS_READ_ONLY, mode);
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00005.csv':{04E2, 7FFF, 7FFF, 7FFF, }
+Copying filename [002_t_00005.csv] into command packet.
+Command packet holds: [002_t_00005.csv].
+ADS1115 Message sent to TIM.
+vc0706::takePicture() len:21392 to Large. Should be <= 20000 
+EVS Port1 66/1/VC0706_APP 6: vc0706_core::takePicture() Error: Image length reported from Camera 1 too large. len reported: 21392, expected value <= $
+vc0706::takePicture() len:21444 to Large. Should be <= 20000 
+EVS Port1 66/1/VC0706_APP 6: vc0706_core::takePicture() Error: Image length reported from Camera 1 too large. len reported: 21444, expected value <= $
+vc0706::takePicture() len:25572 to Large. Should be <= 20000 
+EVS Port1 66/1/VC0706_APP 6: vc0706_core::takePicture() Error: Image length reported from Camera 1 too large. len reported: 25572, expected value <= $
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00006.csv':{04DD, 7FFF, 7FFF, 7FFF, }
+Copying filename [002_t_00006.csv] into command packet.
+Command packet holds: [002_t_00006.csv].
+ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: VC0706_core::takePicture() Camera 1 stored picture successfully as </ram/images/002_1_0003.jpg>
+
+Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[0]: 0, expected: 76	reply[1]: 37304356, expected: 0
+
+EVS Port1 66/1/VC0706_APP 9: vc0706_core::reply() Error: Camera 0 unresponsive.	reply[2]: 415f3630, expected: 11	STRERROR

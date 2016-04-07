@@ -1,7 +1,27 @@
+Filename: temps.readme
 Directory: /home/pi/TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe/ram/temps
 
 TRAPSat cFS needs this directory for writing temperature data.
 
 temperature filename format:
-
+    <num_reboots>_t_<file_count_since_reboot>.csv
 temperature file format:
+    Each data set is comprised of 4 temperature sensor readings
+              After every temperature reading is a comma and a space
+              This is the standard formatting of a comma separated 
+              value  (csv) file.
+    Each temperature reading is technically 16-bits long, 
+              The first 8 bits make the Most Significant Byte
+              Example: 0xFF
+              The second 8 bits make the Least Significant Byte
+              Example: 0xFF
+    Each temperature sensor reading is separated by a comma and a space
+              Example of Comma and Space viewed in Hex (with 0x denotation)
+              Comma  = 0x2C
+              Space = 0x20 
+       
+    
+    <ADC Ch0 Data>,         <ADC Ch1 Data>,         <ADC Ch2 Data>,         <ADC Ch3 Data>, 
+    
+If one were to view the Comma Seperated Value in a hex edittor:
+{ 0xFF 0xFF 0x2C 0x20 0xFF 0xFF 0x2C 0x20 0xFF 0xFF 0x2C 0x20 0xFF 0xFF 0x2C 0x20 }
