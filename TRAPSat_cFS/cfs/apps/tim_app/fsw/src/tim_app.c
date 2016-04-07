@@ -420,12 +420,8 @@ void TIM_ResetCounters(void)
 	TIM_HkTelemetryPkt.tim_command_error_count = 0;
 	TIM_HkTelemetryPkt.tim_command_image_count = 0;
 	TIM_HkTelemetryPkt.tim_command_temps_count = 0;
-
-	//TIM_HkTelemetryPkt.tim_last_pic_loc[0] = '\0';
     memset(TIM_HkTelemetryPkt.tim_last_image_sent, '\0', sizeof(TIM_HkTelemetryPkt.tim_last_image_sent));
-	//TIM_HkTelemetryPkt.tim_last_vid_loc[0] = '\0';
     memset(TIM_HkTelemetryPkt.tim_last_temps_sent, '\0', sizeof(TIM_HkTelemetryPkt.tim_last_temps_sent));
-
 
 	CFE_EVS_SendEvent(TIM_COMMANDRST_INF_EID, CFE_EVS_INFORMATION,
 		"TIM: RESET command");
@@ -444,15 +440,15 @@ void TIM_ResetCounters(void)
 void TIM_SendImageFile(void)
 {   
     int os_ret_val = 0;
-    int32 os_fd = 0;
+    //int32 os_fd = 0;
     int index = 0;
-    uint32 bytes_per_read = 1; /* const */
-    uint16 total_bytes_read = 0;
-    uint8 data_buf[2];
-    data_buf[0] = 0;
-    data_buf[1] = 0;
+    //uint32 bytes_per_read = 1; /* const */
+    //uint16 total_bytes_read = 0;
+    //uint8 data_buf[2];
+    //data_buf[0] = 0;
+    //data_buf[1] = 0;
 
-    mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+    //mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
     
     /* Creating a pointer to handle the TIMMsgPtr as TIM_IMAGE_CMD_PKT  */
 
@@ -482,6 +478,7 @@ void TIM_SendImageFile(void)
 
     /*
     ** Read 1 byte at a time
+    ** Uncomment the following to o
     */
     /*
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read) &&  (total_bytes_read < 20000) )
@@ -492,10 +489,10 @@ void TIM_SendImageFile(void)
         data_buf[0] = 0;
         data_buf[1] = 0;
     }
+    OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
     */
 
     
-    //OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
     /*
     uint8 file_len[2];
     file_len[0] = *((uint8 *) &total_bytes_read);
@@ -505,28 +502,6 @@ void TIM_SendImageFile(void)
     */
 
     //OS_close(os_fd);
-
-    /*
-    ** Data prepped for serial:
-    ** total_bytes_read : file size
-    ** TempsCmdPtr->TempsName : file name
-    ** sizeof(TempsCmdPtr->TempsName) : 22
-    */
-
-    /*
-    uint8 start byte and pkt id  {0xF} {0:?, 1:image, 2:temps, 3:log, 4:unknown}
-    uint16 pkt size in bytes
-    uint8 filename length
-    char filename[22]
-    blank (0x00)
-    ...
-    DATA
-    ...
-    uint16 data_stop_flag 0xFF [filename length]
-    char filename[22]
-    uint8 stop byte
-    */
-
     
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
@@ -547,10 +522,8 @@ void TIM_SendImageFile(void)
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
 
-    CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
-            "Image File \'%s\' Sent Successfully\n", file_path);
+    CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, "Image File \'%s\' Sent Successfully\n", file_path);
     
-
     //OS_printf("Reached end of TIM_SendImageFile().\n");
 
 	return;
@@ -564,25 +537,26 @@ void TIM_SendImageFile(void)
 void TIM_SendTempsFile(void)
 {
     int os_ret_val = 0;
-    int32 os_fd = 0;
     int index = 0;
-    uint32 bytes_per_read = 1; /* const */
+    /*
+    int32 os_fd = 0;
+    uint32 bytes_per_read = 1;
     uint16 total_bytes_read = 0;
     uint8 data_buf[2];
     data_buf[0] = 0;
     data_buf[1] = 0;
-
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
+    */
 
     /* Creating a pointer to handle the TIMMsgPtr as TIM_IMAGE_CMD_PKT  */
     TIM_TEMPS_CMD_PKT_t *TempsCmdPtr;
     TempsCmdPtr = (TIM_TEMPS_CMD_PKT_t *) TIMMsgPtr;
 
-    OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
+    //OS_printf("Received TIM_SendTempsFile() with %s\n", TempsCmdPtr->TempsName);
 
     char file_path[OS_MAX_PATH_LEN];
 
-    OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
+    //OS_printf("sizeof(file_path[OS_MAX_PATH_LEN]) = %d\n", sizeof(file_path));
 
     memset(file_path, '\0', sizeof(file_path));
 
@@ -590,6 +564,7 @@ void TIM_SendTempsFile(void)
     {
         OS_printf("TIM snprintf failure: ret = %d\n", os_ret_val);
     }
+    
     /*
     if ((os_fd = OS_open((const char * ) file_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
     {
@@ -602,6 +577,7 @@ void TIM_SendTempsFile(void)
     ** Read 1 byte at a time
     */
     /*
+    
     while( OS_read((int32) os_fd, (void *) data_buf, (uint32) bytes_per_read))
     {
         //OS_printf("From Tim Temps: File '%s' Byte %.2d = %#.2X %#.2X\n", TempsCmdPtr->TempsName, total_bytes_read, data_buf[0], data_buf[1]);
@@ -623,30 +599,15 @@ void TIM_SendTempsFile(void)
     OS_printf("Temp Length LSB = [%#.2X]\n", file_len[0]);
 
     OS_close(os_fd);
+    
     */
 
-    /*
-    ** Data prepped for serial:
-    ** total_bytes_read : file size
-    ** TempsCmdPtr->TempsName : file name
-    ** sizeof(TempsCmdPtr->TempsName) : 22
-    */
 
-    /*
-    uint8 start byte and pkt id  {0xF} {0:?, 1:image, 2:temps, 3:log, 4:unknown}
-    uint16 file length in bytes
-    char filename[22]
-    ...
-    DATA
-    ...
-    uint8 data_stop_flag 0xF?
-    uint8 stop byte
-    uint8 stop byte
-    */
 
 
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
+    
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
 
@@ -678,20 +639,19 @@ void TIM_SendTempsFile(void)
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * **/
 void TIM_SendLogFile(void)
 {
-    int os_ret_val = 0;
-    int32 os_fd = 0;
+    char log_path[] = "/ram/logs/CFS_Boot.out";
     int index = 0;
-    uint32 bytes_per_read = 1; /* const */
+    
+    // OS_printf("TIM_APP: Sending Log file.\n");
+    
+    /*
+    int32 os_fd = 0;
+    uint32 bytes_per_read = 1; 
     uint16 total_bytes_read = 0;
     uint8 data_buf[2];
     data_buf[0] = 0;
     data_buf[1] = 0;
-
-    char log_path[] = "/ram/logs/CFS_Boot.out";
-    /*
     mode_t mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH;
-
-    OS_printf("TIM_APP: Sending Log file.\n");
 
     if ((os_fd = OS_open((const char * ) log_path, (int32) OS_READ_ONLY, (uint32) mode)) < OS_FS_SUCCESS)
     {
@@ -724,30 +684,12 @@ void TIM_SendLogFile(void)
 
     OS_close(os_fd);
     */
-    /*
-    ** Data prepped for serial:
-    ** total_bytes_read : file size
-    ** TempsCmdPtr->TempsName : file name
-    ** sizeof(TempsCmdPtr->TempsName) : 22
-    */
 
-    /*
-    uint8 start byte and pkt id  {0xF} {0:?, 1:image, 2:temps, 3:log, 4:unknown}
-    uint16 pkt size in bytes
-    uint8 filename length
-    char filename[22]
-    blank (0x00)
-    ...
-    DATA
-    ...
-    uint16 data_stop_flag 0xFF [filename length]
-    char filename[22]
-    uint8 stop byte
-    */
 
 
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
+    
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
 
