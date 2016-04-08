@@ -7,60 +7,987 @@ CFE_PSP: Starting the cFE with a POWER ON reset.
 CFE_PSP: Clearing out CFE CDS Shared memory segment.
 CFE_PSP: Clearing out CFE Reset Shared memory segment.
 CFE_PSP: Clearing out CFE User Reserved Shared memory segment.
-2026-097-22:51:27.86578 POWER ON RESET due to Power Cycle (Power Cycle).
-2026-097-22:51:27.86590 ES Startup: CFE_ES_Main in EARLY_INIT state
+2026-098-17:26:26.88809 POWER ON RESET due to Power Cycle (Power Cycle).
+2026-098-17:26:26.88820 ES Startup: CFE_ES_Main in EARLY_INIT state
 CFE_PSP: CFE_PSP_AttachExceptions Called
-2026-097-22:51:27.86610 ES Startup: CFE_ES_Main entering CORE_STARTUP state
-2026-097-22:51:27.86614 ES Startup: Starting Object Creation calls.
-2026-097-22:51:27.86616 ES Startup: Calling CFE_ES_CDSEarlyInit
-2026-097-22:51:27.86679 ES Startup: Calling CFE_EVS_EarlyInit
-2026-097-22:51:27.86693 Event Log cleared following power-on reset
-2026-097-22:51:27.86698 ES Startup: Calling CFE_SB_EarlyInit
-2026-097-22:51:27.86757 ES Startup: Calling CFE_TIME_EarlyInit
+2026-098-17:26:26.88842 ES Startup: CFE_ES_Main entering CORE_STARTUP state
+2026-098-17:26:26.88845 ES Startup: Starting Object Creation calls.
+2026-098-17:26:26.88848 ES Startup: Calling CFE_ES_CDSEarlyInit
+2026-098-17:26:26.88936 ES Startup: Calling CFE_EVS_EarlyInit
+2026-098-17:26:26.88958 Event Log cleared following power-on reset
+2026-098-17:26:26.88962 ES Startup: Calling CFE_SB_EarlyInit
+2026-098-17:26:26.89005 ES Startup: Calling CFE_TIME_EarlyInit
 1980-012-14:03:20.00001 ES Startup: Calling CFE_TBL_EarlyInit
-1980-012-14:03:20.00115 ES Startup: Calling CFE_FS_EarlyInit
-1980-012-14:03:20.00233 ES Startup: Core App: CFE_EVS created. App ID: 0
+1980-012-14:03:20.00156 ES Startup: Calling CFE_FS_EarlyInit
+1980-012-14:03:20.00315 ES Startup: Core App: CFE_EVS created. App ID: 0
 EVS Port1 66/1/CFE_EVS 14: No subscribers for MsgId 0x808,sender CFE_EVS
 EVS Port1 66/1/CFE_EVS 1: cFE EVS Initialized. cFE Version 6.4.2.0
-1980-012-14:03:20.05292 ES Startup: Core App: CFE_SB created. App ID: 1
-1980-012-14:03:20.05313 SB:Registered 4 events for filtering
+1980-012-14:03:20.05376 ES Startup: Core App: CFE_SB created. App ID: 1
+1980-012-14:03:20.05392 SB:Registered 4 events for filtering
 EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_SB
 EVS Port1 66/1/CFE_SB 1: cFE SB Initialized
-1980-012-14:03:20.10352 ES Startup: Core App: CFE_ES created. App ID: 2
+1980-012-14:03:20.10435 ES Startup: Core App: CFE_ES created. App ID: 2
 EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_ES
 EVS Port1 66/1/CFE_ES 1: cFE ES Initialized
 EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_ES
 EVS Port1 66/1/CFE_ES 2: Versions:cFE 6.4.2.0, OSAL 4.1.1.0, PSP 0.0.0.0, chksm 44360
-1980-012-14:03:20.15423 ES Startup: Core App: CFE_TIME created. App ID: 3
+1980-012-14:03:20.15496 ES Startup: Core App: CFE_TIME created. App ID: 3
 EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_TIME
 EVS Port1 66/1/CFE_TIME 1: cFE TIME Initialized
-1980-012-14:03:20.20477 ES Startup: Core App: CFE_TBL created. App ID: 4
+1980-012-14:03:20.20552 ES Startup: Core App: CFE_TBL created. App ID: 4
 EVS Port1 66/1/CFE_TBL 1: cFE TBL Initialized.  cFE Version 6.4.2.0
-1980-012-14:03:20.25492 ES Startup: Finished ES CreateObject table entries.
-1980-012-14:03:20.25499 ES Startup: CFE_ES_Main entering CORE_READY state
-1980-012-14:03:20.26518 ES Startup: Opened ES App Startup file: /cf/apps/cfe_es_startup.scr
-1980-012-14:03:20.26664 ES Startup: Loading file: /cf/apps/sch_lab.so, APP: SCH_LAB_APP
-1980-012-14:03:20.27788 ES Startup: SCH_LAB_APP loaded and created
-1980-012-14:03:20.27836 ES Startup: Loading file: /cf/apps/ads1115.so, APP: ADS1115_APP
+1980-012-14:03:20.25567 ES Startup: Finished ES CreateObject table entries.
+1980-012-14:03:20.25574 ES Startup: CFE_ES_Main entering CORE_READY state
+1980-012-14:03:20.25777 ES Startup: Opened ES App Startup file: /cf/apps/cfe_es_startup.scr
+1980-012-14:03:20.25918 ES Startup: Loading file: /cf/apps/sch_lab.so, APP: SCH_LAB_APP
+1980-012-14:03:20.27130 ES Startup: SCH_LAB_APP loaded and created
+1980-012-14:03:20.27206 ES Startup: Loading file: /cf/apps/ads1115.so, APP: ADS1115_APP
 SCH Lab Initialized.  Version 2.1.0.0
-1980-012-14:03:20.29094 ES Startup: ADS1115_APP loaded and created
-1980-012-14:03:20.29142 ES Startup: Loading file: /cf/apps/vc0706.so, APP: VC0706_APP
+1980-012-14:03:20.28704 ES Startup: ADS1115_APP loaded and created
+1980-012-14:03:20.28758 ES Startup: Loading file: /cf/apps/vc0706.so, APP: VC0706_APP
 EVS Port1 66/1/ADS1115_APP 4: ADS1115: RESET command
 EVS Port1 66/1/ADS1115_APP 8: ADC Child Task initialization info: create task complete: result = 0
 EVS Port1 66/1/ADS1115_APP 1: ADS1115 App Initialized. Version 0.0.0.0
 EVS Port1 66/1/ADS1115_APP 8: ADS1115 Child Task initialization complete
-
-Inside ADS Child Loop case 0!
-1980-012-14:03:20.29870 ES Startup: VC0706_APP loaded and created
-1980-012-14:03:20.29915 ES Startup: Loading file: /cf/apps/tim_app.so, APP: TIM_APP
+1980-012-14:03:20.29479 ES Startup: VC0706_APP loaded and created
+1980-012-14:03:20.29525 ES Startup: Loading file: /cf/apps/tim_app.so, APP: TIM_APP
 EVS Port1 66/1/VC0706_APP 4: VC0706: RESET command
 EVS Port1 66/1/VC0706_APP 8: VC0706 Child Task initialization info: create task complete: result = 0
 EVS Port1 66/1/VC0706_APP 1: VC0706 App Initialized. Version 0.0.0.0
 EVS Port1 66/1/VC0706_APP 8: VC0706 Child Task initialization complete
-1980-012-14:03:20.30960 ES Startup: TIM_APP loaded and created
+1980-012-14:03:20.30642 ES Startup: TIM_APP loaded and created
 EVS Port1 66/1/TIM_APP 4: TIM: RESET command
 EVS Port1 66/1/TIM_APP 10: Parallel Power Flag Set
 EVS Port1 66/1/TIM_APP 11: Parallel TE-1 Flag Initialized Low
 EVS Port1 66/1/TIM_APP 11: Parallel TE-1 Flag Cleared
 TIM_APP: Attempting to set reboot timer to 345000000 microseconds.
-EVS Port1 66/1/TIM
+EVS Port1 66/1/TIM_APP 1: TIM App Initialized. Version 1.0.0.0
+1980-012-14:03:20.35663 ES Startup: CFE_ES_Main entering OPERATIONAL state
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [0] R[1] = [76] R[2] = [0]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [b] R[1] = [56] R[2] = [43]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [30] R[1] = [33] R[2] = [20]
+Failed communication to Camera.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00001.csv':{04A7, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00001.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [30] R[1] = [30] R[2] = [0]
+Failed communication to Camera.
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0000.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00002.csv':{04AA, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [6d6f7266] R[1] = [30435620] R[2] = [2e363037]
+Failed communication to Camera.
+EVS Port1 66/1/CFE_TIME 20: Start FLYWHEEL
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0000.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00002.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0001.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [6d6f7266] R[1] = [30435620] R[2] = [2e363037]
+Failed communication to Camera.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00003.csv':{0466, 7E70, 7F7F, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0002.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [d6] R[1] = [0] R[2] = [13]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [0] R[1] = [20] R[2] = [c0]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [0] R[1] = [10] R[2] = [cc]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [1e] R[1] = [e0] R[2] = [0]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [0] R[1] = [0] R[2] = [e1]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [f8] R[1] = [0] R[2] = [0]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [0] R[1] = [0] R[2] = [bf]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [8] R[1] = [0] R[2] = [0]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [e0] R[1] = [f] R[2] = [f0]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [c0] R[1] = [0] R[2] = [1]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [0] R[1] = [11] R[2] = [0]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [43] R[1] = [30] R[2] = [37]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [20] R[1] = [31] R[2] = [2e]
+Failed communication to Camera.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0001.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00003.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [0] R[1] = [0] R[2] = [76]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [0] R[1] = [b] R[2] = [56]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [37] R[1] = [30] R[2] = [33]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [2e] R[1] = [30] R[2] = [30]
+Failed communication to Camera.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00004.csv':{0483, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0003.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [6d6f7266] R[1] = [30435620] R[2] = [2e363037]
+Failed communication to Camera.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0002.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00004.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00005.csv':{047B, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0004.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [56] R[1] = [0] R[2] = [11]
+Failed communication to Camera.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00006.csv':{0479, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0003.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00005.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0005.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [6d6f7266] R[1] = [30435620] R[2] = [2e363037]
+Failed communication to Camera.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00007.csv':{047E, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0004.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00006.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0006.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00008.csv':{0481, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0007.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0005.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00007.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0008.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00009.csv':{0483, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0006.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00008.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0009.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00010.csv':{0487, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0010.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0007.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00009.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00011.csv':{0489, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0011.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0009.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00010.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00012.csv':{048B, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0012.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00013.csv':{048E, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0013.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0011.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00012.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0014.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00014.csv':{048F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0012.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00013.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0015.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00015.csv':{048E, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0016.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0013.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00014.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00016.csv':{048F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0017.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0015.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00015.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0018.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00017.csv':{0495, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0019.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00018.csv':{0492, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0017.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00017.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0020.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00019.csv':{0493, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0019.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00018.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0021.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00020.csv':{0493, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0022.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0020.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00019.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0023.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00021.csv':{0498, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_0_0021.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/001_t_00020.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/001_1_0024.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '001_t_00022.csv':{0498, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/001_0_0025.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/001_1_0022.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding untiCFE_PSP: Default Reset Type = PO
+CFE_PSP: Default Reset SubType = 1
+CFE_PSP: Default CPU ID = 1
+CFE_PSP: Default Spacecraft ID = 66
+CFE_PSP: Default CPU Name: CPU1
+CFE_PSP: Starting the cFE with a POWER ON reset.
+CFE_PSP: Clearing out CFE CDS Shared memory segment.
+CFE_PSP: Clearing out CFE Reset Shared memory segment.
+CFE_PSP: Clearing out CFE User Reserved Shared memory segment.
+2026-098-17:37:15.33964 POWER ON RESET due to Power Cycle (Power Cycle).
+2026-098-17:37:15.33976 ES Startup: CFE_ES_Main in EARLY_INIT state
+CFE_PSP: CFE_PSP_AttachExceptions Called
+2026-098-17:37:15.33996 ES Startup: CFE_ES_Main entering CORE_STARTUP state
+2026-098-17:37:15.34000 ES Startup: Starting Object Creation calls.
+2026-098-17:37:15.34002 ES Startup: Calling CFE_ES_CDSEarlyInit
+2026-098-17:37:15.34065 ES Startup: Calling CFE_EVS_EarlyInit
+2026-098-17:37:15.34079 Event Log cleared following power-on reset
+2026-098-17:37:15.34083 ES Startup: Calling CFE_SB_EarlyInit
+2026-098-17:37:15.34126 ES Startup: Calling CFE_TIME_EarlyInit
+1980-012-14:03:20.00001 ES Startup: Calling CFE_TBL_EarlyInit
+1980-012-14:03:20.00110 ES Startup: Calling CFE_FS_EarlyInit
+1980-012-14:03:20.00243 ES Startup: Core App: CFE_EVS created. App ID: 0
+EVS Port1 66/1/CFE_EVS 14: No subscribers for MsgId 0x808,sender CFE_EVS
+EVS Port1 66/1/CFE_EVS 1: cFE EVS Initialized. cFE Version 6.4.2.0
+1980-012-14:03:20.05309 ES Startup: Core App: CFE_SB created. App ID: 1
+1980-012-14:03:20.05331 SB:Registered 4 events for filtering
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_SB
+EVS Port1 66/1/CFE_SB 1: cFE SB Initialized
+1980-012-14:03:20.10367 ES Startup: Core App: CFE_ES created. App ID: 2
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_ES
+EVS Port1 66/1/CFE_ES 1: cFE ES Initialized
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_ES
+EVS Port1 66/1/CFE_ES 2: Versions:cFE 6.4.2.0, OSAL 4.1.1.0, PSP 0.0.0.0, chksm 44360
+1980-012-14:03:20.15430 ES Startup: Core App: CFE_TIME created. App ID: 3
+EVS Port1 66/1/CFE_SB 14: No subscribers for MsgId 0x808,sender CFE_TIME
+EVS Port1 66/1/CFE_TIME 1: cFE TIME Initialized
+1980-012-14:03:20.20485 ES Startup: Core App: CFE_TBL created. App ID: 4
+EVS Port1 66/1/CFE_TBL 1: cFE TBL Initialized.  cFE Version 6.4.2.0
+1980-012-14:03:20.25502 ES Startup: Finished ES CreateObject table entries.
+1980-012-14:03:20.25509 ES Startup: CFE_ES_Main entering CORE_READY state
+1980-012-14:03:20.25725 ES Startup: Opened ES App Startup file: /cf/apps/cfe_es_startup.scr
+1980-012-14:03:20.25870 ES Startup: Loading file: /cf/apps/sch_lab.so, APP: SCH_LAB_APP
+1980-012-14:03:20.26988 ES Startup: SCH_LAB_APP loaded and created
+1980-012-14:03:20.27038 ES Startup: Loading file: /cf/apps/ads1115.so, APP: ADS1115_APP
+SCH Lab Initialized.  Version 2.1.0.0
+1980-012-14:03:20.28250 ES Startup: ADS1115_APP loaded and created
+1980-012-14:03:20.28315 ES Startup: Loading file: /cf/apps/vc0706.so, APP: VC0706_APP
+EVS Port1 66/1/ADS1115_APP 4: ADS1115: RESET command
+EVS Port1 66/1/ADS1115_APP 8: ADC Child Task initialization info: create task complete: result = 0
+EVS Port1 66/1/ADS1115_APP 1: ADS1115 App Initialized. Version 0.0.0.0
+EVS Port1 66/1/ADS1115_APP 8: ADS1115 Child Task initialization complete
+1980-012-14:03:20.29044 ES Startup: VC0706_APP loaded and created
+1980-012-14:03:20.29092 ES Startup: Loading file: /cf/apps/tim_app.so, APP: TIM_APP
+EVS Port1 66/1/VC0706_APP 4: VC0706: RESET command
+EVS Port1 66/1/VC0706_APP 8: VC0706 Child Task initialization info: create task complete: result = 0
+EVS Port1 66/1/VC0706_APP 1: VC0706 App Initialized. Version 0.0.0.0
+EVS Port1 66/1/VC0706_APP 8: VC0706 Child Task initialization complete
+1980-012-14:03:20.30189 ES Startup: TIM_APP loaded and created
+EVS Port1 66/1/TIM_APP 4: TIM: RESET command
+EVS Port1 66/1/TIM_APP 10: Parallel Power Flag Set
+EVS Port1 66/1/TIM_APP 11: Parallel TE-1 Flag Initialized Low
+EVS Port1 66/1/TIM_APP 11: Parallel TE-1 Flag Cleared
+TIM_APP: Attempting to set reboot timer to 345000000 microseconds.
+EVS Port1 66/1/TIM_APP 1: TIM App Initialized. Version 1.0.0.0
+1980-012-14:03:20.35210 ES Startup: CFE_ES_Main entering OPERATIONAL state
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00001.csv':{047E, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00001.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0000.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00002.csv':{0480, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/CFE_TIME 20: Start FLYWHEEL
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0001.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0000.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00002.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00003.csv':{047B, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0002.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0001.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00003.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00004.csv':{047F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0003.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0002.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00004.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0004.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00005.csv':{0482, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0005.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00006.csv':{0480, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0003.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00005.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0006.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00007.csv':{0481, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0005.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00006.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0007.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00008.csv':{0486, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0008.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0006.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00007.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0009.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00009.csv':{048A, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0007.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00008.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0010.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00010.csv':{0488, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0011.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0008.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00009.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00011.csv':{0489, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0012.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0013.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00012.csv':{048E, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender ADS1115_APP.ADC_MONITOR
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0010.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00010.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0014.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0012.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00013.csv':{048C, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00013.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0015.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00014.csv':{048E, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0015.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00014.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0016.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00015.csv':{048F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0017.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0016.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00015.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00016.csv':{0492, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0018.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0017.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00016.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0019.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00017.csv':{0493, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0020.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0018.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00017.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00018.csv':{0491, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0021.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00019.csv':{0495, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0020.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00018.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0022.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0023.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00020.csv':{0497, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0021.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00019.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0024.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00021.csv':{0494, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0022.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00020.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0025.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00022.csv':{0495, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0026.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0024.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00021.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00023.csv':{0497, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0027.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0025.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00022.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0028.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00024.csv':{0498, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0029.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0026.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00023.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00025.csv':{049A, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0030.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0027.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00024.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00026.csv':{0498, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0031.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0032.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00027.csv':{0499, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0030.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00026.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0033.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00028.csv':{0498, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0031.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00027.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0034.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00029.csv':{049A, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0035.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0033.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00028.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00030.csv':{0499, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0036.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0034.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00029.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0037.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00031.csv':{049B, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0038.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0035.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00030.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00032.csv':{049D, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0039.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0036.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00031.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00033.csv':{049C, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0040.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0039.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00033.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00034.csv':{049C, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0041.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0042.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00035.csv':{049D, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0040.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00034.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0043.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00036.csv':{049C, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0041.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00035.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0044.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00037.csv':{049D, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0045.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0043.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00036.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0046.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00038.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0044.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00037.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0047.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00039.csv':{049F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0048.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0045.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00038.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00040.csv':{049F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0049.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0047.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00039.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0050.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00041.csv':{04A0, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0051.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00042.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0049.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00041.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0052.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00043.csv':{049D, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0051.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00042.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0053.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00044.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0054.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0052.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00043.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0055.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00045.csv':{049E, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0053.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00044.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0056.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00046.csv':{049F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0057.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0054.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00045.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00047.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0058.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0056.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00046.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00048.csv':{04A2, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0059.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0060.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0058.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00048.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00049.csv':{049F, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0061.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00050.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0059.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00049.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0062.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00051.csv':{04A3, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0063.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0061.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00050.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0064.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00052.csv':{04A4, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0062.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00051.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0065.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00053.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0066.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0063.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00052.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00054.csv':{04A2, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0067.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0065.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00053.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0068.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00055.csv':{04A5, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0069.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0067.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00055.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00056.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0070.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00057.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0069.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00056.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0071.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0072.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00058.csv':{04A3, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0070.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00057.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0073.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00059.csv':{04A2, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0071.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00058.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0074.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00060.csv':{04A4, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0075.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0073.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00059.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00061.csv':{04A2, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0076.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0074.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00060.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0077.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00062.csv':{04A4, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0078.jpg>
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender VC0706_APP.CAMERA_CONTROL
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0075.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00061.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00063.csv':{04A4, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0079.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00064.csv':{04A2, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender ADS1115_APP.ADC_MONITOR
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_1_0076.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 8: Temps File '/ram/temps/002_t_00062.csv' Sent Successfully
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Wait Count Reached [1]
+EVS Port1 66/1/CFE_TIME 20: Start FLYWHEEL
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [67706a] R[1] = [0] R[2] = [0]
+Camera did not resume
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0080.jpg>
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/CFE_TIME 21: Stop FLYWHEEL
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [76] R[1] = [0] R[2] = [36]
+Failed communication to Camera.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [6e6f6974] R[1] = [ffffffff] R[2] = [656d6143]
+Frame checkReply Failed
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [2000a] R[1] = [ffffffff] R[2] = [1]
+Frame checkReply Failed
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [0] R[1] = [ffffffff] R[2] = [1]
+Frame checkReply Failed
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 9: Camera 0 unresponsive! R[0] = [76] R[1] = [0] R[2] = [36]
+Failed communication to Camera.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00065.csv':{04A1, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/CFE_SB 17: Msg Limit Err,MsgId 0x188a,pipe TIM_CMD_PIPE,sender ADS1115_APP.ADC_MONITOR
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/TIM_APP 7: Image File '/ram/images/002_0_0079.jpg' Sent Successfully
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File Command Received
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 9: Camera 1 unresponsive! R[0] = [6e6f6974] R[1] = [ffffffff] R[2] = [656d6143]
+Frame checkReply Failed
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0085.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00066.csv':{04A5, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received but Serial Busy
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0086.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00067.csv':{04A4, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received but Serial Busy
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0087.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00068.csv':{04A2, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received but Serial Busy
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0088.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0089.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00069.csv':{04A6, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received but Serial Busy
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0090.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00070.csv':{04A3, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received but Serial Busy
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 0 stored as </ram/images/002_0_0091.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 0 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/ADS1115_APP 11: Temp File '002_t_00071.csv':{04A3, 7FFF, 7FFF, 7FFF, }
+EVS Port1 66/1/TIM_APP 8: TIM: Send Temps File Command Received but Serial Busy
+EVS Port1 66/1/ADS1115_APP 11: ADS1115 Message sent to TIM.
+EVS Port1 66/1/VC0706_APP 10: Camera 1 stored as </ram/images/002_1_0092.jpg>
+EVS Port1 66/1/TIM_APP 7: TIM: Send Camera 1 File yeilding until temps sent
+EVS Port1 66/1/VC0706_APP 10: Message sent to TIM from VC0706.
+EVS Port1 66/1/CFE_EVS 9: Log File '/ram/logs/CFS_Boot.out' Sent Successfully
+TIM_APP: leaving cFS
+
+CFE_PSP: Control-C Captured - Exiting cFE
+CFE_PSP: Critical Data Store Shared memory segment removed
+Reset Area Shared memory segment removed
+User Reserved Area Shared memory segment removed
+CFE_PSP: Deleted all Tasks in system
+CFE_PSP: Deleted all Binary Semaphores in system
+CFE_PSP: Deleted all Counting Semaphores in system
+CFE_PSP: Deleted all Mutexes in system
+CFE_PSP: Deleted all Queues in system
+CFE_PSP: Deleted all Timers in system
+CFE_PSP: NOTE: After quitting the cFE with a Control-C signal, it MUST be started next time
+     with a Poweron Reset ( --reset PO ). 

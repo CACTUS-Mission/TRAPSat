@@ -499,8 +499,8 @@ void TIM_SendImageFile(void)
 
     //OS_close(os_fd);
     
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xFF);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
     
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]);
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]); /* check endianess */
@@ -514,7 +514,8 @@ void TIM_SendImageFile(void)
 
     tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
 
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF1);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xFF);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
 
@@ -598,11 +599,8 @@ void TIM_SendTempsFile(void)
     
     */
 
-
-
-
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xFF);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF4);
     
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
@@ -616,7 +614,8 @@ void TIM_SendTempsFile(void)
 
     tim_serial_write_file(&TIM_SerialUSB, (char *) file_path);
 
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF2);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xFF);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF5);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
 

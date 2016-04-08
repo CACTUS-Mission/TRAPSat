@@ -1,0 +1,34 @@
+Temperature Message Format
+
+000_t_00000.csv
+
+FF
+F4
+15 Byte File Name
+00
+00
+16 Byte Data
+FF
+F5
+0D
+0A
+
+
+
+Image Message Format
+
+000_t_0000.jpg
+
+FF
+F2
+14 Byte File Name
+00
+00
+
+Unknown Number of Bytes of Data
+
+FF
+F3
+0D
+0A
+
