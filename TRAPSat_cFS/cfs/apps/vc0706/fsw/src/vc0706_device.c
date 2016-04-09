@@ -16,13 +16,14 @@
 
 /*
 ** Parallel Pins
-*/ 
-int PARALLEL_PIN_BUS[6] = {31, 32, 33, 34, 35, 36};
+*/
+//int PARALLEL_PIN_BUS[6] = {31, 32, 33, 34, 35, 36};
+int PARALLEL_PIN_BUS[6] = {36, 35, 34, 33, 32, 31};
 
 /*
 ** Parallel functions
 */
-void setupParallelPhotoCount();
+void setupParallelPhotoCount(void);
 void updatePhotoCount(uint8 pic_count);
 
 /*
@@ -100,7 +101,7 @@ int VC0706_takePics(void)
     {
 
        /*
-        ** Switch Cameras -- Has not been tested with hardware yet
+  g++ vc0706_test.cpp -o vc0706_test -lwiringPig++ vc0706_test.cpp -o vc0706_test -lwiringPi      ** Switch Cameras -- Has not been tested with hardware yet
         */
         if( mux_switch(&mux) == -1)
 		{
@@ -188,10 +189,10 @@ int VC0706_takePics(void)
 /*
 ** initializes parallel pins on the parallel line designated for photo count [pins 31-36]
 */
-void setupParallelPhotoCount()
+void setupParallelPhotoCount(void)
 {
-	int i=0;
-	for(i; i<6; i++)
+	int i;
+	for(i=0; i<6; i++)
 	{
 		pinMode(PARALLEL_PIN_BUS[i], OUTPUT);
 	}
@@ -203,10 +204,8 @@ void setupParallelPhotoCount()
 */
 void updatePhotoCount(uint8 pic_count)
 {
-	// mask out unwanted bits
-	count &= 00111111;
-
-	int i=0;
+	int gpio_pin;
+	int i;
  	for(i=0; i < 6; i++)
     {
         gpio_pin = PARALLEL_PIN_BUS[i];

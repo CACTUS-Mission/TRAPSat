@@ -89,7 +89,7 @@ void TIM_AppMain( void )
         
         CFE_ES_PerfLogEntry(TIM_APP_PERF_ID);
 
-        //TIM_UpdateTimerEvent();
+        TIM_UpdateTimerEvent();
 
         if (status == CFE_SUCCESS)
         {
