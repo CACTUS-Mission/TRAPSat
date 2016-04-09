@@ -181,7 +181,7 @@ int VC0706_takePics(void)
 		}
 		else 
 		{
-			VC0706_SendTimFileName("error.jpg"); // empty jpg file
+			VC0706_SendTimFileName("error.txt"); // contains: "image failed to be taken."
 		}
 
     } /* Infinite Camera capture Loop End Here */

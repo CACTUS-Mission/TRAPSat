@@ -826,7 +826,7 @@ void timer_callback_poweroff_system(uint32 poweroff_timer_id)
     //system("shutdown -P now");
     
     OS_printf("TIM_APP: leaving cFS\n");
-    CFE_PSP_SigintHandler(); // End cFS -- Obviously, this will only happen when Pi is on.
+    //CFE_PSP_SigintHandler(); // End cFS -- Obviously, this will only happen when Pi is on.
 }
 
 
