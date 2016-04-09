@@ -14,6 +14,16 @@
 #include "vc0706.h"
 #include "vc0706_child.h"
 
+/*
+** Parallel Pins
+*/ 
+int PARALLEL_PIN_BUS[6] = {31, 32, 33, 34, 35, 36};
+
+/*
+** Parallel functions
+*/
+void setupParallelPhotoCount();
+void updatePhotoCount(uint8 pic_count);
 
 /*
 ** External References
@@ -74,6 +84,14 @@ int VC0706_takePics(void)
     }
 
     /*
+    ** Initialize the Parallel Pins
+    */
+    setupParallelPhotoCount();
+
+
+
+
+    /*
     ** infinite Camera loop
     ** w/ no delay
     */
@@ -89,7 +107,7 @@ int VC0706_takePics(void)
             OS_printf("vc0706::mux_switch() failed.\n");
 		} // Only fails if mux_state != 0|1
 
-    //OS_printf("Switched camera. MUX State: %d\n", mux.mux_state);
+    	//OS_printf("Switched camera. MUX State: %d\n", mux.mux_state);
 
         /*
         ** Get camera version, another way to check that the camera is working properly. Also necessary for initialization.
@@ -127,7 +145,7 @@ int VC0706_takePics(void)
         }
 
     	/*
-        ** Actually takes the picture
+        ** Actually take the picture
         */
     	//OS_printf("VC0706: Calling takePicture(&cam, \"%s\")...\n", path);
         char* pic_file_name = takePicture(&cam, path);
@@ -150,16 +168,57 @@ int VC0706_takePics(void)
 			}
 		    //OS_printf("VC0706: VC0706_HkTelemetryPkt.vc0706_filename: '%s'\n", VC0706_HkTelemetryPkt.vc0706_filename);
 
-            
+			/*
+			** update number of pics taken on the parallel pins
+			*/            
+			updatePhotoCount((uint8) num_pics_stored);
 
 		    /*
 		    ** incriment num pics for filename
 		    */
 		    num_pics_stored++;
-		} // else continue
+		} // else continue, try to take another picture
 
     } /* Infinite Camera capture Loop End Here */
 
     return(0);
+}
+
+
+/*
+** initializes parallel pins on the parallel line designated for photo count [pins 31-36]
+*/
+void setupParallelPhotoCount()
+{
+	int i=0;
+	for(i; i<6; i++)
+	{
+		pinMode(PARALLEL_PIN_BUS[i], OUTPUT);
+	}
+}
+
+/*
+** updatePhotoCount() - writes the specified int to 6 bits on out parallel line
+** 						this function assumes the designated ouputs are already 
+*/
+void updatePhotoCount(uint8 pic_count)
+{
+	// mask out unwanted bits
+	count &= 00111111;
+
+	int i=0;
+ 	for(i=0; i < 6; i++)
+    {
+        gpio_pin = PARALLEL_PIN_BUS[i];
+
+        if ( pic_count & (1 << i) )
+        {
+            digitalWrite(gpio_pin, HIGH);
+        }
+        else
+        {
+            digitalWrite(gpio_pin, LOW);
+        }
+    }
 }
 

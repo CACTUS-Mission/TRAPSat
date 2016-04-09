@@ -51,8 +51,8 @@ To be removed once confirmed
 ** TIM GPIO Pin Assignment for Parallel Status Update and TE-1 Event Detection
 */
 #define TIM_MAIN_GPIO_PIN_TE     1
-#define TIM_PAR_GPIO_PIN_TE       38
-#define TIM_PAR_GPIO_PIN_PWR   39
+#define TIM_PAR_GPIO_PIN_TE		29
+#define TIM_PAR_GPIO_PIN_PWR	30
 
 /************************************************************************
 ** Type Definitions
