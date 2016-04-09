@@ -8,5 +8,5 @@
 *.csv
 TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe/ram/logs/CFS_Boot.*
 TRAPSat/TRAPSat_cFS/cfs/build/cpu1/exe/ram/logs/reboot.txt
-
+*~
 
