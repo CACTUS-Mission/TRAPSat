@@ -96,7 +96,7 @@ int VC0706_takePics(void)
     ** infinite Camera loop
     ** w/ no delay
     */
-    unsigned int num_pics_stored = 0;;
+    unsigned int num_pics_stored = 1;
     for ( ;; ) // NOTE: we will need to add flash and MUX implementation. Easy, but should be broken into separate headers.
     {
 
@@ -196,6 +196,9 @@ void setupParallelPhotoCount(void)
 	{
 		pinMode(PARALLEL_PIN_BUS[i], OUTPUT);
 	}
+
+    // initialize to 0
+    updatePhotoCount((uint8)0);
 }
 
 /*

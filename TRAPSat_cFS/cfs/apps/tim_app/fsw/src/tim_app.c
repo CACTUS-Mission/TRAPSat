@@ -753,7 +753,11 @@ void TIM_Parallel_Init(void)
     digitalWrite(TIM_PAR_GPIO_PIN_TE, LOW);
     CFE_EVS_SendEvent(TIM_PARALLEL_TE_EID, CFE_EVS_INFORMATION, "Parallel TE-1 Flag Initialized Low");
     
+    /*
+    ** Initialize TE-1 digital input with built-in pulldown resistor
+    */
     pinMode(TIM_MAIN_GPIO_PIN_TE, INPUT);
+    pullUpDnControl(TIM_MAIN_GPIO_PIN_TE, PUD_DOWN); 
     
     if ( digitalRead(TIM_MAIN_GPIO_PIN_TE) == HIGH )
     {
