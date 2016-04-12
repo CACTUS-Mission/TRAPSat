@@ -178,7 +178,11 @@ int VC0706_takePics(void)
 		    ** incriment num pics for filename
 		    */
 		    num_pics_stored++;
-		} // else continue, try to take another picture
+		}
+		else 
+		{
+			VC0706_SendTimFileName("error.jpg"); // empty jpg file
+		}
 
     } /* Infinite Camera capture Loop End Here */
 
