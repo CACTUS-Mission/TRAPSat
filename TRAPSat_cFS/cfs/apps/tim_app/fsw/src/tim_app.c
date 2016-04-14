@@ -5,7 +5,6 @@
 **   This file contains the source code for the TIM App.
 **
 *******************************************************************************/
-
 /*
 **   Include Files:
 */
@@ -33,9 +32,14 @@ CFE_SB_MsgPtr_t    TIMMsgPtr;
 serial_out_t TIM_SerialUSB;
 int serial_busy;
 int serial_last_sent;
+
 #define TIM_TEMP_MAX_COUNT             5
 int temp_wait_count;
 int timer_event_last;
+
+#define TIM_IMAGE_MAX_COUNT             3
+int image_wait_count;
+int image_event_last;
 
 
 /*
@@ -135,12 +139,14 @@ void TIM_AppInit(void)
 
 	TIM_ResetCounters();
 
-	/* Clear the Queue count */
-	//TIM_SerialQueueInfo.on_queue = 0;
-    serial_busy = 0;
+	serial_busy = 0;
     serial_last_sent = 0;
+    
     temp_wait_count = 0;
     timer_event_last = 0;
+    
+    image_wait_count = 0;
+    image_event_last = 0;
 
     if(serial_out_init(&TIM_SerialUSB, (char *) SERIAL_OUT_PORT) < 0)
     {
@@ -241,6 +247,9 @@ void TIM_ProcessGroundCommand(void)
 		TIM_ResetCounters();
 		break;
 	
+/********************************************************************************************
+***********************************************************************************************
+*********************************************************************************************/
 	case TIM_APP_SEND_IMAGE0_CC:
             /*
             ** Recieved Send Image File Command from Camera 0
@@ -253,40 +262,105 @@ void TIM_ProcessGroundCommand(void)
                     serial_last_sent = TIM_APP_SEND_IMAGE0_CC;
                     TIM_SendImageFile();
                     serial_busy = 0;
-                    CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
-                        "TIM: Send Camera 0 File Command Received");
+                    
+                    /*
+                    ** Reset Wait Count when we know its been sent
+                    */
+                    image_wait_count = 0;
+
                     TIM_HkTelemetryPkt.tim_command_count++;
                     TIM_HkTelemetryPkt.tim_command_image_count++;
+                    
+                    CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                        "TIM: Send Camera 0 File Command Received and Sent");
                 }
                 else
                 {
+                    /*
+                    ** It was time to send a picture but serial busy
+                    */
                     CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
                         "TIM: Send Camera 0 File Command Received but Serial Busy");
                 }
             }
             else
             {
-                CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
-                    "TIM: Send Camera 0 File yeilding until temps sent");
+                /*
+                ** Increment Image Delay/Wait Count
+                ** 
+                ** TIM_IMAGE_MAX_COUNT  =   3
+                */
+                image_wait_count++;
+                
+                if(image_wait_count >= TIM_IMAGE_MAX_COUNT)
+                {
+                    /*
+                    ** if max wait has been reached, try to send an image
+                    */
+                    if (serial_busy == 0)
+                    {
+                        serial_busy = 1;
+                        serial_last_sent = TIM_APP_SEND_IMAGE0_CC;
+                        TIM_SendImageFile();
+                        serial_busy = 0;
+                        
+                        CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                            "TIM: Send Camera 0 File Command Received and Sent");
+                            
+                        TIM_HkTelemetryPkt.tim_command_count++;
+                        TIM_HkTelemetryPkt.tim_command_image_count++;
+                        
+                        /*
+                        ** Reset Wait Count when we know its been sent
+                        */
+                        image_wait_count = 0;
+                        
+                    }
+                    else
+                    {
+                        CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                            "TIM: Send Camera 0 File Command Received but Serial Busy, WC = [%d]", image_wait_count);
+                    }
+                
+                }
+                else
+                {
+                     CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                                    "TIM: Send Camera 0 File Yielding, WC = [%d]", image_wait_count);
+                }
             }
 		    break;
-		
+/********************************************************************************************
+***********************************************************************************************
+*********************************************************************************************/
 	case TIM_APP_SEND_IMAGE1_CC:
             /*
             ** Recieved Send Image File Command from Camera 1
             */
             if(serial_last_sent == TIM_APP_SEND_TEMPS_CC )
             {
+                /*
+                ** The last file sent was a temp file, 
+                ** so send a picture if serial can send
+                */
                 if (serial_busy == 0)
                 {
                     serial_busy = 1;
                     serial_last_sent = TIM_APP_SEND_IMAGE1_CC;
                     TIM_SendImageFile();
                     serial_busy = 0;
+                    
                     CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
                         "TIM: Send Camera 1 File Command Received");
+                        
                     TIM_HkTelemetryPkt.tim_command_count++;
                     TIM_HkTelemetryPkt.tim_command_image_count++;
+                    
+                    /*
+                    ** Reset Wait Count when we know its been sent
+                    */
+                    image_wait_count = 0;
+                    
                 }
                 else
                 {
@@ -297,11 +371,56 @@ void TIM_ProcessGroundCommand(void)
             }
             else
             {
-                CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
-                    "TIM: Send Camera 1 File yeilding until temps sent");
+                /*
+                ** Increment Image Delay/Wait Count
+                ** 
+                ** TIM_IMAGE_MAX_COUNT  =   3
+                */
+                image_wait_count++;
+                
+                if(image_wait_count >= TIM_IMAGE_MAX_COUNT)
+                {
+                    /*
+                    ** if max wait has been reached, try to send an image
+                    */
+                    if (serial_busy == 0)
+                    {
+                        serial_busy = 1;
+                        serial_last_sent = TIM_APP_SEND_IMAGE1_CC;
+                        TIM_SendImageFile();
+                        serial_busy = 0;
+                        
+                        CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                            "TIM: Send Camera 1 File Command Received");
+                            
+                        TIM_HkTelemetryPkt.tim_command_count++;
+                        TIM_HkTelemetryPkt.tim_command_image_count++;
+                        
+                        /*
+                        ** Reset Wait Count when we know its been sent
+                        */
+                        image_wait_count = 0;
+                        
+                    }
+                    else
+                    {
+                        CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                            "TIM: Send Camera 1 File Command Received but Serial Busy, WC = [%d]", image_wait_count);
+                    }
+                
+                }
+                else
+                {
+                     CFE_EVS_SendEvent(TIM_COMMAND_IMAGE_EID,CFE_EVS_INFORMATION, 
+                            "TIM: Send Camera 1 File yeilding, Wait Count = [%d]", image_wait_count);
+                } 
+                
+                
             }        
 		    break;
-
+/********************************************************************************************
+***********************************************************************************************
+*********************************************************************************************/
 	case TIM_APP_SEND_TEMPS_CC:
             /*
             ** Send Temp File Command Received from ADS1115
@@ -314,11 +433,16 @@ void TIM_ProcessGroundCommand(void)
                     serial_last_sent = TIM_APP_SEND_TEMPS_CC;
                     TIM_SendTempsFile();
                     serial_busy = 0;
-                    temp_wait_count = 0;
+                    
                     CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION,
                         "TIM: Send Temps File Command Received");
                     TIM_HkTelemetryPkt.tim_command_count++;
                     TIM_HkTelemetryPkt.tim_command_temps_count++;
+                    
+                    /*
+                    ** Reset Wait Count when we know its been sent
+                    */
+                    temp_wait_count = 0;
                 }
                 else
                 {
@@ -329,7 +453,10 @@ void TIM_ProcessGroundCommand(void)
             else
             {
                 temp_wait_count++;
-                               
+                /*
+                ** Increment wait count to see if images are getting sent
+                ** if they aren't getting sent after TIM_TEMP_MAX_COUNT (== 5?)
+                */
                 if(temp_wait_count >= TIM_TEMP_MAX_COUNT)
                 {
                     /*
@@ -341,9 +468,10 @@ void TIM_ProcessGroundCommand(void)
                         serial_last_sent = TIM_APP_SEND_TEMPS_CC;                        
                         TIM_SendTempsFile();
                         serial_busy = 0;
-                        temp_wait_count = 0;
+                        
                         CFE_EVS_SendEvent(TIM_COMMAND_TEMPS_EID,CFE_EVS_INFORMATION,
                             "TIM: Reached Temp Wait Limit. Force Sending Temps File");
+                        
                         TIM_HkTelemetryPkt.tim_command_count++;
                         TIM_HkTelemetryPkt.tim_command_temps_count++;
                         
@@ -366,6 +494,9 @@ void TIM_ProcessGroundCommand(void)
             }
             
 		    break;
+/********************************************************************************************
+***********************************************************************************************
+*********************************************************************************************/
 
 	/* default case already found during FC vs length test */
 	default:

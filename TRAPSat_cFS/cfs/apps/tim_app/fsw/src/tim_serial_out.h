@@ -15,7 +15,10 @@
 #define _serial_out_h_
 
 #define SERIAL_OUT_BAUD 19200
+
 #define SERIAL_OUT_PORT "/dev/ttyUSB0"
+
+/* #define SERIAL_OUT_PORT "/dev/ttyAMA0" */
 
 #include <stdio.h>
 #include <wiringSerial.h>
