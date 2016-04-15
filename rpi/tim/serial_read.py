@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
 import sys, serial, time, re, os
+
 ser = serial.Serial("/dev/ttyUSB0", 19200, timeout=0)
+
 print ser.portstr
 
 def getSerialData():
@@ -38,9 +40,9 @@ def getFileNames():
 	filenames = re.findall(r'..._[0-1]_.{4,5}\....', read_data, re.S)
 	reset = 0
 	for name in filenames:
-		if(reset == 1 and name == "001_1_0000.jpg"): # break when we see the log file
+		if(reset == 1 and name == "001_1_0001.jpg"): # break when we see the log file
 			break
-		if(name == "001_1_0000.jpg"):
+		if(name == "001_1_0001.jpg"):
 			reset = 1
  		write_file.write(name)
 		write_file.write("\n")
