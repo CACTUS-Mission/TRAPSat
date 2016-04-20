@@ -1,0 +1,7 @@
+Needed:
+	i2c
+	spi
+
+DO NOT INCLUDE:
+	Serial login -- kills the camera.
+	

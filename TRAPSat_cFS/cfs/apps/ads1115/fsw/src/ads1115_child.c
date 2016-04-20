@@ -248,7 +248,7 @@ void ADS1115_ChildLoop(void)
         /*
         OS_printf("ADS1115: ADC Loop current state [%d]. Delay 5s.\n", ADS1115_HkTelemetryPkt.ads1115_childloop_state);
         */
-        OS_TaskDelay(5000);
+        OS_TaskDelay(1000);
         
     } /* Infinite ADC Read Loop End Here */
 
@@ -282,7 +282,14 @@ int ADS1115_SendTimFileName(char *file_name)
 
     CFE_SB_SendMsg((CFE_SB_Msg_t *) &ADS1115_TempsCmdPkt);
 
+<<<<<<< HEAD
     CFE_EVS_SendEvent(ADS1115_CHILD_ADC_INF_EID, CFE_EVS_INFORMATION, "ADS1115 Message sent to TIM.");
+=======
+    //OS_printf("ADS1115 Message sent to TIM.\n");
+
+    CFE_EVS_SendEvent(ADS1115_TIM_MSG_EID,CFE_EVS_INFORMATION, "ADS1115 Message sent to TIM");
+
+>>>>>>> 6cb622b7b83d95d135fa7ec0c62141aa170c8c02
 
     return 0;
 }
