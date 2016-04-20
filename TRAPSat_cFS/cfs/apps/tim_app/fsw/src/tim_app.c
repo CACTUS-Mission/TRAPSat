@@ -154,7 +154,6 @@ void TIM_AppInit(void)
     }
 
     //serial_out_init(&TIM_SerialUSB, SERIAL_OUT_PORT);
-<<<<<<< HEAD
     
     TIM_Parallel_Init();
 
@@ -174,9 +173,7 @@ void TIM_AppInit(void)
     {
         OS_printf("OS_TimerSet() failed to set start time for timer_callback_poweroff_system() function! returned: %d\n", timer_ret);
     }
-=======
     //TIM_ChildInit();
->>>>>>> 6cb622b7b83d95d135fa7ec0c62141aa170c8c02
 
 	CFE_SB_InitMsg(&TIM_HkTelemetryPkt,
 			TIM_APP_HK_TLM_MID,
@@ -620,24 +617,19 @@ void TIM_SendImageFile(void)
         data_buf[0] = 0;
         data_buf[1] = 0;
     }
-<<<<<<< HEAD
     OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
     */
-=======
 
 
     //OS_printf("Image File Length (bytes) = [%u].\n", total_bytes_read);
->>>>>>> 6cb622b7b83d95d135fa7ec0c62141aa170c8c02
 
     
     /*
     uint8 file_len[2];
     file_len[0] = *((uint8 *) &total_bytes_read);
     file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
-<<<<<<< HEAD
     OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
     OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
-=======
     //OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
     //OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
 
@@ -663,7 +655,6 @@ void TIM_SendImageFile(void)
     uint16 data_stop_flag 0xFF [filename length]
     char filename[22]
     uint8 stop byte
->>>>>>> 6cb622b7b83d95d135fa7ec0c62141aa170c8c02
     */
 
     //OS_close(os_fd);
@@ -761,13 +752,10 @@ void TIM_SendTempsFile(void)
     uint8 file_len[2];
     file_len[0] = *((uint8 *) &total_bytes_read);
     file_len[1] = *(((uint8 *) &total_bytes_read) + 1);
-<<<<<<< HEAD
     OS_printf("Temp Length MSB = [%#.2X]\n", file_len[1]);
     OS_printf("Temp Length LSB = [%#.2X]\n", file_len[0]);
-=======
     //OS_printf("Image Length MSB = [%#.2X]\n", file_len[1]);
     //OS_printf("Image Length LSB = [%#.2X]\n", file_len[0]);
->>>>>>> 6cb622b7b83d95d135fa7ec0c62141aa170c8c02
 
     OS_close(os_fd);
     
