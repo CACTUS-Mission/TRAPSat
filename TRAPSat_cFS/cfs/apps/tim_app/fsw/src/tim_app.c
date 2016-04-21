@@ -844,8 +844,8 @@ void TIM_SendLogFile(void)
 
 
 
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xFF);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF6);
     
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
@@ -859,7 +859,7 @@ void TIM_SendLogFile(void)
 
     tim_serial_write_file(&TIM_SerialUSB, (char *) log_path);
 
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF7);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
 
