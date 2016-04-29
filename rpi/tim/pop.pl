@@ -19,6 +19,7 @@ sub readnshift;
 use constant IMAGE_FILENAME_LEN => 14; # 000_0_0000.jpg
 use constant TEMPS_FILENAME_LEN => 15; # 000_t_00000.csv
 use constant LOGS_FILENAME_LEN => 12; # CFS_Boot.out
+use constant LOGS_FILENAME => "CFS_Boot.txt"; # non-binary file extension
 
 #
 # Flag used before each index flag
@@ -170,7 +171,7 @@ while(1)
                 #
                 close(IMAGE_DATA_FILE);
 
-                printf("Completed parsing file: [ %s ]\n", $image_filename);
+                printf("Completed parsing image file: [ %s ]\n", $image_filename);
 
                 #
                 # Reset states, flags, and counts
@@ -253,7 +254,7 @@ while(1)
                 #
                 close(TEMPS_DATA_FILE);
 
-                printf("Completed parsing file: [ %s ]\n", $temps_filename);
+                printf("Completed parsing temps file: [ %s ]\n", $temps_filename);
 
                 #
                 # Reset states, flags, and counts
@@ -290,11 +291,11 @@ while(1)
             #
             # Get Temperature File Name
             #
-            $image_filename = $image_filename.$raw_data_buff[1];
+            $logs_filename = $logs_filename.$raw_data_buff[1];
 
             $filename_byte_count++;
         }
-        elsif(($filename_byte_count <= LOGS_FILENAME_LEN+1) and ($new_file_state == NO_DATA_FILE_OPEN))
+        elsif(($filename_byte_count <= LOGS_FILENAME_LEN+10) and ($new_file_state == NO_DATA_FILE_OPEN))
         {
             #
             # Ignore Single byte after filename
@@ -307,7 +308,7 @@ while(1)
             # Open data file for writing
             #
 
-            printf("About to open filename [%s]\n", $logs_filename);
+            printf("Received log filename [%s]\n", $logs_filename);
             #die;
 
             #
@@ -315,7 +316,8 @@ while(1)
             #
             $new_file_state = LOGS_FILE_OPEN;
 
-            open(LOGS_DATA_FILE, ">>", $logs_filename) or die "Failed opening $logs_filename!";
+            #open(LOGS_DATA_FILE, ">>", "CFS_Boot.txt") or die "Failed opening logs [$logs_filename]!";
+            open(LOGS_DATA_FILE, ">>", LOGS_FILENAME) or die "Failed opening CFS_Boot.txt]!";
 
             #
             # Check for end flag
@@ -352,7 +354,8 @@ while(1)
                 #
                 # Exit now, continue later
                 #
-                die "Finished log";
+                printf("Finished parsing log!\n");
+                die;
             }
 
             #
@@ -360,7 +363,7 @@ while(1)
             #
             $filename_byte_count = 0;
 
-            printf("Writing image data to file. [%c]\n", ord $raw_data_buff[1]);
+            #printf("Writing log data to file. [%c]\n", ord $raw_data_buff[1]);
             printf(LOGS_DATA_FILE "%c", ord $raw_data_buff[1]);
         }
     }
