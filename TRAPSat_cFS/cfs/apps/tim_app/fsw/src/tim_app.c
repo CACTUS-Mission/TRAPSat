@@ -797,6 +797,7 @@ void TIM_SendTempsFile(void)
 void TIM_SendLogFile(void)
 {
     char log_path[] = "/ram/logs/CFS_Boot.out";
+    char logs_filename[] = "CFS_Boot.out";
     int index = 0;
     
     // OS_printf("TIM_APP: Sending Log file.\n");
@@ -844,22 +845,23 @@ void TIM_SendLogFile(void)
 
 
 
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xFF);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF6);
     
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[1]);
     //serial_write_byte(&TIM_SerialUSB, (unsigned char) file_len[0]); /* check endianess */
 
     for(index = 0; index < sizeof(log_path); index++)
     {
-        serial_write_byte(&TIM_SerialUSB, (unsigned char) log_path[index]);
+        serial_write_byte(&TIM_SerialUSB, (unsigned char) logs_filename[index]);
     }
 
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x00);
 
     tim_serial_write_file(&TIM_SerialUSB, (char *) log_path);
 
-    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF3);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xFF);
+    serial_write_byte(&TIM_SerialUSB, (unsigned char) 0xF7);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0D);
     serial_write_byte(&TIM_SerialUSB, (unsigned char) 0x0A);
 
