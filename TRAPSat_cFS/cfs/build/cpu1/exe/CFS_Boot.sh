@@ -116,10 +116,6 @@ case "$1" in
 
     *)
         echo "Usage: /etc/init.d/$DAEMON_NAME {start|stop|setup|restart|status|del_data|reset_boot_count|del_logs}"
-<<<<<<< HEAD
-=======
-
->>>>>>> 6cb622b7b83d95d135fa7ec0c62141aa170c8c02
         exit 1
         ;;
 
