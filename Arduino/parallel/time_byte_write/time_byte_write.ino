@@ -17,7 +17,7 @@ void setup() {
   // Attempt to open communication with the SD card
   if(!SD.begin()) {
     Serial.println("Setup Failed.");
-    while(1);
+    exit(1);
   }
   
   // Create a file on the SD card to test for
@@ -27,17 +27,15 @@ void setup() {
   // Test for created file to ensure SD card is writing and can read
   if(!SD.exists("test.raw")) {
     Serial.println("Error: test file does not exist.");
-    while(1);
+    exit(1);
   }
   
   // Overwrite previous test.raw
   test_file = SD.open("test.raw", FILE_WRITE);
   Serial.println("Setup Complete");
-  // Wait a second before progressing to loop()
+  // Wait a second before progressing to benchmark portion
   delay(1000);
-}
-
-void loop() {
+  
   // Start and end time of each write, measured in microseconds
   double startTime, endTime;
   // Average write time in microseconds
@@ -67,13 +65,17 @@ void loop() {
   // Flush and close the file
   test_file.flush();
   test_file.close();
+  /*
+  // Convert sum to mean
+  averageElapsed = averageElapsed/(float)1000.0;
   // Write average write time readout to Serial
-  /*averageElapsed = averageElapsed/(float)1000.0;
-  
   Serial.print("averageElapsederage Time to write 1 byte to file: ");
   Serial.print(averageElapsed);
-  Serial.println(" micro seconds.");*/
+  Serial.println(" micro seconds.");
+  */
   
-  while(1);
-  //delay(100);
+  exit(0);
 }
+
+// Won't compile without a loop(), but this program only runs once.
+void loop() {}
