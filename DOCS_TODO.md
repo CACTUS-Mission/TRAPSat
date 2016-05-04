@@ -1,10 +1,11 @@
 - [x] `Arduino/parallel/time_byte_write/time_byte_write.ino`  
 - [x] `Arduino/read_parallel/read_parallel.ino`  
-- [ ] `rpi/adc/ADC/rpicm-i2c.c`  
-- [ ] `rpi/adc/ADS1115_C` code  
+- [x] `rpi/adc/ADC/rpicm-i2c.c`  
+- [x] `rpi/adc/ADS1115_C` code  
 - [ ] `rpi/parallel/interrupt_parallel_file_io.c`  
 - [ ] `rpi/serialMOD/serial_test.c`  
 - [ ] `rpi/tim/pop.pl`  
 - [ ] `rpi/tim/serial_read.py`  
+- [ ] Go back through documentation TODOs later
 - [ ] Add CFS documentation/cleanup todos to this list as well.  
 - [ ] Switch everything to Doxygen-compliant comments for automatic doc generation.
