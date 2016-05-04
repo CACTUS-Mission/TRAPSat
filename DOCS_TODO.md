@@ -3,7 +3,8 @@
 - [ ] `rpi/adc/ADC/rpicm-i2c.c`  
 - [ ] `rpi/adc/ADS1115_C/test_main.c`  
 - [ ] `rpi/parallel/interrupt_parallel_file_io.c`  
-- [ ] `rpi/serialMOD/serial_test.c.save`  
+- [ ] `rpi/serialMOD/serial_test.c`  
 - [ ] `rpi/tim/pop.pl`  
 - [ ] `rpi/tim/serial_read.py`  
-- [ ] Add CFS documentation/cleanup todos to this list as well.
+- [ ] Add CFS documentation/cleanup todos to this list as well.  
+- [ ] Switch everything to Doxygen-compliant comments for automatic doc generation.
