@@ -64,7 +64,7 @@ int rpicm_i2c_open_bus(int i2c_bus)
 	int fd;
 	char filename[12];
 	/** The I2C bus ID as an ASCII character */
-	char i2c_bus_id = (char) i2c_bus + '0';
+	char i2c_bus_id = (char) i2c_bus;
 	
 	//printf("debug: inside int rpicm_i2c_open_bus(int) - passed convert\n");
 
