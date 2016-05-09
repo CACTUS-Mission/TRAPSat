@@ -1,14 +1,9 @@
-/*******************************************************************************
-** File: tim_app.c
-**
-** Purpose:
-**   This file contains the source code for the TIM App.
-**
-*******************************************************************************/
-/*
-**   Include Files:
-*/
+/** @file tim_app.c
+ *  Telemetry interface module. Manages taking camera images, taking temperature
+ *  readings, and saving and sending them.
+ */
 
+// Project includes. General includes are located in tim_app.h
 #include "tim_app.h"
 #include "tim_app_events.h"
 #include "tim_app_msg.h"
@@ -71,10 +66,6 @@ static CFE_EVS_BinFilter_t TIM_EventFilters[] = {
     {TIM_COMMANDNOP_INF_EID, 0x0000},
     {TIM_COMMANDRST_INF_EID, 0x0000},
 };
-
-/*
-** Prototype Section
-*/
 
 /** Application entry point and main process loop */
 void TIM_AppMain(void) {
@@ -223,6 +214,7 @@ void TIM_ProcessCommandPacket(void) {
   // Log invalid command
   default:
     TIM_HkTelemetryPkt.tim_command_error_count++;
+    // TODO: Make this error specific (TIM_INVALID_MSGID_ERR_EID)?
     CFE_EVS_SendEvent(TIM_COMMAND_ERR_EID, CFE_EVS_ERROR,
                       "TIM: invalid command packet,MID = 0x%x", MsgId);
     break;
