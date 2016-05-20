@@ -45,7 +45,7 @@ To be removed once confirmed
 #define TIM_SYS_CALL_MAX_LEN		     TIM_RASPICALL_MAX_LEN + OS_MAX_PATH_LEN
 */
 
-#define POWEROFF_TIME 				               345000000 /* time before poweroff in microseconds */
+#define POWEROFF_TIME 				               435000000 /* time before poweroff in microseconds */
 
 /*
 ** TIM GPIO Pin Assignment for Parallel Status Update and TE-1 Event Detection

@@ -55,8 +55,13 @@ use constant LOGS_FILE_OPEN => 3;
 my $new_file_state = NO_DATA_FILE_OPEN;
 
 
-
-my $raw_data_filename = "test.data";
+if (not defined($ARGV[0]))
+{
+    print "\n\tExpected raw data as command line argument. Exiting.\n";
+    exit;
+}
+#print "$ARGV[0]\n";
+my $raw_data_filename = $ARGV[0]; # "test.data"; #  #
 open(RAW_DATA_FILE, "<", $raw_data_filename) or die "Failed opening $raw_data_filename!";
 
 my $new_data_filename = "parsed.txt";
@@ -391,7 +396,7 @@ while(1)
 sub readnshift
 {
     my $raw_byte = "\x00";
-    read(RAW_DATA_FILE, $raw_byte, 1) or die "Failed to read byte from file.";
+    read(RAW_DATA_FILE, $raw_byte, 1) or die "Failed to read byte from file: $raw_data_filename.";
     
     #printf("Raw Byte: %02X\n", ord $raw_byte);
     #printf("Character: %c\n", ord $raw_byte);
