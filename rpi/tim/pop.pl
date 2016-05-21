@@ -214,7 +214,7 @@ while(1)
 
             $filename_byte_count++;
         }
-        elsif(($filename_byte_count <= TEMPS_FILENAME_LEN+2) and ($new_file_state == NO_DATA_FILE_OPEN))
+        elsif(($filename_byte_count <= TEMPS_FILENAME_LEN+1) and ($new_file_state == NO_DATA_FILE_OPEN))
         {
             #
             # Ignore Single byte after filename
