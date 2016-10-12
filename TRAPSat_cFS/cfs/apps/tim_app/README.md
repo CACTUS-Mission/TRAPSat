@@ -1,0 +1,2 @@
+# Telemetry Interface Module (TIM) cFS Module
+This cFS app contains the core code the TRAPSat Telemetry Interface Module (TIM). The TIM manages invoking and governing other TRAPSat cFS modules and sending the data they return to the filesystem and to the RockSat-X sounding rocket via serial.
