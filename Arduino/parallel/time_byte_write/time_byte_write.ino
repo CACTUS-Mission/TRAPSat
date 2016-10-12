@@ -1,56 +1,81 @@
+/*
+  time_write_byte.ino - Program to test SD card operation and write speed.
+*/
+
 #include <SPI.h>
 #include <SD.h>
 
+// File to be written to. Opened in setup(), closed in loop()
 File test_file;
 
 void setup() {
-  
+  // Begin serial communication at 115.2k baud
   Serial.begin(115200);
+  // Wait for serial connection to initialize before proceeding
   while(!Serial);
   
+  // Attempt to open communication with the SD card
   if(!SD.begin()) {
     Serial.println("Setup Failed.");
-    while(1) ;
-  }
-    
-  test_file=SD.open("test.raw", FILE_WRITE);
-  test_file.close();
-
-  if(!SD.exists("test.raw")) {
-    Serial.println("Error: test file does not exist.");
-    while(1) ;
+    exit(1);
   }
   
-  test_file=SD.open("test.raw", FILE_WRITE);
-  Serial.println("Setup Complete");
-  delay(1000);
-}
+  // Create a file on the SD card to test for
+  test_file = SD.open("test.raw", FILE_WRITE);
+  test_file.close();
 
-void loop() {
-  double t0, tf, av;
+  // Test for created file to ensure SD card is writing and can read
+  if(!SD.exists("test.raw")) {
+    Serial.println("Error: test file does not exist.");
+    exit(1);
+  }
+  
+  // Overwrite previous test.raw
+  test_file = SD.open("test.raw", FILE_WRITE);
+  Serial.println("Setup Complete");
+  // Wait a second before progressing to benchmark portion
+  delay(1000);
+  
+  // Start and end time of each write, measured in microseconds
+  double startTime, endTime;
+  // Average write time in microseconds
+  //double averageElapsed;
+  
   //unsigned char data = 0x11;
   byte data = 0xFE;
   
-  for(int i=1; i<=1000; i++) {
-    t0 = micros();
+  // Write data byte to file 1000 times, measure elapsed time
+  for(int i = 1; i <= 1000; i++) {
+    // Retrieve microseconds since program start
+    startTime = micros();
     delayMicroseconds(5);
     test_file.write(data);
     delayMicroseconds(5);
-    tf = micros();   
+    // Retrieve microseconds since program start to get difference from startTime
+    endTime = micros();
+    // Write results readout to Serial
     Serial.print("Time to write byte ");
     Serial.print(i);
     Serial.print(" to file: ");
-    Serial.print((tf-t0)-10);
+    Serial.print((endTime - startTime) - 10);
     Serial.println(" micro seconds.");
-    //av = av + (tf-t0);
+    
+    //averageElapsed = averageElapsed + (endTime-startTime);
   }
+  // Flush and close the file
   test_file.flush();
   test_file.close();
-  //av = av/(float)1000.0;
+  /*
+  // Convert sum to mean
+  averageElapsed = averageElapsed/(float)1000.0;
+  // Write average write time readout to Serial
+  Serial.print("averageElapsederage Time to write 1 byte to file: ");
+  Serial.print(averageElapsed);
+  Serial.println(" micro seconds.");
+  */
   
-  //Serial.print("Average Time to write 1 byte to file: ");
-  //Serial.print(av);
-  //Serial.println(" micro seconds.");
-  while(1) ;
-  //delay(100);
+  exit(0);
 }
+
+// Won't compile without a loop(), but this program only runs once.
+void loop() {}
