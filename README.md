@@ -1,5 +1,5 @@
 # TRAPSat
-Flight and ground software for the TRAPSat payload. All flight software applications are developed within the NASA [cFS](https://cfs.gsfc.nasa.gov/) (Core Flight Software) framework.
+Flight and ground software for the TRAPSat payload. All flight software applications are developed within the NASA [cFS](https://cfs.gsfc.nasa.gov/) (Core Flight System) framework.
 
 The flight software is designed to run on a Raspberry Pi Compute Module.
 
